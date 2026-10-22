@@ -4,6 +4,7 @@
 Usage :
   python3 outils/publier.py chemin/edition.json            construit _site/ et contrôle
   python3 outils/publier.py chemin/edition.json --pousser  idem puis publie (force push sur `pages`)
+  python3 outils/publier.py chemin/edition.json --texte    écrit edition.txt (audit sans-trace-ia)
 
 Le dépôt garde deux branches :
 - main  : le code de l'app et ces outils.
@@ -194,6 +195,21 @@ def construire(chemin_json):
     return site, ed["date"]
 
 
+def texte(ed):
+    """Texte brut de l'édition, pour l'audit sans-trace-ia."""
+    lignes = [ed["une"]["texte"]] if ed.get("une") else []
+    for r in ed["rubriques"]:
+        lignes.append(r["titre"])
+        for b in r["blocs"]:
+            lignes += [b.get("texte", "")] + b.get("items", []) + [b.get("legende", "")]
+            lignes += [e.get("legende", "") for e in b.get("elements", [])]
+            lignes += [x.get("boite") or x.get("fleche", "") for x in b.get("etapes", [])]
+        lignes.append(r.get("a_retenir", ""))
+    for br in ed.get("breves", []):
+        lignes += br["items"]
+    return "\n\n".join(x for x in lignes if x)
+
+
 def git(*args, cwd):
     subprocess.run(["git", *args], cwd=cwd, check=True)
 
@@ -214,7 +230,12 @@ if __name__ == "__main__":
     a = argparse.ArgumentParser()
     a.add_argument("edition")
     a.add_argument("--pousser", action="store_true")
+    a.add_argument("--texte", action="store_true", help="écrit edition.txt à côté du JSON et s'arrête")
     x = a.parse_args()
+    if x.texte:
+        sortie = os.path.splitext(x.edition)[0] + ".txt"
+        open(sortie, "w", encoding="utf-8").write(texte(json.load(open(x.edition, encoding="utf-8"))))
+        sys.exit(print(sortie))
     site, date = construire(x.edition)
     if x.pousser:
         pousser(site, date)
