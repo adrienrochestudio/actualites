@@ -1,0 +1,21 @@
+name: App Mac
+on:
+  push:
+    branches: [main]
+    paths: ["natif/**", ".github/workflows/app-mac.yml"]
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  construire:
+    runs-on: macos-15
+    steps:
+      - uses: actions/checkout@v4
+      - name: Construire
+        run: natif/construire-mac.sh
+      - name: Publier dans la release "mac"
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh release view mac >/dev/null 2>&1 || gh release create mac --title "App Mac" --notes "Dernière version de l'app Mac Actualités."
+          gh release upload mac natif/build/Actualites-mac.zip --clobber
