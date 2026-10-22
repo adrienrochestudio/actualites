@@ -11,8 +11,9 @@ func chargerImage(_ url: URL) -> ImagePlateforme? { UIImage(contentsOfFile: url.
 func vueImage(_ i: ImagePlateforme) -> Image { Image(uiImage: i) }
 #endif
 
-// Référence : quotidien imprimé de type NYT / WSJ, mêmes règles que styles.css de l'app web.
-// Une famille (Source Serif 4, embarquée dans l'app), encre, gris de note, bordeaux pour le nom des rubriques.
+// Référence : apps de quotidiens de qualité (NYT, The Economist, FT), mêmes règles que styles.css :
+// titres en graisse moyenne et coupe display, séparation par l'espace plutôt que par des filets.
+// Coupes statiques de Source Serif 4 embarquées : Texte (taille optique 20), Titre (48), Manchette (60).
 enum Style {
     static let encre = Color(red: 0x12 / 255, green: 0x12 / 255, blue: 0x12 / 255)
     static let note = Color(red: 0x66 / 255, green: 0x66 / 255, blue: 0x66 / 255)
@@ -20,9 +21,10 @@ enum Style {
     static let fond = Color.white
     static let colonne: CGFloat = 640
     static func serif(_ taille: CGFloat, gras: Bool = false, italique: Bool = false) -> Font {
-        .custom(gras ? "SourceSerif4-Bold" : (italique ? "SourceSerif4-Italic" : "SourceSerif4-Regular"), size: taille)
+        .custom(gras ? "ActualitesTexte-Semibold" : (italique ? "ActualitesTexte-Italic" : "ActualitesTexte-Regular"), size: taille)
     }
-    static func titre() -> Font { serif(30, gras: true) }
+    static func titre(_ taille: CGFloat = 31) -> Font { .custom("ActualitesTitre-Medium", size: taille) }
+    static func manchette() -> Font { .custom("ActualitesManchette-Semibold", size: 54) }
     static func sousTitre() -> Font { serif(19, gras: true) }
     static func texte() -> Font { serif(18) }
     static func petit(italique: Bool = false) -> Font { serif(13, italique: italique) }
@@ -206,9 +208,8 @@ struct VueRubrique: View {
                 Text(r.titre).font(Style.titre()).foregroundStyle(Style.encre).fixedSize(horizontal: false, vertical: true)
             }
             CorpsArticle(a: r)
-            Filet().padding(.top, 18)
         }
-        .padding(.top, 36)
+        .padding(.top, 64)
     }
 }
 
@@ -216,8 +217,7 @@ struct VueBreves: View {
     let breves: [Breve]
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
-            Text("En bref").font(Style.titre()).foregroundStyle(Style.encre).padding(.bottom, 14)
-            Filet()
+            Text("En bref").font(Style.titre()).foregroundStyle(Style.encre).padding(.bottom, 6)
             LazyVGrid(columns: [GridItem(.flexible(), spacing: 32, alignment: .top), GridItem(.flexible(), alignment: .top)],
                       alignment: .leading, spacing: 0) {
                 ForEach(breves) { br in
@@ -225,13 +225,12 @@ struct VueBreves: View {
                         NomRubrique(t: br.rubrique)
                         ForEach(br.items, id: \.self) { Paragraphe(t: "- \($0)", taille: 17) }
                         if let s = ligneSources(br.sources) { Note(attribue: s) }
-                        Rectangle().fill(Color(white: 0.81)).frame(height: 1).padding(.top, 4)
                     }
-                    .padding(.top, 14)
+                    .padding(.top, 22)
                 }
             }
         }
-        .padding(.top, 38)
+        .padding(.top, 72)
     }
 }
 
@@ -243,12 +242,10 @@ struct VueSemaine: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
             Text("Dossiers de la semaine").font(Style.titre()).foregroundStyle(Style.encre)
-                .padding(.top, 26).padding(.bottom, 18)
+                .padding(.top, 36).padding(.bottom, 8)
             ForEach(semaine.sujets) { s in
-                Filet()
                 dossier(s).id("dossier-\(s.id)")
             }
-            Filet()
         }
         .onChange(of: semaine.date) { _ in ouverts = [] }
     }
@@ -289,7 +286,7 @@ struct VueSemaine: View {
                 CorpsArticle(a: s)
             }
         }
-        .padding(.vertical, 16)
+        .padding(.vertical, 24)
     }
 }
 
@@ -334,20 +331,16 @@ struct Journal: View {
                 if let u = Bundle.main.url(forResource: "logo", withExtension: "png"), let i = chargerImage(u) {
                     vueImage(i).resizable().frame(width: 42, height: 42)
                 }
-                Text("Actualités").font(Style.serif(52, gras: true)).foregroundStyle(Style.encre)
+                Text("Actualités").font(Style.manchette()).foregroundStyle(Style.encre)
             }
             .padding(.top, 40)
-            VStack(spacing: 2) {
-                Rectangle().fill(Style.encre).frame(height: 3)
-                Rectangle().fill(Style.encre).frame(height: 1)
-            }
-            .padding(.top, 14)
-            HStack(spacing: 28) {
+            HStack(spacing: 32) {
                 onglet("Quotidien", .jour)
                 onglet("Hebdomadaire", .semaine)
             }
-            Filet()
-            Note(ligneDate).padding(.top, 8)
+            .padding(.top, 16)
+            Rectangle().fill(Color(white: 0.89)).frame(height: 1)
+            Note(ligneDate).padding(.top, 14)
         }
         .frame(maxWidth: 880)
         .padding(.horizontal, 24)
@@ -382,11 +375,10 @@ struct Journal: View {
                 if let une = ed.une {
                     VStack(alignment: .leading, spacing: 10) {
                         NomRubrique(t: "Actu")
-                        Paragraphe(t: une.texte, taille: 21)
+                        Paragraphe(t: une.texte, taille: 22)
                         if let s = ligneSources(une.sources) { Note(attribue: s) }
                     }
-                    .padding(.vertical, 22)
-                    Filet()
+                    .padding(.top, 30)
                 }
                 ForEach(Array(ed.rubriques.enumerated()), id: \.offset) { _, r in VueRubrique(r: r) }
                 if let b = ed.breves, !b.isEmpty { VueBreves(breves: b) }
@@ -428,7 +420,7 @@ struct Journal: View {
             default: EmptyView()
             }
         }
-        .padding(.top, 28)
+        .padding(.top, 64)
     }
 
     /// Image agrandie sur fond blanc ; un clic ou Échap referme.

@@ -1,10 +1,10 @@
-/* Référence : quotidien imprimé de type NYT / WSJ (titre de journal centré, double filet, rubriques
-   signalées par leur nom, texte en colonne, légendes sous les images), validée sur la newsletter.
-   Une famille : Source Serif 4 (OFL), embarquée pour la lecture hors ligne.
+/* Référence : apps de quotidiens de qualité (New York Times, The Economist, Financial Times) :
+   titres en graisse moyenne et coupe "display", séparation par l'espace plutôt que par des filets,
+   nom de rubrique en couleur au-dessus du titre, légendes en italique.
+   Une famille : Source Serif 4 variable (OFL, axe de taille optique), embarquée pour le hors ligne.
    Couleurs : encre, gris de note, et le bordeaux du logo pour un seul rôle, le nom des rubriques. */
-@font-face { font-family: "Source Serif 4"; src: url("./fonts/source-serif-4-latin-400-normal.woff2") format("woff2"); font-weight: 400; font-style: normal; font-display: swap; }
-@font-face { font-family: "Source Serif 4"; src: url("./fonts/source-serif-4-latin-400-italic.woff2") format("woff2"); font-weight: 400; font-style: italic; font-display: swap; }
-@font-face { font-family: "Source Serif 4"; src: url("./fonts/source-serif-4-latin-700-normal.woff2") format("woff2"); font-weight: 700; font-style: normal; font-display: swap; }
+@font-face { font-family: "Source Serif 4"; src: url("./fonts/source-serif-4-var.woff2") format("woff2"); font-weight: 200 900; font-style: normal; font-display: swap; }
+@font-face { font-family: "Source Serif 4"; src: url("./fonts/source-serif-4-var-italic.woff2") format("woff2"); font-weight: 200 900; font-style: italic; font-display: swap; }
 
 :root {
   --encre: #121212;
@@ -33,6 +33,8 @@ body {
   color: var(--encre);
   font-family: var(--serif);
   font-feature-settings: "kern", "liga", "onum";
+  font-optical-sizing: auto;
+  -webkit-font-smoothing: antialiased;
   padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
 }
 
@@ -51,25 +53,17 @@ a:focus-visible, button:focus-visible, summary:focus-visible, img:focus-visible 
 }
 .marque { display: inline-flex; align-items: center; gap: 10px; }
 .marque img { width: 34px; height: 34px; }
-.marque h1 { font-size: 40px; line-height: 44px; font-weight: 700; margin: 0; letter-spacing: -0.01em; }
+.marque h1 { font-size: 40px; line-height: 44px; font-weight: 640; margin: 0; letter-spacing: -0.015em; }
 .onglets {
   display: flex;
   justify-content: center;
-  gap: 28px;
-  margin-top: 14px;
-  border-top: 3px solid var(--encre);
-  border-bottom: 1px solid var(--encre);
-  padding: 2px 0 0;
-  position: relative;
-}
-.onglets::before { /* second filet de la manchette */
-  content: "";
-  position: absolute;
-  left: 0; right: 0; top: 2px;
-  border-top: 1px solid var(--encre);
+  gap: 32px;
+  margin-top: 16px;
+  border-bottom: 1px solid #e3e3e3;
 }
 .onglets button {
   font: 16px/20px var(--serif);
+  margin-bottom: -1px;
   color: var(--note);
   background: none;
   border: 0;
@@ -80,8 +74,8 @@ a:focus-visible, button:focus-visible, summary:focus-visible, img:focus-visible 
   user-select: none;
   -webkit-user-select: none;
 }
-.onglets button[aria-pressed="true"] { color: var(--encre); font-weight: 700; border-bottom-color: var(--encre); }
-.date { font-size: 13px; line-height: 19px; color: var(--note); margin: 8px 0 0; }
+.onglets button[aria-pressed="true"] { color: var(--encre); font-weight: 600; border-bottom-color: var(--encre); }
+.date { font-size: 13px; line-height: 19px; color: var(--note); margin: 14px 0 0; }
 
 .journal {
   max-width: calc(var(--colonne) + 2 * var(--marge));
@@ -89,24 +83,25 @@ a:focus-visible, button:focus-visible, summary:focus-visible, img:focus-visible 
   padding: 8px var(--marge) 56px;
 }
 
-/* Tailles : titre 30, sous-titre 19, texte 18, note 13 (titre 26 et texte 17 sur téléphone) */
-.titre { font-size: 30px; line-height: 35px; font-weight: 700; margin: 0; letter-spacing: -0.005em; }
-.sous-titre { font-size: 19px; line-height: 26px; font-weight: 700; margin: 24px 0 6px; }
+/* Tailles : titre 31, sous-titre 19, texte 18, note 13 (titre 27 et texte 17 sur téléphone).
+   Graisses : titres 540 en coupe display, intertitres 600, texte 400. Pas de gras lourd. */
+.titre { font-size: 31px; line-height: 37px; font-weight: 540; margin: 0; letter-spacing: -0.01em; }
+.sous-titre { font-size: 19px; line-height: 26px; font-weight: 600; margin: 28px 0 6px; }
 .texte { font-size: 18px; line-height: 30px; margin: 0 0 15px; hyphens: auto; -webkit-hyphens: auto; }
 .note { font-size: 13px; line-height: 19px; color: var(--note); margin: 0; font-weight: 400; }
 .note a { color: var(--note); }
 figcaption.note, .chapo { font-style: italic; }
-.rubrique-nom { font-size: 14px; line-height: 20px; color: var(--marque); margin: 0 0 6px; font-weight: 700; }
+.rubrique-nom { font-size: 14px; line-height: 20px; color: var(--marque); margin: 0 0 8px; font-weight: 600; }
 
 /* Actu du moment */
-.une { padding: 22px 0 22px; border-bottom: 1px solid var(--encre); }
-.une-texte { font-size: 21px; line-height: 32px; margin: 0 0 10px; }
+.une { padding: 30px 0 8px; }
+.une-texte { font-size: 22px; line-height: 33px; margin: 0 0 10px; font-weight: 400; }
 
 /* Rubriques du jour */
-.rubrique { padding-top: 36px; }
-.rubrique > .titre { padding-bottom: 18px; }
+.rubrique { padding-top: 64px; }
+.rubrique > .titre { padding-bottom: 20px; }
 .liste { padding-left: 14px; margin-bottom: 8px; }
-.sources { padding: 8px 0 30px; border-bottom: 1px solid var(--encre); }
+.sources { padding-top: 10px; }
 
 /* Figures */
 figure { margin: 8px 0 24px; }
@@ -130,25 +125,22 @@ figure.photo:not(.large) img { max-width: 360px; }
 .schema .fleche { text-align: center; padding: 6px 0; font-style: italic; }
 
 /* Brèves */
-.breves { padding-top: 38px; }
-.breves > .titre { padding-bottom: 14px; }
-.breves-liste { border-top: 1px solid var(--encre); }
-.breve { padding: 14px 0 8px; border-bottom: 1px solid #cfcfcf; }
-.breve:last-child { border-bottom: 1px solid var(--encre); }
-.breve .rubrique-nom { margin-bottom: 8px; }
+.breves { padding-top: 72px; }
+.breves > .titre { padding-bottom: 6px; }
+.breve { padding: 22px 0 0; }
+.breve .rubrique-nom { margin-bottom: 6px; }
 .breve .texte { font-size: 17px; line-height: 27px; margin-bottom: 10px; }
 
 /* Édition de la semaine : dossiers repliés, chacun représenté par son image */
-.semaine-entete { padding: 26px 0 18px; }
-.dossier { border-top: 1px solid var(--encre); }
-.dossier:last-of-type { border-bottom: 1px solid var(--encre); }
+.semaine-entete { padding: 36px 0 8px; }
+.dossier + .dossier { margin-top: 12px; }
 .dossier summary {
   list-style: none;
   cursor: pointer;
   display: grid;
   grid-template-columns: 1fr;
   gap: 14px;
-  padding: 18px 0;
+  padding: 24px 0;
 }
 .dossier summary::-webkit-details-marker { display: none; }
 .dossier .couverture {
@@ -164,9 +156,9 @@ figure.photo:not(.large) img { max-width: 360px; }
 .dossier[open] .ouvrir { text-decoration: none; }
 .dossier-corps { padding-bottom: 10px; }
 .dossier-corps > figcaption { padding: 0 0 18px; }
-.dossier-corps .sources { border-bottom: 0; }
+.dossier-corps { padding-bottom: 28px; }
 
-.pied { padding-top: 28px; }
+.pied { padding-top: 64px; }
 .pied .note + .note { margin-top: 6px; }
 
 /* Image agrandie */
@@ -221,7 +213,7 @@ figure.photo:not(.large) img { max-width: 360px; }
 @media (max-width: 560px) {
   :root { --marge: 18px; }
   .marque h1 { font-size: 34px; line-height: 38px; }
-  .titre { font-size: 26px; line-height: 31px; }
+  .titre { font-size: 27px; line-height: 33px; }
   .texte { font-size: 17px; line-height: 28px; }
   .une-texte { font-size: 19px; line-height: 29px; }
   figure.large, .dossier .couverture {
@@ -237,14 +229,13 @@ figure.photo:not(.large) img { max-width: 360px; }
 /* Ordinateur : graphiques plus larges que le texte, brèves sur deux colonnes, dossiers image à gauche */
 @media (min-width: 960px) {
   .titre-journal { padding-top: 40px; }
-  .marque h1 { font-size: 52px; line-height: 56px; }
+  .marque h1 { font-size: 54px; line-height: 58px; }
   .marque img { width: 42px; height: 42px; }
   figure.large {
     margin-left: calc((var(--colonne) - var(--large)) / 2);
     margin-right: calc((var(--colonne) - var(--large)) / 2);
   }
   .breves-liste { display: grid; grid-template-columns: 1fr 1fr; column-gap: 32px; }
-  .breve:last-child { border-bottom: 1px solid #cfcfcf; }
   .dossier summary { grid-template-columns: 300px 1fr; gap: 24px; align-items: start; }
   .dossier .couverture { aspect-ratio: 4 / 3; }
 }
