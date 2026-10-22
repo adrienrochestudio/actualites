@@ -74,6 +74,8 @@ FICHIERS_APP = [
     "index.html", "styles.css", "app.js", "edition.js", "rendu.js", "sw.js", "manifest.webmanifest",
     "icons/logo-96.png", "icons/icon-180.png", "icons/icon-192.png", "icons/icon-512.png",
     "icons/icon-512-maskable.png",
+    "fonts/source-serif-4-latin-400-normal.woff2", "fonts/source-serif-4-latin-400-italic.woff2",
+    "fonts/source-serif-4-latin-700-normal.woff2", "fonts/LICENSE-OFL.txt",
 ]
 TYPES = {"p", "sous_titre", "liste", "image", "duo", "carte", "schema"}
 MOIS = ["janvier", "février", "mars", "avril", "mai", "juin", "juillet", "août",

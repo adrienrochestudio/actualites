@@ -70,7 +70,7 @@ function bloc(b) {
     case "p":
       return el("p", "texte", b.texte);
     case "sous_titre":
-      return el("h4", "sous-titre", b.texte);
+      return el("h3", "sous-titre", b.texte);
     case "liste": {
       const d = el("div");
       for (const item of b.items ?? []) d.append(el("p", "texte liste", `- ${item}`));
@@ -113,59 +113,26 @@ function corps(r) {
     const n = bloc(b);
     if (n) frag.append(n);
   }
-  if (r.a_retenir) frag.append(el("h4", "sous-titre", "À retenir"), el("p", "texte", r.a_retenir));
+  if (r.a_retenir) frag.append(el("h3", "sous-titre", "À retenir"), el("p", "texte", r.a_retenir));
   const fin = ligneSources(r.sources, r.note_sources);
   fin.classList.add("sources");
   frag.append(fin);
   return frag;
 }
 
-function entete(ed) {
-  const h = el("header", "entete");
-  const marque = el("div", "marque");
-  const logo = el("img");
-  logo.src = "./icons/logo-96.png";
-  logo.alt = "";
-  marque.append(logo, el("h1", "titre", "Actualités"));
-  h.append(marque, el("p", "note date", ed.date_texte));
-  if (ed.une) {
-    const une = el("section", "une");
-    une.setAttribute("aria-labelledby", "une-titre");
-    const t = el("h2", "etiquette", "Actu");
-    t.id = "une-titre";
-    une.append(t, el("p", "texte une-texte", ed.une.texte), ligneSources(ed.une.sources));
-    h.append(une);
-  }
-  return h;
-}
-
-function entreeSommaire(href, etiquette, titre) {
-  const a = el("a");
-  a.href = href;
-  if (etiquette) a.append(el("span", "note", etiquette));
-  a.append(el("span", null, titre));
-  const li = el("li");
-  li.append(a);
-  return li;
-}
-
-function sommaire(ed, semaine) {
-  const nav = el("nav", "sommaire");
-  nav.setAttribute("aria-labelledby", "sommaire-titre");
-  const t = el("h2", "etiquette", "Sommaire");
-  t.id = "sommaire-titre";
-  const ol = el("ol");
-  (ed?.rubriques ?? []).forEach((r, i) => ol.append(entreeSommaire(`#r${i + 1}`, r.etiquette, r.titre)));
-  if (ed?.breves?.length) ol.append(entreeSommaire("#breves", null, "En bref"));
-  if (semaine?.sujets?.length) ol.append(entreeSommaire("#semaine", null, "Dossiers de la semaine"));
-  nav.append(t, ol);
-  return nav;
+function une(ed) {
+  const s = el("section", "une");
+  s.setAttribute("aria-labelledby", "une-titre");
+  const t = el("h2", "rubrique-nom", "Actu");
+  t.id = "une-titre";
+  s.append(t, el("p", "une-texte", ed.une.texte), ligneSources(ed.une.sources));
+  return s;
 }
 
 function rubrique(r, i) {
   const s = el("article", "rubrique");
   s.id = `r${i + 1}`;
-  s.append(el("p", "note", r.etiquette), el("h3", "titre", r.titre), corps(r));
+  s.append(el("p", "rubrique-nom", r.etiquette), el("h2", "titre", r.titre), corps(r));
   return s;
 }
 
@@ -173,21 +140,22 @@ function breves(liste) {
   const s = el("section", "breves");
   s.id = "breves";
   s.append(el("h2", "titre", "En bref"));
+  const l = el("div", "breves-liste");
   for (const br of liste) {
     const d = el("div", "breve");
-    d.append(el("h3", "sous-titre", br.rubrique));
+    d.append(el("h3", "rubrique-nom", br.rubrique));
     for (const item of br.items ?? []) d.append(el("p", "texte", `- ${item}`));
     d.append(ligneSources(br.sources));
-    s.append(d);
+    l.append(d);
   }
+  s.append(l);
   return s;
 }
 
 // Dossiers de la semaine : repliés, représentés par leur image, ouverts au toucher.
 function semaine(heb) {
   const s = el("section", "semaine");
-  s.id = "semaine";
-  s.append(el("h2", "titre", "Dossiers de la semaine"), el("p", "note", heb.date_texte_semaine || heb.date_texte));
+  s.append(el("h2", "titre semaine-entete", "Dossiers de la semaine"));
   heb.sujets.forEach((sujet, i) => {
     const d = el("details", "dossier");
     d.id = `s${i + 1}`;
@@ -200,15 +168,13 @@ function semaine(heb) {
       resume.append(c);
     }
     const textes = el("div", "dossier-entete");
-    textes.append(el("p", "note", sujet.etiquette), el("h3", "titre", sujet.titre));
+    textes.append(el("p", "rubrique-nom", sujet.etiquette), el("h3", "titre", sujet.titre));
     if (sujet.chapo) textes.append(el("p", "chapo", sujet.chapo));
     textes.append(el("p", "note ouvrir", "Lire le dossier"));
     resume.append(textes);
     const contenu = el("div", "dossier-corps");
-    if (sujet.couverture?.legende || sujet.couverture?.credit) {
-      const l = legende(sujet.couverture);
-      if (l) contenu.append(l);
-    }
+    const l = sujet.couverture ? legende(sujet.couverture) : null;
+    if (l) contenu.append(l);
     contenu.append(corps(sujet));
     d.append(resume, contenu);
     d.addEventListener("toggle", () => {
@@ -219,23 +185,27 @@ function semaine(heb) {
   return s;
 }
 
-// Renvoie le nœud du pied de page, que app.js complète avec l'état hors ligne.
-export function rendre(conteneur, ed, heb) {
+// Affiche l'édition du jour ("jour") ou de la semaine ("semaine"). Renvoie le pied de page,
+// que app.js complète avec l'état hors ligne.
+export function rendre(conteneur, vue, ed, heb) {
   const frag = document.createDocumentFragment();
-  if (ed) {
-    frag.append(entete(ed), sommaire(ed, heb));
+  const pied = el("footer", "pied");
+  if (vue === "jour" && ed) {
+    if (ed.une) frag.append(une(ed));
     (ed.rubriques ?? []).forEach((r, i) => frag.append(rubrique(r, i)));
     if (ed.breves?.length) frag.append(breves(ed.breves));
-  }
-  if (heb?.sujets?.length) frag.append(semaine(heb));
-  const pied = el("footer", "pied");
-  if (ed) {
     const jour = (ed.date_texte || "").split(" ").slice(1).join(" ");
     pied.append(el("p", "note", `Rédigé par Claude à partir de sources publiques consultées le ${jour}.`));
+  } else if (vue === "semaine" && heb?.sujets?.length) {
+    frag.append(semaine(heb));
+    pied.append(el("p", "note", "Dossiers rédigés par Claude à partir de sources publiques, publiés chaque lundi."));
+  } else {
+    frag.append(el("p", "note", vue === "semaine"
+      ? "Pas encore d'édition de la semaine sur cet appareil."
+      : "Pas encore d'édition du jour sur cet appareil."));
   }
   frag.append(pied);
   conteneur.replaceChildren(frag);
-  if (ed) document.title = `Actualités, ${ed.date_texte}`;
   return pied;
 }
 

@@ -15,6 +15,7 @@ lipo -create build/Actualites-arm64 build/Actualites-x86_64 -output "$APP/Conten
 
 cp Info.plist "$APP/Contents/Info.plist"
 cp logo.png "$APP/Contents/Resources/logo.png"
+mkdir -p "$APP/Contents/Resources/Fonts" && cp Fonts/*.ttf "$APP/Contents/Resources/Fonts/"
 
 ICONES=build/Actualites.iconset
 mkdir -p "$ICONES"

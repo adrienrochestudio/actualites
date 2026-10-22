@@ -5,15 +5,48 @@ const journal = document.getElementById("journal");
 const RELECTURE_MIN_MS = 10 * 60 * 1000;
 
 let affiche = { jour: null, semaine: null };
+let contenus = { jour: null, semaine: null };
 let derniereVerif = 0;
+let vue = "jour";
+try { if (localStorage.getItem("vue") === "semaine") vue = "semaine"; } catch {}
 
 const installee = matchMedia("(display-mode: standalone)").matches || navigator.standalone === true;
+const ligneDate = document.getElementById("date");
+const boutons = [...document.querySelectorAll(".onglets button")];
+let etat = "";
+
+function dessiner() {
+  for (const b of boutons) b.setAttribute("aria-pressed", String(b.dataset.vue === vue));
+  const { jour, semaine } = contenus;
+  ligneDate.textContent = vue === "jour"
+    ? (jour?.donnees.date_texte ?? "")
+    : (semaine?.donnees.date_texte_semaine ?? semaine?.donnees.date_texte ?? "");
+  const pied = rendre(journal, vue, jour?.donnees, semaine?.donnees);
+  if (etat) ligneEtat(pied, etat);
+  if (!installee) {
+    pied.append(Object.assign(document.createElement("p"), {
+      className: "note",
+      textContent: "Installer : iPhone, Partager puis Sur l'écran d'accueil.",
+    }));
+  }
+  document.title = vue === "jour" ? "Actualités" : "Actualités, la semaine";
+}
+
+for (const b of boutons) {
+  b.addEventListener("click", () => {
+    if (b.dataset.vue === vue) return;
+    vue = b.dataset.vue;
+    try { localStorage.setItem("vue", vue); } catch {}
+    dessiner();
+    scrollTo(0, 0);
+  });
+}
 
 async function afficher({ silencieux = false } = {}) {
   derniereVerif = Date.now();
   const [jour, semaine] = await Promise.all([charger("jour"), charger("semaine")]);
   if (!jour && !semaine) {
-    if (!affiche.jour) message(journal, "Aucune édition enregistrée sur cet appareil. Ouvrir l'app une fois avec une connexion.");
+    if (!affiche.jour && !affiche.semaine) message(journal, "Aucune édition enregistrée sur cet appareil. Ouvrir l'app une fois avec une connexion.");
     return;
   }
   const dates = { jour: jour?.donnees.date ?? null, semaine: semaine?.donnees.date ?? null };
@@ -23,30 +56,25 @@ async function afficher({ silencieux = false } = {}) {
   const ouverts = dates.semaine === affiche.semaine
     ? [...journal.querySelectorAll("details[open]")].map((d) => d.id) : [];
   const nouveauJour = affiche.jour && affiche.jour !== dates.jour;
-
-  const pied = rendre(journal, jour?.donnees, semaine?.donnees);
-  for (const id of ouverts) document.getElementById(id)?.setAttribute("open", "");
-  if (nouveauJour) scrollTo(0, 0);
+  contenus = { jour, semaine };
   affiche = dates;
 
   const enLigne = [jour, semaine].some((c) => c?.source === "reseau");
-  if (!enLigne) {
-    ligneEtat(pied, "Hors ligne : dernières éditions enregistrées sur cet appareil.");
-  } else {
-    ligneEtat(pied, "Enregistrement pour la lecture hors ligne.");
+  etat = enLigne ? "Enregistrement pour la lecture hors ligne." : "Hors ligne : dernières éditions enregistrées sur cet appareil.";
+  dessiner();
+  for (const id of ouverts) document.getElementById(id)?.setAttribute("open", "");
+  if (nouveauJour && vue === "jour") scrollTo(0, 0);
+
+  if (enLigne) {
     const manquees = (await Promise.all([
       jour?.source === "reseau" ? enregistrer("jour", jour.donnees) : 0,
       semaine?.source === "reseau" ? enregistrer("semaine", semaine.donnees) : 0,
     ])).reduce((a, b) => a + b, 0);
-    ligneEtat(pied, manquees
+    etat = manquees
       ? `Éditions enregistrées hors ligne, ${manquees} image(s) non enregistrée(s).`
-      : "Éditions enregistrées pour la lecture hors ligne.");
-  }
-  if (!installee) {
-    pied.append(Object.assign(document.createElement("p"), {
-      className: "note",
-      textContent: "Installer : iPhone, Partager puis Sur l'écran d'accueil.",
-    }));
+      : "Éditions enregistrées pour la lecture hors ligne.";
+    const pied = journal.querySelector(".pied");
+    if (pied) ligneEtat(pied, etat);
   }
 }
 
@@ -78,23 +106,6 @@ if ("serviceWorker" in navigator) {
   navigator.serviceWorker.addEventListener("controllerchange", () => {
     if (!recharge) { recharge = true; location.reload(); }
   });
-}
-
-// Plein écran (navigateur d'ordinateur) : au premier clic, et bouton tant qu'on n'y est pas.
-const racine = document.documentElement;
-const pleinEcranDispo = (document.fullscreenEnabled || document.webkitFullscreenEnabled) && matchMedia("(pointer: fine)").matches;
-const enPleinEcran = () => Boolean(document.fullscreenElement || document.webkitFullscreenElement);
-const passerPleinEcran = () => {
-  if (enPleinEcran()) return;
-  (racine.requestFullscreen || racine.webkitRequestFullscreen)?.call(racine)?.catch?.(() => {});
-};
-if (pleinEcranDispo) {
-  const bouton = document.getElementById("plein-ecran");
-  const majBouton = () => { bouton.hidden = enPleinEcran(); };
-  bouton.addEventListener("click", passerPleinEcran);
-  document.addEventListener("fullscreenchange", majBouton);
-  document.addEventListener("webkitfullscreenchange", majBouton);
-  majBouton();
 }
 
 // Demande à garder les données (accordé plus facilement à une app installée).
