@@ -19,10 +19,9 @@ enum Style {
     static let note = Color(red: 0x66 / 255, green: 0x66 / 255, blue: 0x66 / 255)
     static let marque = Color(red: 0x6b / 255, green: 0x1d / 255, blue: 0x2a / 255)
     static let fond = Color.white
-    static let colonne: CGFloat = 640
-    static let rail: CGFloat = 340
-    static let gouttiere: CGFloat = 48
-    static var page: CGFloat { colonne + gouttiere + rail }
+    static let colonne: CGFloat = 680
+    /// Largeur des graphiques larges sur grand écran : un peu plus que la colonne de texte.
+    static let large: CGFloat = 920
     static func serif(_ taille: CGFloat, gras: Bool = false, italique: Bool = false) -> Font {
         .custom(gras ? "ActualitesTexte-Semibold" : (italique ? "ActualitesTexte-Italic" : "ActualitesTexte-Regular"), size: taille)
     }
@@ -44,7 +43,7 @@ extension EnvironmentValues {
 
 private struct CleGrandEcran: EnvironmentKey { static let defaultValue = false }
 extension EnvironmentValues {
-    /// Fenêtre d'au moins 1 180 pt : colonne de texte + marge de droite pour les images, comme l'app web.
+    /// Fenêtre d'au moins 960 pt : texte plus grand, graphiques larges débordant de la colonne, comme l'app web.
     var grandEcran: Bool {
         get { self[CleGrandEcran.self] }
         set { self[CleGrandEcran.self] = newValue }
@@ -149,9 +148,8 @@ struct Figure: View {
     @Environment(\.grandEcran) var grandEcran
 
     private var largeurMax: CGFloat? {
-        if grandEcran && !element.estLarge { return Style.rail }
-        if element.estCarte { return 420 }
-        return element.estLarge ? nil : 360
+        if element.estCarte { return grandEcran ? nil : 420 }
+        return element.estLarge ? nil : (grandEcran ? 420 : 360)
     }
 }
 
@@ -161,7 +159,7 @@ struct VueBloc: View {
     var body: some View {
         switch b.type {
         case "p":
-            Paragraphe(t: b.texte ?? "")
+            Paragraphe(t: b.texte ?? "", taille: grandEcran ? 19 : 18)
         case "sous_titre":
             Text(b.texte ?? "").font(Style.sousTitre()).foregroundStyle(Style.encre).padding(.top, 10)
                 .fixedSize(horizontal: false, vertical: true)
@@ -171,13 +169,6 @@ struct VueBloc: View {
             }
         case "image", "carte":
             Figure(element: b.commeElement)
-        case "duo" where grandEcran:
-            VStack(alignment: .leading, spacing: 20) {
-                ForEach(b.elements ?? [], id: \.self) { e in
-                    Figure(element: Element(type: e.type, url: e.url, src: e.src, largeur: 360,
-                                            legende: e.legende, lien: e.lien, credit: e.credit, ville: e.ville))
-                }
-            }
         case "duo":
             HStack(alignment: .top, spacing: 14) {
                 ForEach(b.elements ?? [], id: \.self) { e in
@@ -212,57 +203,21 @@ struct CorpsArticle: View {
     @Environment(\.grandEcran) var grandEcran
     let a: Article
 
-    /// Image placée dans la marge de droite sur grand écran (carte, portrait, image double).
-    private static func enMarge(_ b: Bloc) -> Bool {
-        (b.type == "carte") || (b.type == "duo") || (b.type == "image" && !b.commeElement.estLarge)
-    }
-
-    /// Découpe en tronçons : une image de marge ouvre un tronçon et se place à hauteur du texte qui la suit ;
-    /// un graphique large occupe toute la largeur et forme son propre tronçon.
-    private var troncons: [(marge: [Bloc], texte: [Bloc], large: Bloc?)] {
-        var liste: [(marge: [Bloc], texte: [Bloc], large: Bloc?)] = [([], [], nil)]
-        for b in a.blocs {
-            if b.type == "image" && b.commeElement.estLarge {
-                liste.append(([], [], b)); liste.append(([], [], nil))
-            } else if Self.enMarge(b) {
-                liste.append(([b], [], nil))
-            } else {
-                liste[liste.count - 1].texte.append(b)
-            }
-        }
-        return liste.filter { !$0.marge.isEmpty || !$0.texte.isEmpty || $0.large != nil }
-    }
-
     var body: some View {
         VStack(alignment: .leading, spacing: 14) {
-            if grandEcran {
-                ForEach(Array(troncons.enumerated()), id: \.offset) { _, t in
-                    if let l = t.large {
-                        VueBloc(b: l).frame(maxWidth: Style.page, alignment: .leading)
-                    } else {
-                        HStack(alignment: .top, spacing: Style.gouttiere) {
-                            VStack(alignment: .leading, spacing: 14) {
-                                ForEach(Array(t.texte.enumerated()), id: \.offset) { _, b in VueBloc(b: b) }
-                            }
-                            .frame(width: Style.colonne, alignment: .leading)
-                            VStack(alignment: .leading, spacing: 20) {
-                                ForEach(Array(t.marge.enumerated()), id: \.offset) { _, b in VueBloc(b: b) }
-                            }
-                            .frame(width: Style.rail, alignment: .leading)
-                        }
-                    }
+            ForEach(Array(a.blocs.enumerated()), id: \.offset) { _, b in
+                if grandEcran && b.type == "image" && b.commeElement.estLarge {
+                    // Graphique large : déborde de la colonne de part et d'autre.
+                    VueBloc(b: b).padding(.horizontal, -(Style.large - Style.colonne) / 2)
+                } else {
+                    VueBloc(b: b)
                 }
-            } else {
-                ForEach(Array(a.blocs.enumerated()), id: \.offset) { _, b in VueBloc(b: b) }
             }
-            Group {
-                if let r = a.a_retenir {
-                    Text("À retenir").font(Style.sousTitre()).foregroundStyle(Style.encre).padding(.top, 10)
-                    Paragraphe(t: r)
-                }
-                if let s = ligneSources(a.sources, apres: a.note_sources) { Note(attribue: s).padding(.top, 6) }
+            if let r = a.a_retenir {
+                Text("À retenir").font(Style.sousTitre()).foregroundStyle(Style.encre).padding(.top, 10)
+                Paragraphe(t: r, taille: grandEcran ? 19 : 18)
             }
-            .frame(maxWidth: Style.colonne, alignment: .leading)
+            if let s = ligneSources(a.sources, apres: a.note_sources) { Note(attribue: s).padding(.top, 6) }
         }
     }
 }
@@ -278,7 +233,7 @@ struct VueRubrique: View {
             }
             CorpsArticle(a: r)
         }
-        .padding(.top, 64)
+        .padding(.top, grandEcran ? 80 : 64)
     }
 }
 
@@ -304,12 +259,12 @@ struct VueBreves: View {
         VStack(alignment: .leading, spacing: 0) {
             Text("En bref").font(Style.titre()).foregroundStyle(Style.encre).padding(.bottom, 6)
             HStack(alignment: .top, spacing: 44) {
-                ForEach(Array(colonnes(grandEcran ? 3 : 2).enumerated()), id: \.offset) { _, col in
+                ForEach(Array(colonnes(1).enumerated()), id: \.offset) { _, col in
                     VStack(alignment: .leading, spacing: 0) {
                         ForEach(col) { br in
                             VStack(alignment: .leading, spacing: 10) {
                                 NomRubrique(t: br.rubrique)
-                                ForEach(br.items, id: \.self) { Paragraphe(t: "- \($0)", taille: 17) }
+                                ForEach(br.items, id: \.self) { Paragraphe(t: "- \($0)", taille: grandEcran ? 18 : 17) }
                                 if let s = ligneSources(br.sources) { Note(attribue: s) }
                             }
                             .padding(.top, 22)
@@ -349,10 +304,10 @@ struct VueSemaine: View {
                     if ouvert { ouverts.remove(s.id) } else { ouverts.insert(s.id) }
                 }
             } label: {
-                HStack(alignment: .top, spacing: grandEcran ? 36 : 20) {
+                HStack(alignment: .top, spacing: grandEcran ? 28 : 20) {
                     if let c = s.couverture?.chemin {
                         ImageLocale(chemin: c, remplir: true)
-                            .frame(width: grandEcran ? 460 : 300, height: grandEcran ? 345 : 225)
+                            .frame(width: grandEcran ? 320 : 300, height: grandEcran ? 240 : 225)
                             .clipped()
                             .background(Color(white: 0.93))
                     }
@@ -391,7 +346,7 @@ struct Journal: View {
         ZStack {
             Style.fond.ignoresSafeArea()
             GeometryReader { geo in
-            let grand = geo.size.width >= 1180
+            let grand = geo.size.width >= 960
             ScrollViewReader { proxy in
                 ScrollView {
                     VStack(spacing: 0) {
@@ -400,7 +355,7 @@ struct Journal: View {
                             contenu
                             pied
                         }
-                        .frame(maxWidth: grand ? Style.page : Style.colonne, alignment: .leading)
+                        .frame(maxWidth: Style.colonne, alignment: .leading)
                         .padding(.horizontal, 24)
                         .padding(.bottom, 56)
                     }
@@ -436,7 +391,7 @@ struct Journal: View {
             Rectangle().fill(Color(white: 0.89)).frame(height: 1)
             Note(ligneDate).padding(.top, 14)
         }
-        .frame(maxWidth: Style.page)
+        .frame(maxWidth: Style.large)
         .padding(.horizontal, 24)
     }
 
@@ -469,7 +424,7 @@ struct Journal: View {
                 if let une = ed.une {
                     VStack(alignment: .leading, spacing: 10) {
                         NomRubrique(t: "Actu")
-                        Paragraphe(t: une.texte, taille: 22)
+                        Paragraphe(t: une.texte, taille: 23)
                         if let s = ligneSources(une.sources) { Note(attribue: s) }
                     }
                     .padding(.top, 30)
