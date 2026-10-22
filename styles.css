@@ -1,0 +1,129 @@
+/* Gabarit repris de la newsletter validée : une police, deux couleurs, quatre tailles. */
+:root {
+  --encre: #121212;
+  --note: #6b6b6b;
+  --fond: #ffffff;
+  --marque: #6b1d2a;
+  --serif: Georgia, "Times New Roman", serif;
+}
+
+* { box-sizing: border-box; }
+
+html {
+  background: var(--fond);
+  -webkit-text-size-adjust: 100%;
+  overscroll-behavior-y: none;
+}
+
+body {
+  margin: 0;
+  min-height: 100dvh;
+  background: var(--fond);
+  color: var(--encre);
+  font-family: var(--serif);
+  padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
+}
+
+a { color: inherit; }
+a:focus-visible, button:focus-visible { outline: 2px solid var(--marque); outline-offset: 2px; }
+
+.journal {
+  max-width: 640px;
+  margin: 0 auto;
+  padding: 28px 20px 48px;
+}
+
+/* Tailles : titre 24, sous-titre 18, texte 17, note 13 */
+.titre { font-size: 24px; line-height: 30px; font-weight: bold; margin: 0; }
+.sous-titre { font-size: 18px; line-height: 26px; font-weight: bold; margin: 18px 0 6px; }
+.texte { font-size: 17px; line-height: 28px; margin: 0 0 14px; }
+.note { font-size: 13px; line-height: 19px; color: var(--note); margin: 0; }
+.note a { color: var(--note); }
+
+/* En-tête */
+.entete { border-top: 1px solid var(--encre); padding-top: 16px; }
+.marque { display: flex; align-items: center; gap: 10px; }
+.marque img { width: 40px; height: 40px; }
+.date { padding: 2px 0 18px; }
+.une { padding-bottom: 22px; border-bottom: 1px solid var(--encre); }
+.une .texte { margin-bottom: 6px; }
+
+/* Sommaire */
+.sommaire { padding: 18px 0 20px; border-bottom: 1px solid var(--encre); }
+.sommaire ol { list-style: none; margin: 8px 0 0; padding: 0; }
+.sommaire li { margin: 0; }
+.sommaire a {
+  display: block;
+  padding: 9px 0;
+  min-height: 44px;
+  text-decoration: none;
+  font-size: 17px;
+  line-height: 24px;
+}
+.sommaire a .note { display: block; }
+
+/* Rubriques */
+.rubrique { padding-top: 30px; scroll-margin-top: env(safe-area-inset-top); }
+.rubrique > .titre { padding: 4px 0 14px; }
+.liste { padding-left: 14px; margin-bottom: 8px; }
+.fin { padding-bottom: 26px; border-bottom: 1px solid var(--encre); margin-top: 6px; }
+
+figure { margin: 4px 0 18px; }
+figure img { display: block; max-width: 100%; height: auto; }
+figure.carte img { width: 260px; }
+figcaption { padding-top: 6px; }
+
+.duo { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 18px; }
+.duo figure { margin: 0; }
+.duo figure img { width: 100%; }
+
+.schema { margin: 4px 0 18px; }
+.schema .boite {
+  border: 1px solid var(--encre);
+  padding: 10px;
+  font-size: 16px;
+  line-height: 22px;
+  text-align: center;
+}
+.schema .fleche { text-align: center; padding: 4px 0; }
+
+/* Brèves */
+.breves { padding-top: 30px; scroll-margin-top: env(safe-area-inset-top); }
+.breve { border-top: 1px solid var(--encre); padding: 12px 0; }
+.breve:last-child { border-bottom: 1px solid var(--encre); }
+.breve .sous-titre { margin-top: 0; }
+.breve .texte { margin-bottom: 10px; }
+
+.pied { padding-top: 22px; }
+.pied .note + .note { margin-top: 6px; }
+
+/* Bandeau de mise à jour de l'app */
+.maj {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 20px;
+  background: var(--encre);
+  color: var(--fond);
+  font-size: 15px;
+}
+.maj[hidden] { display: none; }
+.maj button {
+  font: inherit;
+  color: var(--fond);
+  background: none;
+  border: 1px solid var(--fond);
+  padding: 8px 14px;
+  min-height: 44px;
+  cursor: pointer;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+@media (min-width: 900px) {
+  .journal { padding-top: 48px; }
+}
