@@ -81,6 +81,7 @@ TYPES = {"p", "sous_titre", "liste", "image", "duo", "carte", "schema"}
 MOIS = ["janvier", "février", "mars", "avril", "mai", "juin", "juillet", "août",
         "septembre", "octobre", "novembre", "décembre"]
 LIMITE_SITE = 5 * 1024 * 1024
+MOTS_DOSSIER = 1200
 MAX_IMAGE = 4 * 1024 * 1024
 LARGEUR_MAX = 1100
 AGENT = "ActualitesApp/1.0 (+https://github.com/adrienrochestudio/actualites)"
@@ -123,6 +124,10 @@ def verifier(ed, genre):
                 erreur(f"{liste[:-1]} sans {cle} : {r.get('titre', r.get('etiquette'))}")
         if genre == "semaine" and not r.get("couverture"):
             erreur(f"sujet sans couverture : {r['titre']}")
+        if genre == "semaine":
+            mots = len(" ".join([b.get("texte", "") for b in r["blocs"]] + sum((b.get("items", []) for b in r["blocs"]), [])).split())
+            if mots < MOTS_DOSSIER:
+                erreur(f"dossier trop court ({mots} mots, minimum {MOTS_DOSSIER}) : {r['titre']}")
         for b in r["blocs"]:
             if b.get("type") not in TYPES:
                 erreur(f"type de bloc inconnu : {b.get('type')} ({r['etiquette']})")
