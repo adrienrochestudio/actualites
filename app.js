@@ -1,41 +1,51 @@
-import { chargerEdition, enregistrer } from "./edition.js";
-import { rendre, message, ligneEtat } from "./rendu.js";
+import { charger, enregistrer } from "./edition.js";
+import { rendre, message, ligneEtat, activerZoom } from "./rendu.js";
 
 const journal = document.getElementById("journal");
 const RELECTURE_MIN_MS = 10 * 60 * 1000;
 
-let dateAffichee = null;
+let affiche = { jour: null, semaine: null };
 let derniereVerif = 0;
 
 const installee = matchMedia("(display-mode: standalone)").matches || navigator.standalone === true;
 
 async function afficher({ silencieux = false } = {}) {
   derniereVerif = Date.now();
-  const res = await chargerEdition();
-  if (!res) {
-    if (!dateAffichee) message(journal, "Aucune édition enregistrée sur cet appareil. Ouvrir l'app une fois avec une connexion.");
+  const [jour, semaine] = await Promise.all([charger("jour"), charger("semaine")]);
+  if (!jour && !semaine) {
+    if (!affiche.jour) message(journal, "Aucune édition enregistrée sur cet appareil. Ouvrir l'app une fois avec une connexion.");
     return;
   }
-  const { edition, source } = res;
-  if (silencieux && edition.date === dateAffichee) return;
+  const dates = { jour: jour?.donnees.date ?? null, semaine: semaine?.donnees.date ?? null };
+  if (silencieux && dates.jour === affiche.jour && dates.semaine === affiche.semaine) return;
 
-  const pied = rendre(journal, edition);
-  if (dateAffichee && dateAffichee !== edition.date) scrollTo(0, 0);
-  dateAffichee = edition.date;
+  // Garder les dossiers ouverts quand on réaffiche la même semaine.
+  const ouverts = dates.semaine === affiche.semaine
+    ? [...journal.querySelectorAll("details[open]")].map((d) => d.id) : [];
+  const nouveauJour = affiche.jour && affiche.jour !== dates.jour;
 
-  if (source === "cache") {
-    ligneEtat(pied, "Hors ligne : dernière édition enregistrée sur cet appareil.");
+  const pied = rendre(journal, jour?.donnees, semaine?.donnees);
+  for (const id of ouverts) document.getElementById(id)?.setAttribute("open", "");
+  if (nouveauJour) scrollTo(0, 0);
+  affiche = dates;
+
+  const enLigne = [jour, semaine].some((c) => c?.source === "reseau");
+  if (!enLigne) {
+    ligneEtat(pied, "Hors ligne : dernières éditions enregistrées sur cet appareil.");
   } else {
     ligneEtat(pied, "Enregistrement pour la lecture hors ligne.");
-    const manquees = await enregistrer(edition);
+    const manquees = (await Promise.all([
+      jour?.source === "reseau" ? enregistrer("jour", jour.donnees) : 0,
+      semaine?.source === "reseau" ? enregistrer("semaine", semaine.donnees) : 0,
+    ])).reduce((a, b) => a + b, 0);
     ligneEtat(pied, manquees
-      ? `Édition enregistrée hors ligne, ${manquees} image(s) non enregistrée(s).`
-      : "Édition enregistrée pour la lecture hors ligne.");
+      ? `Éditions enregistrées hors ligne, ${manquees} image(s) non enregistrée(s).`
+      : "Éditions enregistrées pour la lecture hors ligne.");
   }
   if (!installee) {
     pied.append(Object.assign(document.createElement("p"), {
       className: "note",
-      textContent: "Installer : iPhone, Partager puis Sur l'écran d'accueil. Mac, dans Safari, Fichier puis Ajouter au Dock.",
+      textContent: "Installer : iPhone, Partager puis Sur l'écran d'accueil.",
     }));
   }
 }
@@ -47,12 +57,13 @@ document.addEventListener("visibilitychange", () => {
   }
 });
 
+activerZoom(journal, document.getElementById("zoom"));
+
 // Mise à jour de l'app elle-même (nouveau service worker).
 if ("serviceWorker" in navigator) {
   navigator.serviceWorker.register("./sw.js").then((reg) => {
     const proposer = (sw) => {
-      const bandeau = document.getElementById("maj");
-      bandeau.hidden = false;
+      document.getElementById("maj").hidden = false;
       document.getElementById("maj-bouton").onclick = () => sw.postMessage("activer");
     };
     if (reg.waiting && navigator.serviceWorker.controller) proposer(reg.waiting);
@@ -69,8 +80,7 @@ if ("serviceWorker" in navigator) {
   });
 }
 
-// Mac : plein écran au premier clic ou à la première touche, et bouton tant qu'on n'y est pas.
-// Le navigateur exige une action de l'utilisateur : impossible de l'ouvrir directement en plein écran.
+// Plein écran (navigateur d'ordinateur) : au premier clic, et bouton tant qu'on n'y est pas.
 const racine = document.documentElement;
 const pleinEcranDispo = (document.fullscreenEnabled || document.webkitFullscreenEnabled) && matchMedia("(pointer: fine)").matches;
 const enPleinEcran = () => Boolean(document.fullscreenElement || document.webkitFullscreenElement);
@@ -85,14 +95,6 @@ if (pleinEcranDispo) {
   document.addEventListener("fullscreenchange", majBouton);
   document.addEventListener("webkitfullscreenchange", majBouton);
   majBouton();
-  if (installee) {
-    const auto = (e) => {
-      if (e.target.closest?.("a, button")) return;
-      passerPleinEcran();
-    };
-    document.addEventListener("pointerdown", auto, { once: true });
-    document.addEventListener("keydown", auto, { once: true });
-  }
 }
 
 // Demande à garder les données (accordé plus facilement à une app installée).

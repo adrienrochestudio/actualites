@@ -1,15 +1,18 @@
-// Accès à l'édition : réseau d'abord, copie locale ensuite. Seul module qui touche au cache des éditions.
-// Une seule édition est gardée hors ligne : enregistrer() supprime les précédentes.
+// Accès aux contenus publiés : réseau d'abord, copie locale ensuite.
+// Deux contenus indépendants : l'édition du jour et l'édition de la semaine.
+// Un seul exemplaire de chacun est gardé hors ligne : enregistrer() supprime les précédents.
 
-const URL_EDITION = new URL("./edition/edition.json", location.href).href;
-const PREFIXE = "edition-";
+export const CONTENUS = {
+  jour: { url: new URL("./edition/edition.json", location.href).href, prefixe: "edition-" },
+  semaine: { url: new URL("./hebdo/hebdo.json", location.href).href, prefixe: "hebdo-" },
+};
 const DELAI_RESEAU_MS = 8000;
 
-async function depuisReseau() {
+async function depuisReseau(url) {
   const ctrl = new AbortController();
   const minuteur = setTimeout(() => ctrl.abort(), DELAI_RESEAU_MS);
   try {
-    const rep = await fetch(URL_EDITION, { cache: "no-store", signal: ctrl.signal });
+    const rep = await fetch(url, { cache: "no-store", signal: ctrl.signal });
     if (!rep.ok) return null;
     return await rep.json();
   } catch {
@@ -19,27 +22,23 @@ async function depuisReseau() {
   }
 }
 
-async function depuisCache() {
+async function depuisCache(url) {
   if (!("caches" in self)) return null;
-  const rep = await caches.match(URL_EDITION);
+  const rep = await caches.match(url);
   return rep ? rep.json() : null;
 }
 
-// Renvoie { edition, source: "reseau" | "cache" } ou null si rien n'est disponible.
-export async function chargerEdition() {
-  const enLigne = await depuisReseau();
-  if (enLigne) return { edition: enLigne, source: "reseau" };
-  const locale = await depuisCache();
-  return locale ? { edition: locale, source: "cache" } : null;
+// Renvoie { donnees, source: "reseau" | "cache" } ou null si rien n'est disponible.
+export async function charger(cle) {
+  const { url } = CONTENUS[cle];
+  const enLigne = await depuisReseau(url);
+  if (enLigne) return { donnees: enLigne, source: "reseau" };
+  const locale = await depuisCache(url);
+  return locale ? { donnees: locale, source: "cache" } : null;
 }
 
-export async function dateEnregistree() {
-  const locale = await depuisCache();
-  return locale?.date ?? null;
-}
-
-// Toutes les images citées par l'édition (fichiers du dépôt et images libres externes).
-export function imagesDe(edition) {
+// Toutes les images citées (blocs, éléments de duo, couvertures des sujets de la semaine).
+export function imagesDe(donnees) {
   const urls = new Set();
   const visiter = (bloc) => {
     if (!bloc || typeof bloc !== "object") return;
@@ -47,39 +46,43 @@ export function imagesDe(edition) {
     const src = bloc.src || bloc.url;
     if (src) urls.add(src);
   };
-  for (const r of edition.rubriques ?? []) (r.blocs ?? []).forEach(visiter);
+  for (const r of [...(donnees.rubriques ?? []), ...(donnees.sujets ?? [])]) {
+    visiter(r.couverture);
+    (r.blocs ?? []).forEach(visiter);
+  }
   return [...urls].map((u) => new URL(u, location.href).href);
 }
 
-// Enregistre l'édition et ses images pour la lecture hors ligne. Renvoie le nombre d'images manquées.
-export async function enregistrer(edition) {
-  if (!("caches" in self) || !edition?.date) return 0;
-  const nom = PREFIXE + edition.date;
+// Enregistre le contenu et ses images pour la lecture hors ligne. Renvoie le nombre d'images manquées.
+export async function enregistrer(cle, donnees) {
+  if (!("caches" in self) || !donnees?.date) return 0;
+  const { url, prefixe } = CONTENUS[cle];
+  const nom = prefixe + donnees.date;
   const cache = await caches.open(nom);
-  await cache.put(URL_EDITION, new Response(JSON.stringify(edition), {
+  await cache.put(url, new Response(JSON.stringify(donnees), {
     headers: { "Content-Type": "application/json; charset=utf-8" },
   }));
 
   let manquees = 0;
-  await Promise.all(imagesDe(edition).map(async (url) => {
+  await Promise.all(imagesDe(donnees).map(async (img) => {
     try {
-      if (await cache.match(url)) return;
+      if (await cache.match(img)) return;
       // CORS d'abord (Wikimedia et Our World in Data l'acceptent) pour vérifier le statut.
       // Repli no-cors : réponse opaque, statut invisible, gardée faute de mieux.
       let rep;
       try {
-        rep = await fetch(url, { mode: "cors" });
+        rep = await fetch(img, { mode: "cors" });
       } catch {
-        rep = await fetch(url, { mode: "no-cors" });
+        rep = await fetch(img, { mode: "no-cors" });
       }
       if (rep.type !== "opaque" && !rep.ok) throw new Error(String(rep.status));
-      await cache.put(url, rep);
+      await cache.put(img, rep);
     } catch {
       manquees += 1;
     }
   }));
 
   const noms = await caches.keys();
-  await Promise.all(noms.filter((n) => n.startsWith(PREFIXE) && n !== nom).map((n) => caches.delete(n)));
+  await Promise.all(noms.filter((n) => n.startsWith(prefixe) && n !== nom).map((n) => caches.delete(n)));
   return manquees;
 }

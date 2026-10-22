@@ -53,7 +53,7 @@ def carte(nom, lat, lon, sortie, zoom=1.0, nom_pays=None):
 
     demi_lat = 10 / zoom
     demi_lon = demi_lat * (2.6 / 1.6) / math.cos(math.radians(lat))
-    fig, ax = plt.subplots(figsize=(2.6, 1.6), dpi=200)
+    fig, ax = plt.subplots(figsize=(2.6, 1.6), dpi=320)
     fig.patch.set_facecolor(MER)
     ax.set_facecolor(MER)
 
