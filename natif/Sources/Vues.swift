@@ -20,6 +20,9 @@ enum Style {
     static let marque = Color(red: 0x6b / 255, green: 0x1d / 255, blue: 0x2a / 255)
     static let fond = Color.white
     static let colonne: CGFloat = 640
+    static let rail: CGFloat = 340
+    static let gouttiere: CGFloat = 48
+    static var page: CGFloat { colonne + gouttiere + rail }
     static func serif(_ taille: CGFloat, gras: Bool = false, italique: Bool = false) -> Font {
         .custom(gras ? "ActualitesTexte-Semibold" : (italique ? "ActualitesTexte-Italic" : "ActualitesTexte-Regular"), size: taille)
     }
@@ -36,6 +39,15 @@ extension EnvironmentValues {
     var zoom: (Element) -> Void {
         get { self[CleZoom.self] }
         set { self[CleZoom.self] = newValue }
+    }
+}
+
+private struct CleGrandEcran: EnvironmentKey { static let defaultValue = false }
+extension EnvironmentValues {
+    /// Fenêtre d'au moins 1 180 pt : colonne de texte + marge de droite pour les images, comme l'app web.
+    var grandEcran: Bool {
+        get { self[CleGrandEcran.self] }
+        set { self[CleGrandEcran.self] = newValue }
     }
 }
 
@@ -134,13 +146,17 @@ struct Figure: View {
         }
     }
 
+    @Environment(\.grandEcran) var grandEcran
+
     private var largeurMax: CGFloat? {
+        if grandEcran && !element.estLarge { return Style.rail }
         if element.estCarte { return 420 }
         return element.estLarge ? nil : 360
     }
 }
 
 struct VueBloc: View {
+    @Environment(\.grandEcran) var grandEcran
     let b: Bloc
     var body: some View {
         switch b.type {
@@ -155,6 +171,13 @@ struct VueBloc: View {
             }
         case "image", "carte":
             Figure(element: b.commeElement)
+        case "duo" where grandEcran:
+            VStack(alignment: .leading, spacing: 20) {
+                ForEach(b.elements ?? [], id: \.self) { e in
+                    Figure(element: Element(type: e.type, url: e.url, src: e.src, largeur: 360,
+                                            legende: e.legende, lien: e.lien, credit: e.credit, ville: e.ville))
+                }
+            }
         case "duo":
             HStack(alignment: .top, spacing: 14) {
                 ForEach(b.elements ?? [], id: \.self) { e in
@@ -186,26 +209,72 @@ struct VueBloc: View {
 
 /// Corps commun aux rubriques du jour et aux dossiers de la semaine.
 struct CorpsArticle: View {
+    @Environment(\.grandEcran) var grandEcran
     let a: Article
+
+    /// Image placée dans la marge de droite sur grand écran (carte, portrait, image double).
+    private static func enMarge(_ b: Bloc) -> Bool {
+        (b.type == "carte") || (b.type == "duo") || (b.type == "image" && !b.commeElement.estLarge)
+    }
+
+    /// Découpe en tronçons : une image de marge ouvre un tronçon et se place à hauteur du texte qui la suit ;
+    /// un graphique large occupe toute la largeur et forme son propre tronçon.
+    private var troncons: [(marge: [Bloc], texte: [Bloc], large: Bloc?)] {
+        var liste: [(marge: [Bloc], texte: [Bloc], large: Bloc?)] = [([], [], nil)]
+        for b in a.blocs {
+            if b.type == "image" && b.commeElement.estLarge {
+                liste.append(([], [], b)); liste.append(([], [], nil))
+            } else if Self.enMarge(b) {
+                liste.append(([b], [], nil))
+            } else {
+                liste[liste.count - 1].texte.append(b)
+            }
+        }
+        return liste.filter { !$0.marge.isEmpty || !$0.texte.isEmpty || $0.large != nil }
+    }
+
     var body: some View {
         VStack(alignment: .leading, spacing: 14) {
-            ForEach(Array(a.blocs.enumerated()), id: \.offset) { _, b in VueBloc(b: b) }
-            if let r = a.a_retenir {
-                Text("À retenir").font(Style.sousTitre()).foregroundStyle(Style.encre).padding(.top, 10)
-                Paragraphe(t: r)
+            if grandEcran {
+                ForEach(Array(troncons.enumerated()), id: \.offset) { _, t in
+                    if let l = t.large {
+                        VueBloc(b: l).frame(maxWidth: Style.page, alignment: .leading)
+                    } else {
+                        HStack(alignment: .top, spacing: Style.gouttiere) {
+                            VStack(alignment: .leading, spacing: 14) {
+                                ForEach(Array(t.texte.enumerated()), id: \.offset) { _, b in VueBloc(b: b) }
+                            }
+                            .frame(width: Style.colonne, alignment: .leading)
+                            VStack(alignment: .leading, spacing: 20) {
+                                ForEach(Array(t.marge.enumerated()), id: \.offset) { _, b in VueBloc(b: b) }
+                            }
+                            .frame(width: Style.rail, alignment: .leading)
+                        }
+                    }
+                }
+            } else {
+                ForEach(Array(a.blocs.enumerated()), id: \.offset) { _, b in VueBloc(b: b) }
             }
-            if let s = ligneSources(a.sources, apres: a.note_sources) { Note(attribue: s).padding(.top, 6) }
+            Group {
+                if let r = a.a_retenir {
+                    Text("À retenir").font(Style.sousTitre()).foregroundStyle(Style.encre).padding(.top, 10)
+                    Paragraphe(t: r)
+                }
+                if let s = ligneSources(a.sources, apres: a.note_sources) { Note(attribue: s).padding(.top, 6) }
+            }
+            .frame(maxWidth: Style.colonne, alignment: .leading)
         }
     }
 }
 
 struct VueRubrique: View {
+    @Environment(\.grandEcran) var grandEcran
     let r: Article
     var body: some View {
         VStack(alignment: .leading, spacing: 16) {
             VStack(alignment: .leading, spacing: 6) {
                 NomRubrique(t: r.etiquette)
-                Text(r.titre).font(Style.titre()).foregroundStyle(Style.encre).fixedSize(horizontal: false, vertical: true)
+                Text(r.titre).font(Style.titre(grandEcran ? 36 : 31)).foregroundStyle(Style.encre).fixedSize(horizontal: false, vertical: true)
             }
             CorpsArticle(a: r)
         }
@@ -214,19 +283,39 @@ struct VueRubrique: View {
 }
 
 struct VueBreves: View {
+    @Environment(\.grandEcran) var grandEcran
     let breves: [Breve]
+
+    /// Répartit les brèves en colonnes de longueur proche, dans l'ordre de lecture (comme des colonnes de journal).
+    private func colonnes(_ n: Int) -> [[Breve]] {
+        let poids = breves.map { $0.items.reduce(60) { $0 + $1.count } }
+        let cible = Double(poids.reduce(0, +)) / Double(n)
+        var res: [[Breve]] = [[]]
+        var cumul = 0
+        for (br, p) in zip(breves, poids) {
+            if Double(cumul) >= cible * Double(res.count), res.count < n { res.append([]) }
+            res[res.count - 1].append(br)
+            cumul += p
+        }
+        return res
+    }
+
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
             Text("En bref").font(Style.titre()).foregroundStyle(Style.encre).padding(.bottom, 6)
-            LazyVGrid(columns: [GridItem(.flexible(), spacing: 32, alignment: .top), GridItem(.flexible(), alignment: .top)],
-                      alignment: .leading, spacing: 0) {
-                ForEach(breves) { br in
-                    VStack(alignment: .leading, spacing: 10) {
-                        NomRubrique(t: br.rubrique)
-                        ForEach(br.items, id: \.self) { Paragraphe(t: "- \($0)", taille: 17) }
-                        if let s = ligneSources(br.sources) { Note(attribue: s) }
+            HStack(alignment: .top, spacing: 44) {
+                ForEach(Array(colonnes(grandEcran ? 3 : 2).enumerated()), id: \.offset) { _, col in
+                    VStack(alignment: .leading, spacing: 0) {
+                        ForEach(col) { br in
+                            VStack(alignment: .leading, spacing: 10) {
+                                NomRubrique(t: br.rubrique)
+                                ForEach(br.items, id: \.self) { Paragraphe(t: "- \($0)", taille: 17) }
+                                if let s = ligneSources(br.sources) { Note(attribue: s) }
+                            }
+                            .padding(.top, 22)
+                        }
                     }
-                    .padding(.top, 22)
+                    .frame(maxWidth: .infinity, alignment: .topLeading)
                 }
             }
         }
@@ -236,6 +325,7 @@ struct VueBreves: View {
 
 /// Dossiers de la semaine : repliés, chacun représenté par son image, ouverts au clic.
 struct VueSemaine: View {
+    @Environment(\.grandEcran) var grandEcran
     let semaine: Semaine
     @State private var ouverts: Set<String> = []
 
@@ -259,10 +349,10 @@ struct VueSemaine: View {
                     if ouvert { ouverts.remove(s.id) } else { ouverts.insert(s.id) }
                 }
             } label: {
-                HStack(alignment: .top, spacing: 20) {
+                HStack(alignment: .top, spacing: grandEcran ? 36 : 20) {
                     if let c = s.couverture?.chemin {
                         ImageLocale(chemin: c, remplir: true)
-                            .frame(width: 300, height: 225)
+                            .frame(width: grandEcran ? 460 : 300, height: grandEcran ? 345 : 225)
                             .clipped()
                             .background(Color(white: 0.93))
                     }
@@ -300,6 +390,8 @@ struct Journal: View {
     var body: some View {
         ZStack {
             Style.fond.ignoresSafeArea()
+            GeometryReader { geo in
+            let grand = geo.size.width >= 1180
             ScrollViewReader { proxy in
                 ScrollView {
                     VStack(spacing: 0) {
@@ -308,7 +400,7 @@ struct Journal: View {
                             contenu
                             pied
                         }
-                        .frame(maxWidth: Style.colonne, alignment: .leading)
+                        .frame(maxWidth: grand ? Style.page : Style.colonne, alignment: .leading)
                         .padding(.horizontal, 24)
                         .padding(.bottom, 56)
                     }
@@ -317,6 +409,8 @@ struct Journal: View {
                 }
                 .onChange(of: vue) { _ in proxy.scrollTo("haut", anchor: .top) }
                 .onChange(of: depot.edition?.date) { _ in if vue == .jour { proxy.scrollTo("haut", anchor: .top) } }
+            }
+            .environment(\.grandEcran, grand)
             }
             if let e = agrandie { zoom(e) }
         }
@@ -342,7 +436,7 @@ struct Journal: View {
             Rectangle().fill(Color(white: 0.89)).frame(height: 1)
             Note(ligneDate).padding(.top, 14)
         }
-        .frame(maxWidth: 880)
+        .frame(maxWidth: Style.page)
         .padding(.horizontal, 24)
     }
 

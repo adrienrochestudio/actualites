@@ -226,16 +226,48 @@ figure.photo:not(.large) img { max-width: 360px; }
   figure.photo:not(.large) img { max-width: 100%; }
 }
 
-/* Ordinateur : graphiques plus larges que le texte, brèves sur deux colonnes, dossiers image à gauche */
-@media (min-width: 960px) {
-  .titre-journal { padding-top: 40px; }
-  .marque h1 { font-size: 54px; line-height: 58px; }
-  .marque img { width: 42px; height: 42px; }
+/* Ordinateur moyen : graphiques plus larges que le texte, brèves sur deux colonnes */
+@media (min-width: 960px) and (max-width: 1179px) {
   figure.large {
     margin-left: calc((var(--colonne) - var(--large)) / 2);
     margin-right: calc((var(--colonne) - var(--large)) / 2);
   }
-  .breves-liste { display: grid; grid-template-columns: 1fr 1fr; column-gap: 32px; }
+  .breves-liste { columns: 2; column-gap: 40px; }
+}
+@media (min-width: 960px) {
+  .titre-journal { padding-top: 40px; }
+  .marque h1 { font-size: 54px; line-height: 58px; }
+  .marque img { width: 42px; height: 42px; }
+  .breve { break-inside: avoid; }
   .dossier summary { grid-template-columns: 300px 1fr; gap: 24px; align-items: start; }
   .dossier .couverture { aspect-ratio: 4 / 3; }
+}
+
+/* Grand écran : mise en page de journal sur toute la largeur utile.
+   Colonne de texte de 640 px, marge de droite de 340 px pour les cartes, portraits et images doubles
+   (placées à hauteur du paragraphe qui les cite), graphiques larges sur les deux colonnes,
+   brèves sur trois colonnes, dossiers avec grande image. */
+@media (min-width: 1180px) {
+  :root { --rail: 340px; --gouttiere: 48px; --page: calc(var(--colonne) + var(--gouttiere) + var(--rail)); }
+  .titre-journal { max-width: calc(var(--page) + 2 * var(--marge)); }
+  .journal { max-width: calc(var(--page) + 2 * var(--marge)); }
+  .une { max-width: 820px; }
+  .une-texte { font-size: 24px; line-height: 36px; }
+  .rubrique, .dossier-corps { padding-right: calc(var(--rail) + var(--gouttiere)); }
+  .rubrique::after, .dossier-corps::after { content: ""; display: block; clear: both; }
+  .rubrique > .titre { font-size: 36px; line-height: 42px; max-width: 820px; margin-right: calc(-1 * (var(--rail) + var(--gouttiere))); }
+  figure.carte, figure.photo:not(.large), .duo {
+    float: right;
+    clear: right;
+    width: var(--rail);
+    margin: 6px calc(-1 * (var(--rail) + var(--gouttiere))) 24px 0;
+  }
+  figure.carte img, figure.photo:not(.large) img { max-width: 100%; }
+  .duo { display: block; }
+  .journal .duo figure { float: none; width: auto; margin: 0; }
+  .duo figure + figure { margin-top: 20px; }
+  figure.large { clear: both; margin-right: calc(-1 * (var(--rail) + var(--gouttiere))); }
+  .breves-liste { columns: 3; column-gap: 44px; }
+  .dossier summary { grid-template-columns: 460px 1fr; gap: 36px; }
+  .dossier-entete .titre { font-size: 34px; line-height: 40px; }
 }
