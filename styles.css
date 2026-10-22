@@ -124,6 +124,21 @@ figcaption { padding-top: 6px; }
   -webkit-user-select: none;
 }
 
+/* Mac : passage en plein écran (masqué une fois en plein écran) */
+.plein-ecran {
+  position: fixed;
+  top: calc(12px + env(safe-area-inset-top));
+  right: 16px;
+  z-index: 1;
+  font: 13px/19px var(--serif);
+  color: var(--note);
+  background: var(--fond);
+  border: 1px solid var(--note);
+  padding: 6px 10px;
+  cursor: pointer;
+}
+.plein-ecran[hidden] { display: none; }
+
 @media (min-width: 900px) {
   .journal { padding-top: 48px; }
 }

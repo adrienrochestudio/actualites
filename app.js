@@ -69,6 +69,32 @@ if ("serviceWorker" in navigator) {
   });
 }
 
+// Mac : plein écran au premier clic ou à la première touche, et bouton tant qu'on n'y est pas.
+// Le navigateur exige une action de l'utilisateur : impossible de l'ouvrir directement en plein écran.
+const racine = document.documentElement;
+const pleinEcranDispo = (document.fullscreenEnabled || document.webkitFullscreenEnabled) && matchMedia("(pointer: fine)").matches;
+const enPleinEcran = () => Boolean(document.fullscreenElement || document.webkitFullscreenElement);
+const passerPleinEcran = () => {
+  if (enPleinEcran()) return;
+  (racine.requestFullscreen || racine.webkitRequestFullscreen)?.call(racine)?.catch?.(() => {});
+};
+if (pleinEcranDispo) {
+  const bouton = document.getElementById("plein-ecran");
+  const majBouton = () => { bouton.hidden = enPleinEcran(); };
+  bouton.addEventListener("click", passerPleinEcran);
+  document.addEventListener("fullscreenchange", majBouton);
+  document.addEventListener("webkitfullscreenchange", majBouton);
+  majBouton();
+  if (installee) {
+    const auto = (e) => {
+      if (e.target.closest?.("a, button")) return;
+      passerPleinEcran();
+    };
+    document.addEventListener("pointerdown", auto, { once: true });
+    document.addEventListener("keydown", auto, { once: true });
+  }
+}
+
 // Demande à garder les données (accordé plus facilement à une app installée).
 if (installee) navigator.storage?.persist?.();
 
