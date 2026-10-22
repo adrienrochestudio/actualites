@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Actualités</title>
+<meta name="description" content="Actualités, édition quotidienne et dossiers de la semaine, lisibles hors ligne.">
+<link rel="manifest" href="./manifest.webmanifest">
+<link rel="icon" href="./icons/icon-192.png">
+<link rel="apple-touch-icon" href="./icons/icon-180.png">
+<link rel="preload" href="./fonts/source-serif-4-var.woff2" as="font" type="font/woff2" crossorigin>
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Actualités">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="theme-color" content="#ffffff">
+<link rel="stylesheet" href="./styles.css">
+<script type="module" src="./app.js"></script>
+</head>
+<body>
+<div id="maj" class="maj" hidden>
+  <span>Nouvelle version de l'app.</span>
+  <button type="button" id="maj-bouton">Recharger</button>
+</div>
+<header class="titre-journal">
+  <div class="marque">
+    <img src="./icons/logo-96.png" alt="" width="34" height="34">
+    <h1>Actualités</h1>
+  </div>
+  <nav class="onglets" aria-label="Éditions">
+    <button type="button" data-vue="jour" aria-pressed="true">Quotidien</button>
+    <button type="button" data-vue="semaine" aria-pressed="false">Hebdomadaire</button>
+  </nav>
+  <p class="date" id="date"></p>
+</header>
+<main id="journal" class="journal" aria-live="polite">
+  <p class="note">Chargement de l'édition.</p>
+</main>
+<dialog id="zoom" class="zoom" aria-label="Image agrandie">
+  <img alt="">
+  <p class="note"></p>
+</dialog>
+</body>
+</html>
