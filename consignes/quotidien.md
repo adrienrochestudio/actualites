@@ -10,6 +10,7 @@ Ces consignes complètent les skills `.claude/skills/actualites-quotidiennes` et
 - Le dimanche, une fois l'édition du jour en ligne, enchaîner sur l'édition de la semaine (`consignes/hebdo.md`).
 - Mini-cartes : plus de limite par édition. Une mini-carte pour chaque ville peu connue citée dans une rubrique principale.
 - Schéma du JSON : en tête de `outils/publier.py`.
+- Dépendances : `publier.py` a besoin de Pillow et matplotlib. Si l'import échoue, `pip install pillow matplotlib`.
 
 ## Rubriques (ordre fixe)
 

@@ -4,5 +4,5 @@ __pycache__/
 historique/
 edition.json
 hebdo.json
-*.txt
-!fonts/*.txt
+edition.txt
+hebdo.txt
