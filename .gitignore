@@ -1,3 +1,8 @@
 _site/
 __pycache__/
 .DS_Store
+historique/
+edition.json
+hebdo.json
+*.txt
+!fonts/*.txt

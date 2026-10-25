@@ -1,10 +1,13 @@
 # Édition du jour : consignes de l'app
 
-Ces consignes complètent le skill `actualites-quotidiennes` et priment sur lui quand ils diffèrent.
+Ces consignes complètent les skills `.claude/skills/actualites-quotidiennes` et `.claude/skills/sans-trace-ia` et priment sur eux quand ils diffèrent.
 
 ## Ce qui change par rapport au skill
 
-- Publication dans l'app, pas de mail : `python3 outils/publier.py jour edition.json --pousser`. Pas de render.py, pas de build.py, pas d'artefact, pas de nettoyage Gmail.
+- Publication uniquement dans l'app : `python3 outils/publier.py jour edition.json --pousser`. Pas de render.py, pas de build.py, pas d'artefact, pas de nettoyage Gmail.
+- Pas de mail, sauf en cas d'échec (voir plus bas).
+- Historique dans la branche `historique` du dépôt, plus dans Drive.
+- Le dimanche, une fois l'édition du jour en ligne, enchaîner sur l'édition de la semaine (`consignes/hebdo.md`).
 - Mini-cartes : plus de limite par édition. Une mini-carte pour chaque ville peu connue citée dans une rubrique principale.
 - Schéma du JSON : en tête de `outils/publier.py`.
 
@@ -33,4 +36,15 @@ La légende dit ce qu'il faut regarder dans l'image (la zone, la courbe, l'écar
 
 ## Historique
 
-Fichier Drive `Actualités - historique.txt` (id dans le skill) : ajouter aussi une ligne pour `IA, technique`.
+Branche `historique` du dépôt, fichier `quotidien.txt`. Le fichier Drive n'est plus utilisé.
+- Début d'exécution : `git fetch origin historique` puis `git worktree add -B historique historique origin/historique`, et lire `historique/quotidien.txt`. Aucun sujet ni aucune notion "Comprendre" déjà traités dans les 60 jours.
+- Fin d'exécution : ajouter une ligne par rubrique, dont `IA, technique`, au format `AAAA-MM-JJ | rubrique | sujet | notion ou villes`, supprimer les lignes de plus de 60 jours (garder l'en-tête), puis dans `historique/` : `git add quotidien.txt`, `git commit`, `git push origin historique`. Si le push est refusé parce que la branche a bougé : `git pull --rebase origin historique` et relancer.
+
+## Le dimanche
+
+Après la publication et l'historique du jour, produire l'édition de la semaine selon `consignes/hebdo.md`. Toujours publier le jour avant la semaine : `publier.py` reprend l'autre édition déjà en ligne.
+
+## En cas d'échec
+
+- Accès git refusé : produire quand même l'édition et l'envoyer par mail (étapes 6 et 7 du skill `actualites-quotidiennes` : render.py, build.py, Gmail `send_message` à adrien.etks@gmail.com, libellé Actualités). Puis un mail court à adrienroche6@gmail.com, objet "Actualités · app non mise à jour", avec le message d'erreur git exact.
+- Aucune édition possible : un seul mail court à adrienroche6@gmail.com, objet "Actualités · édition non produite", avec la cause en une phrase.

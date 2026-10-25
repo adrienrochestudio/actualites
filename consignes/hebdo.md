@@ -1,12 +1,12 @@
 # Édition de la semaine : consignes
 
-Cinq dossiers de fond publiés chaque lundi, affichés toute la semaine en bas de l'app, repliés derrière leur image. Le lecteur les ouvre quand il a le temps : ce sont des articles longs, qui expliquent un sujet complexe jusqu'au bout.
+Cinq dossiers de fond publiés chaque dimanche par la tâche quotidienne, après l'édition du jour, et affichés jusqu'au dimanche suivant en bas de l'app, repliés derrière leur image. Le lecteur les ouvre quand il a le temps : ce sont des articles longs, qui expliquent un sujet complexe jusqu'au bout.
 
 ## Déroulé
 
-1. Charger le skill `actualites-quotidiennes` (sources, images, règles d'écriture) et le skill `sans-trace-ia`.
-2. Date du jour (lundi), fuseau Europe/Paris. `date_texte` : "Lundi 26 octobre 2026", `date_texte_semaine` : "Semaine du 26 octobre 2026".
-3. Historique : lire le fichier Drive `Actualités - hebdo historique.txt` (le créer s'il n'existe pas, avec la ligne d'en-tête `date | etiquette | sujet`). Lire aussi `Actualités - historique.txt` (édition du jour) pour ne pas refaire un "Comprendre" récent. Aucun sujet déjà traité dans les 6 derniers mois.
+1. Charger le skill `.claude/skills/actualites-quotidiennes` (sources, images, règles d'écriture) et le skill `.claude/skills/sans-trace-ia`.
+2. Date du jour (dimanche), fuseau Europe/Paris. `date_texte` : la date du dimanche, "Dimanche 1 novembre 2026". `date_texte_semaine` : la semaine qui commence le lendemain, "Semaine du 2 novembre 2026".
+3. Historique : lire `historique/hebdo.txt` (branche `historique`, déjà récupérée par l'édition du jour). Lire aussi `historique/quotidien.txt` pour ne pas refaire un "Comprendre" récent. Aucun sujet déjà traité dans les 6 derniers mois.
 4. Choix des 5 sujets, un par thème :
    - Géopolitique ou géoéconomie (hors du flux habituel : pas Iran, Ukraine ou Trump sauf cas exceptionnel)
    - Finance ou économie (un mécanisme : dette, monnaie, marchés, fiscalité, assurance, commerce)
@@ -18,7 +18,7 @@ Cinq dossiers de fond publiés chaque lundi, affichés toute la semaine en bas d
 6. Rédaction de `hebdo.json` selon le schéma en tête de `outils/publier.py`.
 7. Contrôle : `python3 outils/publier.py semaine hebdo.json --texte`, puis l'audit du skill sans-trace-ia sur le .txt (`--lang fr`). Corriger les alertes rouges.
 8. Publication : `python3 outils/publier.py semaine hebdo.json --pousser`. Le script reprend l'édition du jour déjà en ligne.
-9. Historique : ajouter les 5 lignes au fichier Drive hebdo, supprimer les lignes de plus de 6 mois.
+9. Historique : ajouter les 5 lignes à `historique/hebdo.txt` au format `AAAA-MM-JJ | etiquette | sujet`, supprimer les lignes de plus de 6 mois (garder l'en-tête), puis commit et `git push origin historique`.
 
 ## Chaque dossier
 
@@ -35,4 +35,4 @@ Cinq dossiers de fond publiés chaque lundi, affichés toute la semaine en bas d
 ## En cas d'échec
 
 - Un dossier sans matière fiable : en publier quatre.
-- Échec complet : un seul mail court via Gmail `send_message` à adrienroche6@gmail.com, objet "Actualités · édition de la semaine non produite", avec la cause en une phrase. L'édition de la semaine précédente reste en ligne.
+- Échec complet : un seul mail court via Gmail `send_message` à adrienroche6@gmail.com, objet "Actualités · édition de la semaine non produite", avec la cause en une phrase. L'édition de la semaine précédente reste en ligne. L'édition du jour, déjà publiée, n'est pas concernée.
