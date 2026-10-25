@@ -1,0 +1,17 @@
+# Historique de la newsletter Actualités (60 derniers jours, une ligne par rubrique)
+# Format : AAAA-MM-JJ | rubrique | sujet | notion expliquée ou villes cartographiées
+2026-10-19 | une | Bercy réunit commerçants, banques et assureurs après les pillages du samedi |
+2026-10-19 | monde | Minerais africains : transformation locale (Xi/Botswana, compacts Banque mondiale, alliance égyptienne, Inde) | Gaborone
+2026-10-19 | chiffre | AIE : demande mondiale de pétrole -2,6 Mb/j en 2026 |
+2026-10-19 | comprendre | Dette des data centers IA : SPV hors bilan, crédit privé, spread, CDS (Meta El Paso, CoreWeave) | notions : SPV, titrisation, spread, CDS ; El Paso
+2026-10-19 | finance | Brent 109,86 $, Nasdaq -4,5 %, taux US 10 ans, or | notion : valeur refuge et rendement obligataire ; Yanbu
+2026-10-19 | ia | DeepSeek V4.1 Flash open weights, Mistral Large 4, Haiku 5.5 | Hangzhou
+2026-10-19 | cinema | CNC septembre 2026 : 8,88 M entrées, cumul +25,3 % |
+2026-10-25 | une | Ebola : Kenya 9 cas, Nigeria, essai Tumaini à Bunia |
+2026-10-25 | monde | Inde « superpuissance du raffinage » (visite Rubio, exportations +37 %) | Jamnagar
+2026-10-25 | chiffre | CNUCED : 3 800 Md$ d'exportations liées à la biodiversité |
+2026-10-25 | comprendre | Fuite vers la qualité, relation prix/rendement des obligations | notions : fuite vers la qualité, coupon, point de base
+2026-10-25 | finance | S&P 500 -0,52 %, WTI 103,58 $, or 4 011 $, CoreWeave |
+2026-10-25 | ia | Claude Duet, Enterprise Chat+Cowork, Claude Security |
+2026-10-25 | ia technique | Le token et la tarification entrée/sortie, cache, lots |
+2026-10-25 | cinema | Box-office 14-20 oct : 3,1 M entrées, Les Misérables en tête |
