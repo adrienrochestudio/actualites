@@ -11,15 +11,16 @@ struct ActualitesMac: App {
         Window("Actualités", id: "journal") {
             Journal()
                 .environmentObject(depot)
-                .frame(minWidth: 480, minHeight: 600)
+                .frame(minWidth: 720, minHeight: 600)
                 .task { await depot.actualiser(force: true) }
+                // Retour au premier plan : nouvelle vérification si la dernière date de plus de 10 min.
                 .onChange(of: phase) { p in
                     if p == .active { Task { await depot.actualiser() } }
                 }
         }
         .commands {
             CommandGroup(after: .newItem) {
-                Button("Rechercher la nouvelle édition") { Task { await depot.actualiser(force: true) } }
+                Button(depot.profil.textes.actualiser) { Task { await depot.actualiser(force: true) } }
                     .keyboardShortcut("r")
             }
         }

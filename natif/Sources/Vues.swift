@@ -41,6 +41,15 @@ extension EnvironmentValues {
     }
 }
 
+private struct CleTextes: EnvironmentKey { static let defaultValue = Textes.fr }
+extension EnvironmentValues {
+    /// Textes de l'interface dans la langue du profil choisi.
+    var textes: Textes {
+        get { self[CleTextes.self] }
+        set { self[CleTextes.self] = newValue }
+    }
+}
+
 private struct CleGrandEcran: EnvironmentKey { static let defaultValue = false }
 extension EnvironmentValues {
     /// Fenêtre d'au moins 960 pt : texte plus grand, graphiques larges débordant de la colonne, comme l'app web.
@@ -88,9 +97,9 @@ func lien(_ s: Source, texte: String? = nil) -> AttributedString {
     return a
 }
 
-func ligneSources(_ sources: [Source]?, apres: String? = nil) -> AttributedString? {
+func ligneSources(_ sources: [Source]?, _ t: Textes, apres: String? = nil) -> AttributedString? {
     guard let sources, !sources.isEmpty else { return nil }
-    var r = AttributedString(sources.count == 1 ? "Source : " : "Sources : ")
+    var r = AttributedString(sources.count == 1 ? t.source : t.sources)
     for (i, s) in sources.enumerated() {
         if i > 0 { r += AttributedString(", ") }
         r += lien(s)
@@ -99,11 +108,11 @@ func ligneSources(_ sources: [Source]?, apres: String? = nil) -> AttributedStrin
     return r
 }
 
-func legende(_ e: Element) -> AttributedString? {
+func legende(_ e: Element, _ t: Textes) -> AttributedString? {
     var r = AttributedString(e.legende ?? "")
     if let l = e.lien {
         if !r.characters.isEmpty { r += AttributedString(" ") }
-        r += lien(Source(titre: "", url: l), texte: "Version interactive") + AttributedString(".")
+        r += lien(Source(titre: "", url: l), texte: t.versionInteractive) + AttributedString(".")
     }
     if let c = e.credit {
         if !r.characters.isEmpty { r += AttributedString(" ") }
@@ -127,6 +136,7 @@ struct ImageLocale: View {
 struct Figure: View {
     @EnvironmentObject var depot: Depot
     @Environment(\.zoom) var zoom
+    @Environment(\.textes) var t
     let element: Element
 
     var body: some View {
@@ -137,9 +147,9 @@ struct Figure: View {
                     .overlay(element.estCarte ? Rectangle().stroke(Color(white: 0.9), lineWidth: 1) : nil)
                     .contentShape(Rectangle())
                     .onTapGesture { zoom(element) }
-                    .accessibilityLabel(element.estCarte ? "Carte : \(element.ville ?? "")" : (element.legende ?? ""))
+                    .accessibilityLabel(element.estCarte ? "\(t.carte)\(element.ville ?? "")" : (element.legende ?? ""))
                     .accessibilityAddTraits(.isButton)
-                if let l = legende(element) { Note(attribue: l, italique: true) }
+                if let l = legende(element, t) { Note(attribue: l, italique: true) }
             }
             .padding(.vertical, 6)
         }
@@ -155,6 +165,7 @@ struct Figure: View {
 
 struct VueBloc: View {
     @Environment(\.grandEcran) var grandEcran
+    @Environment(\.textes) var t
     let b: Bloc
     var body: some View {
         switch b.type {
@@ -189,7 +200,7 @@ struct VueBloc: View {
                         Note(f, italique: true).multilineTextAlignment(.center)
                     }
                 }
-                if let l = legende(b.commeElement) { Note(attribue: l, italique: true).frame(maxWidth: .infinity, alignment: .leading) }
+                if let l = legende(b.commeElement, t) { Note(attribue: l, italique: true).frame(maxWidth: .infinity, alignment: .leading) }
             }
             .padding(.vertical, 8)
         default:
@@ -201,6 +212,7 @@ struct VueBloc: View {
 /// Corps commun aux rubriques du jour et aux dossiers de la semaine.
 struct CorpsArticle: View {
     @Environment(\.grandEcran) var grandEcran
+    @Environment(\.textes) var t
     let a: Article
 
     var body: some View {
@@ -214,10 +226,10 @@ struct CorpsArticle: View {
                 }
             }
             if let r = a.a_retenir {
-                Text("À retenir").font(Style.sousTitre()).foregroundStyle(Style.encre).padding(.top, 10)
+                Text(t.aRetenir).font(Style.sousTitre()).foregroundStyle(Style.encre).padding(.top, 10)
                 Paragraphe(t: r, taille: grandEcran ? 19 : 18)
             }
-            if let s = ligneSources(a.sources, apres: a.note_sources) { Note(attribue: s).padding(.top, 6) }
+            if let s = ligneSources(a.sources, t, apres: a.note_sources) { Note(attribue: s).padding(.top, 6) }
         }
     }
 }
@@ -239,6 +251,7 @@ struct VueRubrique: View {
 
 struct VueBreves: View {
     @Environment(\.grandEcran) var grandEcran
+    @Environment(\.textes) var t
     let breves: [Breve]
 
     /// Répartit les brèves en colonnes de longueur proche, dans l'ordre de lecture (comme des colonnes de journal).
@@ -257,7 +270,7 @@ struct VueBreves: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
-            Text("En bref").font(Style.titre()).foregroundStyle(Style.encre).padding(.bottom, 6)
+            Text(t.enBref).font(Style.titre()).foregroundStyle(Style.encre).padding(.bottom, 6)
             HStack(alignment: .top, spacing: 44) {
                 ForEach(Array(colonnes(1).enumerated()), id: \.offset) { _, col in
                     VStack(alignment: .leading, spacing: 0) {
@@ -265,7 +278,7 @@ struct VueBreves: View {
                             VStack(alignment: .leading, spacing: 10) {
                                 NomRubrique(t: br.rubrique)
                                 ForEach(br.items, id: \.self) { Paragraphe(t: "- \($0)", taille: grandEcran ? 18 : 17) }
-                                if let s = ligneSources(br.sources) { Note(attribue: s) }
+                                if let s = ligneSources(br.sources, t) { Note(attribue: s) }
                             }
                             .padding(.top, 22)
                         }
@@ -281,15 +294,16 @@ struct VueBreves: View {
 /// Dossiers de la semaine : repliés, chacun représenté par son image, ouverts au clic.
 struct VueSemaine: View {
     @Environment(\.grandEcran) var grandEcran
+    @Environment(\.textes) var t
     let semaine: Semaine
     @State private var ouverts: Set<String> = []
 
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
-            Text("Dossiers de la semaine").font(Style.titre()).foregroundStyle(Style.encre)
+            Text(t.dossiersSemaine).font(Style.titre()).foregroundStyle(Style.encre)
                 .padding(.top, 36).padding(.bottom, 8)
-            ForEach(semaine.sujets) { s in
-                dossier(s).id("dossier-\(s.id)")
+            ForEach(Array(semaine.sujets.enumerated()), id: \.offset) { i, s in
+                dossier(s).ancre("s\(i + 1)")
             }
         }
         .onChange(of: semaine.date) { _ in ouverts = [] }
@@ -316,7 +330,7 @@ struct VueSemaine: View {
                         Text(s.titre).font(Style.titre()).foregroundStyle(Style.encre)
                             .multilineTextAlignment(.leading).fixedSize(horizontal: false, vertical: true)
                         if let ch = s.chapo { Paragraphe(t: ch, italique: true) }
-                        Text(ouvert ? "Replier" : "Lire le dossier").font(Style.petit()).foregroundStyle(Style.note)
+                        Text(ouvert ? t.replier : t.lireDossier).font(Style.petit()).foregroundStyle(Style.note)
                             .underline(!ouvert)
                     }
                 }
@@ -324,10 +338,10 @@ struct VueSemaine: View {
                 .contentShape(Rectangle())
             }
             .buttonStyle(.plain)
-            .accessibilityHint(ouvert ? "Replier le dossier" : "Ouvrir le dossier")
+            .accessibilityHint(ouvert ? t.replierLeDossier : t.ouvrirLeDossier)
 
             if ouvert {
-                if let c = s.couverture, let l = legende(c) { Note(attribue: l, italique: true) }
+                if let c = s.couverture, let l = legende(c, t) { Note(attribue: l, italique: true) }
                 CorpsArticle(a: s)
             }
         }
@@ -335,158 +349,3 @@ struct VueSemaine: View {
     }
 }
 
-enum Vue: String { case jour, semaine }
-
-struct Journal: View {
-    @EnvironmentObject var depot: Depot
-    @State private var agrandie: Element?
-    @AppStorage("vue") private var vue: Vue = .jour
-
-    var body: some View {
-        ZStack {
-            Style.fond.ignoresSafeArea()
-            GeometryReader { geo in
-            let grand = geo.size.width >= 960
-            ScrollViewReader { proxy in
-                ScrollView {
-                    VStack(spacing: 0) {
-                        manchette
-                        VStack(alignment: .leading, spacing: 0) {
-                            contenu
-                            pied
-                        }
-                        .frame(maxWidth: Style.colonne, alignment: .leading)
-                        .padding(.horizontal, 24)
-                        .padding(.bottom, 56)
-                    }
-                    .frame(maxWidth: .infinity)
-                    .id("haut")
-                }
-                .onChange(of: vue) { _ in proxy.scrollTo("haut", anchor: .top) }
-                .onChange(of: depot.edition?.date) { _ in if vue == .jour { proxy.scrollTo("haut", anchor: .top) } }
-            }
-            .environment(\.grandEcran, grand)
-            }
-            if let e = agrandie { zoom(e) }
-        }
-        .environment(\.colorScheme, .light)
-        .environment(\.zoom, { e in withAnimation(.easeOut(duration: 0.15)) { agrandie = e } })
-    }
-
-    /// Titre du journal centré, double filet, onglets Quotidien / Hebdomadaire, date.
-    private var manchette: some View {
-        VStack(spacing: 0) {
-            HStack(spacing: 12) {
-                if let u = Bundle.main.url(forResource: "logo", withExtension: "png"), let i = chargerImage(u) {
-                    vueImage(i).resizable().frame(width: 42, height: 42)
-                }
-                Text("Actualités").font(Style.manchette()).foregroundStyle(Style.encre)
-            }
-            .padding(.top, 40)
-            HStack(spacing: 32) {
-                onglet("Quotidien", .jour)
-                onglet("Hebdomadaire", .semaine)
-            }
-            .padding(.top, 16)
-            Rectangle().fill(Color(white: 0.89)).frame(height: 1)
-            Note(ligneDate).padding(.top, 14)
-        }
-        .frame(maxWidth: Style.large)
-        .padding(.horizontal, 24)
-    }
-
-    private var ligneDate: String {
-        vue == .jour ? (depot.edition?.date_texte ?? "")
-            : (depot.semaine?.date_texte_semaine ?? depot.semaine?.date_texte ?? "")
-    }
-
-    private func onglet(_ titre: String, _ v: Vue) -> some View {
-        Button { vue = v } label: {
-            Text(titre)
-                .font(Style.serif(16, gras: vue == v))
-                .foregroundStyle(vue == v ? Style.encre : Style.note)
-                .padding(.vertical, 12)
-                .overlay(alignment: .bottom) {
-                    Rectangle().fill(vue == v ? Style.encre : .clear).frame(height: 2)
-                }
-                .frame(minHeight: 44)
-                .contentShape(Rectangle())
-        }
-        .buttonStyle(.plain)
-        .accessibilityAddTraits(vue == v ? .isSelected : [])
-    }
-
-    @ViewBuilder
-    private var contenu: some View {
-        switch vue {
-        case .jour:
-            if let ed = depot.edition {
-                if let une = ed.une {
-                    VStack(alignment: .leading, spacing: 10) {
-                        NomRubrique(t: "Actu")
-                        Paragraphe(t: une.texte, taille: 23)
-                        if let s = ligneSources(une.sources) { Note(attribue: s) }
-                    }
-                    .padding(.top, 30)
-                }
-                ForEach(Array(ed.rubriques.enumerated()), id: \.offset) { _, r in VueRubrique(r: r) }
-                if let b = ed.breves, !b.isEmpty { VueBreves(breves: b) }
-            } else {
-                vide("Pas encore d'édition du jour sur cet appareil.")
-            }
-        case .semaine:
-            if let s = depot.semaine, !s.sujets.isEmpty {
-                VueSemaine(semaine: s)
-            } else {
-                vide("Pas encore d'édition de la semaine sur cet appareil.")
-            }
-        }
-    }
-
-    private func vide(_ texte: String) -> some View {
-        VStack(alignment: .leading) {
-            switch depot.etat {
-            case .chargement: Note("Chargement de l'édition.")
-            case .erreur(let m): Note(m)
-            default: Note(texte)
-            }
-        }
-        .padding(.top, 28)
-    }
-
-    private var pied: some View {
-        VStack(alignment: .leading, spacing: 6) {
-            if vue == .jour, let ed = depot.edition {
-                let jour = ed.date_texte.split(separator: " ").dropFirst().joined(separator: " ")
-                Note("Rédigé par Claude à partir de sources publiques consultées le \(jour).")
-            } else if vue == .semaine, depot.semaine != nil {
-                Note("Dossiers rédigés par Claude à partir de sources publiques, publiés chaque lundi.")
-            }
-            switch depot.etat {
-            case .horsLigne: Note("Hors ligne : dernières éditions enregistrées sur cet appareil.")
-            case .aJour: Note("Éditions enregistrées pour la lecture hors ligne.")
-            case .chargement: Note("Recherche des nouvelles éditions.")
-            default: EmptyView()
-            }
-        }
-        .padding(.top, 64)
-    }
-
-    /// Image agrandie sur fond blanc ; un clic ou Échap referme.
-    private func zoom(_ e: Element) -> some View {
-        ZStack {
-            Style.fond.ignoresSafeArea()
-            VStack(spacing: 12) {
-                ImageLocale(chemin: e.chemin).padding(.horizontal, 24)
-                if let l = legende(e) { Note(attribue: l, italique: true).frame(maxWidth: Style.colonne, alignment: .leading) }
-            }
-            .padding(32)
-        }
-        .contentShape(Rectangle())
-        .onTapGesture { withAnimation(.easeOut(duration: 0.15)) { agrandie = nil } }
-        #if os(macOS)
-        .onExitCommand { agrandie = nil }
-        #endif
-        .transition(.opacity)
-    }
-}
