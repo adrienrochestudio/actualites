@@ -6,9 +6,9 @@ Comme pour le jour : une seule rédaction en français (`hebdo-base.json`), les 
 
 ## Déroulé
 
-1. Charger le skill `.claude/skills/actualites-quotidiennes` (sources, images, règles d'écriture) et le skill `.claude/skills/sans-trace-ia`.
+1. Lire `consignes/ecriture.md` (règles d'écriture et de traduction) ; sources et visuels : sections du même nom dans `consignes/quotidien.md`. Ne pas charger les skills.
 2. Date du jour (dimanche), fuseau Europe/Paris. `date_texte` : la date du dimanche, "Dimanche 1 novembre 2026". `date_texte_semaine` : la semaine qui commence le lendemain, "Semaine du 2 novembre 2026".
-3. Historique : lire `historique/hebdo.txt` (branche `historique`, déjà récupérée par l'édition du jour). Lire aussi `historique/quotidien.txt` pour ne pas refaire un "Comprendre" récent. Aucun sujet déjà traité dans les 6 derniers mois.
+3. Point de départ : `python3 outils/historique.py pistes` (sujets de fond repérés pendant la semaine) et `python3 outils/historique.py notions` (dossiers des 6 derniers mois et notions récentes, à ne pas refaire). Compléter au besoin avec `python3 outils/veille.py --heures 168 --max 8`.
 4. Choix de 7 sujets, un par thème. Chaque dossier porte `"profils"` :
    - Géopolitique ou géoéconomie (hors du flux habituel : pas Iran, Ukraine, Trump ou Bolsonaro sauf cas exceptionnel) : `["fr", "pt"]`
    - Énergie, climat ou environnement : `["fr", "pt"]`
@@ -18,12 +18,12 @@ Comme pour le jour : une seule rédaction en français (`hebdo-base.json`), les 
    - Architecture ou urbanisme : `["pt"]`
    - Politique du Brésil (institutions, lois, budget, réformes ; pas de petites phrases) : `["pt"]`
    Chaque sujet part d'un fait des 7 derniers jours, mais traite la question de fond qui est derrière.
-5. Recherche : vagues parallèles, au plus 50 recherches et 32 lectures de page au total. Sources primaires en priorité (institutions, rapports, données), presse de référence ensuite.
+5. Recherche : partir des pistes, vagues parallèles, au plus 30 recherches web et 32 lectures de page au total. Sources primaires en priorité (institutions, rapports, données), presse de référence ensuite.
 6. Rédaction de `hebdo-base.json` en français selon le schéma en tête de `outils/publier.py`, avec le champ `profils` de chaque dossier.
 7. Contrôle FR : `python3 outils/publier.py semaine hebdo-base.json --texte`, puis l'audit sans-trace-ia sur le .txt (`--lang fr`). Corriger les alertes rouges.
 8. `python3 outils/profils.py preparer hebdo-base.json --semaine` (écrit `hebdo-fr.json` et `a-traduire.json`), traduction dans `traduit.json` (mêmes règles que pour le jour), puis `python3 outils/profils.py assembler hebdo-base.json traduit.json --semaine` (écrit `hebdo-pt.json`). Contrôle `--texte` et audit `--lang pt` sur `hebdo-pt.json`.
 9. Publication des deux profils en un envoi : `python3 outils/publier.py semaine hebdo-fr.json hebdo-pt.json --pousser`. Le script reprend les éditions du jour déjà en ligne.
-10. Historique : ajouter les 7 lignes à `historique/hebdo.txt` au format `AAAA-MM-JJ | etiquette | sujet`, supprimer les lignes de plus de 6 mois (garder l'en-tête), puis commit et `git push origin historique`.
+10. Historique : `python3 outils/historique.py ajouter hebdo-base.json --semaine`, puis `python3 outils/historique.py envoyer`.
 
 ## Chaque dossier
 
@@ -35,7 +35,7 @@ Comme pour le jour : une seule rédaction en français (`hebdo-base.json`), les 
 - Chaque notion technique est définie à sa première apparition.
 - Faits précis : chiffres, dates, noms, lieux. Toute affirmation vient d'une source lue cette semaine, listée dans `sources`. Un calcul fait par la rédaction est signalé dans `note_sources`.
 - `a_retenir` : trois phrases.
-- Écriture : skill sans-trace-ia, phrases courtes, pas de tiret cadratin, pas de ton alarmiste ni promotionnel, titres non interrogatifs.
+- Écriture : `consignes/ecriture.md`, phrases courtes, pas de tiret cadratin, pas de ton alarmiste ni promotionnel, titres non interrogatifs.
 
 ## En cas d'échec
 

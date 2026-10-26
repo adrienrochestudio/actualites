@@ -1,14 +1,11 @@
-# Édition du jour : consignes de l'app
+# Édition du jour : consignes
 
-Ces consignes complètent les skills `.claude/skills/actualites-quotidiennes` (sources, images, règles d'écriture) et `.claude/skills/sans-trace-ia`, et priment sur eux quand ils diffèrent. Dans le skill actualites-quotidiennes, ignorer tout ce qui concerne Gmail, render.py, build.py et le fichier Drive.
+Seuls fichiers à lire : celui-ci et `consignes/ecriture.md`. Ne pas charger les skills : le skill `actualites-quotidiennes` ne sert qu'en cas d'échec git (voir la fin), le skill `sans-trace-ia` fournit seulement l'audit et, pour la traduction, `references/lexique-pt.md`.
 
 ## Deux profils, une seule rédaction
 
 - `fr` : Adrien, en français. `pt` : Ana, en portugais du Brésil.
-- On écrit une seule fois, en français, une édition de base (`base.json`) qui contient les rubriques des deux profils. La version d'Ana est une traduction de ses rubriques, faite à la fin.
-- Recherche une seule fois pour les rubriques communes.
-
-## Rubriques (ordre fixe par profil)
+- On écrit une seule fois, en français, une édition de base (`base.json`) avec les rubriques des deux profils. La version d'Ana est la traduction de ses rubriques, faite à la fin. Recherche une seule fois pour les rubriques communes.
 
 | Adrien (fr) | Ana (pt) |
 |---|---|
@@ -26,58 +23,69 @@ Ces consignes complètent les skills `.claude/skills/actualites-quotidiennes` (s
 | Carte expliquée | |
 | brèves | |
 
-Dans `base.json`, l'ordre des rubriques n'a pas d'importance : `outils/profils.py` répartit et ordonne selon l'étiquette. Les étiquettes doivent être exactement celles du tableau.
+Dans `base.json`, l'ordre n'a pas d'importance : `outils/profils.py` répartit et ordonne selon l'étiquette, qui doit être exactement celle du tableau.
 
-## Ligne éditoriale (toutes rubriques)
+## Ligne éditoriale
 
-- Le but : s'informer sans le flux des médias qui parlent sans cesse des mêmes figures et des mêmes guerres. Pas Trump, Bolsonaro, Ukraine, Iran, sauf événement exceptionnel.
-- Privilégier ce qui a un impact réel sur le monde et reste peu traité : décisions, budgets, technologies, matières premières, infrastructures, sciences, régions peu couvertes.
-- Pas d'alarmisme et pas de fin du monde à chaque rubrique. Une info grave se traite par les faits et par ce qui est fait pour y répondre. Inclure des avancées réelles quand elles existent (un progrès mesuré, une solution qui marche), sans tomber dans le tout positif : l'utile d'abord.
-- Être à la pointe sur la technologie et la finance : nouveautés de la veille ou de la semaine, expliquées jusqu'au mécanisme.
+- S'informer sans le flux des médias qui parlent sans cesse des mêmes figures et des mêmes guerres. Pas Trump, Bolsonaro, Ukraine, Iran, sauf événement exceptionnel.
+- Privilégier ce qui a un impact réel et reste peu traité : décisions, budgets, technologies, matières premières, infrastructures, sciences, régions peu couvertes.
+- Pas d'alarmisme ni de fin du monde à chaque rubrique. Une info grave se traite par les faits et par ce qui est fait pour y répondre. Inclure des avancées réelles quand elles existent, sans tomber dans le tout positif : l'utile d'abord.
+- À la pointe sur la technologie et la finance : nouveautés de la veille ou de la semaine, expliquées jusqu'au mécanisme.
+- Faits précis, chiffres, dates, noms. Jamais de généralités. "À retenir" : 2 phrases en fin de chaque rubrique sauf Le chiffre.
 
-## Règles par rubrique
+## Rubriques (longueurs indicatives en mots)
 
-Les règles des rubriques déjà existantes (Une, Monde, Le chiffre, Comprendre, Finance, Intelligence artificielle) sont celles du skill. Longueurs indicatives en mots.
-
-- **France** (350) : politique, économie, société, sciences ou régions, une décision ou un fait à impact réel, hors polémiques du jour. Les sujets de Paris y entrent quand ils comptent.
-- **Brésil** (350) : société, économie, culture, sciences, environnement. Pas la politique nationale, traitée à part pour Ana.
+- **Une** (`une`, 60) : l'actualité brûlante du matin, factuelle, pas alarmiste. Pas un résumé de l'édition.
+- **Monde** (450) : géopolitique ou géoéconomie hors du flux habituel. Préférer Afrique, Asie, Amérique latine, matières premières, accords commerciaux.
+- **France** (350) : politique, économie, société, sciences ou régions ; une décision ou un fait à impact réel, hors polémiques du jour. Paris y entre quand c'est utile.
+- **Brésil** (350) : société, économie, culture, sciences, environnement. Pas la politique nationale.
 - **Politique du Brésil** (350, Ana) : institutions, lois, budget, décisions des ministères, États et villes. Les figures nationales seulement quand une décision en découle. Pas de petites phrases ni de sondages.
-- **Architecture** (350, Ana) : un projet, un bâtiment, un concours, un prix, l'urbanisme ou les matériaux, au Brésil ou ailleurs. Une photo Wikimedia Commons obligatoire, avec l'architecte et l'année dans la légende.
-- **IA, technique** (550) : un mécanisme technique de l'IA, expliqué à quelqu'un qui n'est pas ingénieur (refroidissement d'un data center, token, choix du mot suivant, skills et mods de Claude, MCP, quantification, entraînement contre inférence, GPU, InfiniBand, fenêtre de contexte...). Sous-titres. Partir d'une situation concrète, puis descendre dans le mécanisme. Chaque terme technique défini à sa première apparition. Un schéma (`schema`) obligatoire. Chiffres réels et sourcés. Sources : documentation officielle (docs.claude.com, Nvidia, Google, Meta), AIE, Uptime Institute, recherche, presse tech reconnue.
+- **Le chiffre** (250) : une statistique de source fiable (AIE, Eurostat, INSEE, FMI, OCDE, Banque mondiale, BRI, Our World in Data). Le titre est le chiffre. Expliquer l'ordre de grandeur et ce qu'il dit.
+- **Comprendre** (600) : une notion de finance ou de géoéconomie expliquée à partir d'une actu de la semaine, avec sous-titres, et un `schema` quand un circuit d'argent ou un montage s'y prête.
+- **Finance** (350) : 3 ou 4 mouvements de marché de la veille ou de la semaine (indices, taux, pétrole, or, devises, une action) : niveau, variation, raison précise.
+- **Intelligence artificielle** (400) : nouveauté Claude ou Anthropic en priorité (lire anthropic.com/news, qui n'a pas de flux), puis OpenAI, Mistral, modèles chinois, marché, matières premières de l'IA, ou article critique.
+- **IA, technique** (550) : un mécanisme technique de l'IA expliqué à un non-ingénieur (refroidissement d'un data center, token, choix du mot suivant, skills et mods de Claude, MCP, quantification, entraînement contre inférence, GPU, InfiniBand, fenêtre de contexte...). Partir d'une situation concrète, définir chaque terme à sa première apparition, `schema` obligatoire, chiffres réels et sourcés (documentation officielle, Nvidia, Google, AIE, Uptime Institute, recherche).
+- **Architecture** (350, Ana) : un projet, un bâtiment, un concours, un prix, l'urbanisme ou les matériaux, au Brésil ou ailleurs. Photo Wikimedia Commons obligatoire, architecte et année dans la légende.
 - **Cinéma** (300) : industrie du cinéma et de l'audiovisuel, plutôt France (fréquentation, financement, tournages, festivals, métiers). Pas de classement du box-office.
 - **Environnement** (350) : climat, énergie, biodiversité, pollution ; un fait mesuré et ce qu'il change. Les solutions qui fonctionnent ont leur place.
-- **Carte expliquée** (350) : une seule carte, lue en détail. Ce qu'elle représente, comment la lire, ce qu'on y voit d'étonnant, ce qui l'explique. Carte en pleine largeur (`"largeur": 1100`) : Our World in Data (`?tab=map`), Wikimedia Commons ou institution publique sous licence libre. Lien vers la version interactive quand elle existe. Sujet sans lien obligatoire avec l'actualité du jour.
-- **Brèves**, dans cet ordre : Portugal, Europe, Afrique, Amériques, Asie, Océanie. Paris passe dans France, le Brésil dans Brésil. 2 ou 3 items par zone, une zone sans info notable est omise.
+- **Carte expliquée** (350) : une seule carte, lue en détail : ce qu'elle représente, comment la lire, ce qu'on y voit d'étonnant, ce qui l'explique. Pleine largeur (`"largeur": 1100`), Our World in Data (`?tab=map`), Wikimedia Commons ou institution publique sous licence libre, avec `"lien"` vers la version interactive. Sans lien obligatoire avec l'actualité.
+- **Brèves** (`breves`), dans cet ordre : Portugal, Europe, Afrique, Amériques, Asie, Océanie. 2 ou 3 items par zone, une zone sans info notable est omise. Chaque brève donne le contexte pour être comprise seule (qui est qui, pourquoi ça compte).
+
+## Sources
+
+- `outils/veille.py` couvre la plupart des rubriques (flux listés dans `consignes/veille.txt`). Lire ensuite les articles retenus avec WebFetch.
+- Compléments : anthropic.com/news et mistral.ai/news (IA) ; iea.org/reports, ec.europa.eu/eurostat, insee.fr, worldbank.org (chiffres) ; cnc.fr (fréquentation, début de mois) ; paris.fr ; consilium.europa.eu.
+- Une page qui refuse la lecture : passer à une autre source, ne pas insister. Éviter les agrégateurs de faible qualité.
 
 ## Visuels
 
-Viser au moins un visuel dans 80 % des rubriques, toujours utile :
-- graphiques Our World in Data (`?tab=map` ou `?tab=chart`), avec `"lien"` vers la version interactive ;
-- photos et portraits Wikimedia Commons, demandés en 1100 px de large (`iiurlwidth=1100`) ;
-- mini-cartes pour les villes peu connues citées dans une rubrique, sans limite ;
-- schémas pour les montages et les mécanismes.
-Un graphique ou une photo de paysage prend la largeur entière (`"largeur": 1100`). Un portrait reste petit (`"largeur": 360`), seul ou dans un `duo` avec une carte. La légende dit ce qu'il faut regarder dans l'image, pas seulement ce que c'est.
+Viser un visuel utile dans 80 % des rubriques. Licences libres uniquement, chargées par `"url"` : jamais d'image de presse, d'affiche de film ni de photo de célébrité.
+- Wikimedia Commons : chercher avec `curl -s -A "ActualitesNewsletter/1.0" "https://commons.wikimedia.org/w/api.php?action=query&list=search&srsearch=NOM&srnamespace=6&srlimit=5&format=json"`, puis `prop=imageinfo&iiprop=url|extmetadata&iiurlwidth=1100&titles=File:...` sur le fichier choisi ; utiliser `thumburl`, créditer auteur et licence dans `credit`.
+- Our World in Data : `https://ourworldindata.org/grapher/<graphique>.png?tab=map` (ou `tab=chart`), `"lien"` vers la version interactive, crédit "Our World in Data, CC BY".
+- Portrait : seulement une personne peu médiatisée, petit (`"largeur": 360`), seul ou dans un `duo` avec une carte.
+- Mini-carte (`carte`) pour chaque ville peu connue citée dans une rubrique, sans limite ; pas pour une capitale évidente. Ville frontalière : préciser `"pays"` (nom Natural Earth).
+- Graphique ou paysage en pleine largeur (`"largeur": 1100`). La légende dit ce qu'il faut regarder, pas seulement ce que c'est.
+- Une carte de presse meilleure que tout ce qui existe en libre : un lien "voir la carte" dans la légende, jamais l'image.
 
 ## Déroulé
 
-Dépendances : Pillow et matplotlib (`pip install pillow matplotlib` si l'import échoue). Schéma du JSON : en tête de `outils/publier.py`. Au plus 22 recherches et 16 lectures de page.
+Dépendances : Pillow et matplotlib (`pip install pillow matplotlib` si l'import échoue). Schéma du JSON : en tête de `outils/publier.py`. Au plus 10 recherches web et 16 lectures de page : la veille remplace le reste.
 
-1. Historique : `git fetch origin historique`, `git worktree add -B historique historique origin/historique`, lire `historique/quotidien.txt`. Aucun sujet ni aucune notion "Comprendre", "IA, technique" ou "Carte expliquée" déjà traités dans les 60 jours.
-2. Recherche en vagues parallèles, puis rédaction de `base.json` en français, avec toutes les rubriques des deux profils et les brèves.
-3. Contrôle FR : `python3 outils/publier.py jour base.json --texte`, puis l'audit sans-trace-ia sur `base.txt` (`--lang fr`). Corriger les alertes rouges dans le JSON. Les alertes "de plus" dans une comparaison chiffrée sont acceptées.
-4. `python3 outils/profils.py preparer base.json` : écrit `edition-fr.json` et `a-traduire.json` (les seuls textes du profil pt).
-5. Traduction : charger `references/lexique-pt.md` et la section FR vers pt-BR de `references/traduction.md` du skill sans-trace-ia. Écrire `traduit.json` : mêmes clés, même nombre d'entrées, chaque texte en portugais du Brésil naturel. Ne rien ajouter, ne rien retirer.
-6. `python3 outils/profils.py assembler base.json traduit.json` : écrit `edition-pt.json`. Puis `python3 outils/publier.py jour edition-pt.json --texte` et l'audit sur `edition-pt.txt` (`--lang pt`). Corriger les alertes rouges dans `traduit.json` et réassembler.
-7. Publication des deux profils en un envoi : `python3 outils/publier.py jour edition-fr.json edition-pt.json --pousser`. S'il s'arrête sur une erreur, corriger le JSON et relancer. Une image "laissée distante" n'est pas une erreur.
-8. Historique : une ligne par rubrique de `base.json` au format `AAAA-MM-JJ | rubrique | sujet | notion ou villes`, supprimer les lignes de plus de 60 jours (garder l'en-tête), puis dans `historique/` : `git add quotidien.txt`, `git commit`, `git push origin historique`. Si le push est refusé parce que la branche a bougé : `git pull --rebase origin historique` et relancer.
+1. Historique : `git fetch origin historique`, `git worktree add -B historique historique origin/historique`. Puis `python3 outils/historique.py notions` (notions et dossiers récents à ne pas refaire). Ne pas lire les fichiers de l'historique.
+2. Veille : `python3 outils/veille.py`. Choisir les sujets, `python3 outils/veille.py lien <numéros>` pour leurs adresses, lire les articles retenus. Recherches web seulement pour ce que la veille ne couvre pas (Le chiffre, Carte expliquée, IA, technique, compléments).
+3. Pistes pour le dimanche : pour 1 à 3 sujets de fond repérés et non traités, `python3 outils/historique.py piste "thème" "sujet en une ligne" "url"`. Thèmes : Géopolitique, Environnement, Société, Finance, IA, Architecture, Politique du Brésil.
+4. Rédaction de `base.json` en français, toutes les rubriques des deux profils et les brèves. Puis `python3 outils/historique.py verifier base.json` : changer de sujet si une rubrique reprend un sujet déjà traité.
+5. Contrôle FR : `python3 outils/publier.py jour base.json --texte`, puis l'audit sur `base.txt` (`--lang fr`). Corriger les alertes rouges dans le JSON. Les alertes "de plus" dans une comparaison chiffrée sont acceptées.
+6. `python3 outils/profils.py preparer base.json` : écrit `edition-fr.json` et `a-traduire.json` (les seuls textes d'Ana).
+7. Traduction selon `consignes/ecriture.md` : écrire `traduit.json`, mêmes clés, même nombre d'entrées, chaque texte en pt-BR naturel. Ne rien ajouter, ne rien retirer.
+8. `python3 outils/profils.py assembler base.json traduit.json` (écrit `edition-pt.json`), puis `python3 outils/publier.py jour edition-pt.json --texte` et l'audit sur `edition-pt.txt` (`--lang pt`). Corriger les alertes rouges dans `traduit.json` et réassembler.
+9. Publication des deux profils en un envoi : `python3 outils/publier.py jour edition-fr.json edition-pt.json --pousser`. Une image "laissée distante" n'est pas une erreur. Si l'édition pt a échoué, publier `edition-fr.json` seul.
+10. Historique : `python3 outils/historique.py ajouter base.json`, puis `python3 outils/historique.py envoyer`.
 
-Si la traduction ou l'édition pt échoue, publier quand même `edition-fr.json` seul : le profil pt garde l'édition de la veille.
-
-## Le dimanche
-
-Après la publication et l'historique du jour, produire l'édition de la semaine selon `consignes/hebdo.md`.
+Le dimanche, après l'étape 10 : édition de la semaine selon `consignes/hebdo.md`.
 
 ## En cas d'échec
 
 - Accès git refusé : produire quand même l'édition fr et l'envoyer par mail (étapes 6 et 7 du skill `actualites-quotidiennes` : render.py, build.py, Gmail `send_message` à adrien.etks@gmail.com, libellé Actualités). Puis un mail court à adrienroche6@gmail.com, objet "Actualités · app non mise à jour", avec le message d'erreur git exact.
 - Aucune édition possible : un seul mail court à adrienroche6@gmail.com, objet "Actualités · édition non produite", avec la cause en une phrase.
+- Une rubrique sans matière fiable est omise ; une image qui échoue part sans image.

@@ -1,0 +1,44 @@
+# Flux lus chaque matin par outils/veille.py. Format : rubrique | source | url
+# Rubrique = étiquette de l'édition ou zone des brèves. Une ligne commentée (#) est ignorée.
+Monde | Le Monde International | https://www.lemonde.fr/international/rss_full.xml
+Monde | BBC World | https://feeds.bbci.co.uk/news/world/rss.xml
+Monde | Nikkei Asia | https://asia.nikkei.com/rss/feed/nar
+France | Le Monde Société | https://www.lemonde.fr/societe/rss_full.xml
+France | Le Monde Économie française | https://www.lemonde.fr/economie-francaise/rss_full.xml
+France | Franceinfo France | https://www.francetvinfo.fr/france.rss
+Brésil | Folha Cotidiano | https://feeds.folha.uol.com.br/cotidiano/rss091.xml
+Brésil | Agência Brasil | https://agenciabrasil.ebc.com.br/rss/ultimasnoticias/feed.xml
+Brésil | The Rio Times | https://www.riotimesonline.com/feed/
+Politique du Brésil | Folha Poder | https://feeds.folha.uol.com.br/poder/rss091.xml
+Finance | Le Monde Économie | https://www.lemonde.fr/economie/rss_full.xml
+Finance | Folha Mercado | https://feeds.folha.uol.com.br/mercado/rss091.xml
+Finance | MarketWatch | https://feeds.content.dowjones.io/public/rss/mw_topstories
+Finance | Financial Times Markets | https://www.ft.com/markets?format=rss
+Finance | Investing.com | https://www.investing.com/rss/news_1.rss
+Intelligence artificielle | Le Monde Pixels | https://www.lemonde.fr/pixels/rss_full.xml
+Intelligence artificielle | The Verge AI | https://www.theverge.com/rss/ai-artificial-intelligence/index.xml
+Intelligence artificielle | MIT Technology Review | https://www.technologyreview.com/feed/
+Intelligence artificielle | Ars Technica | https://feeds.arstechnica.com/arstechnica/technology-lab
+Intelligence artificielle | OpenAI | https://openai.com/news/rss.xml
+Intelligence artificielle | Hugging Face | https://huggingface.co/blog/feed.xml
+Cinéma | Le Monde Cinéma | https://www.lemonde.fr/cinema/rss_full.xml
+Cinéma | AlloCiné | https://www.allocine.fr/rss/news-cine.xml
+Cinéma | Variety Film | https://variety.com/v/film/feed/
+Environnement | Le Monde Planète | https://www.lemonde.fr/planete/rss_full.xml
+Environnement | Carbon Brief | https://www.carbonbrief.org/feed
+Environnement | Reporterre | https://reporterre.net/spip.php?page=backend
+Environnement | Folha Ambiente | https://feeds.folha.uol.com.br/ambiente/rss091.xml
+Environnement | Reasons to be Cheerful | https://reasonstobecheerful.world/feed/
+Architecture | ArchDaily | https://www.archdaily.com/feed
+Architecture | ArchDaily Brasil | https://www.archdaily.com.br/br/feed
+Architecture | Dezeen Architecture | https://www.dezeen.com/architecture/feed/
+Données | Our World in Data | https://ourworldindata.org/atom.xml
+Données | Le Monde Sciences | https://www.lemonde.fr/sciences/rss_full.xml
+Données | The Conversation France | https://theconversation.com/fr/articles.atom
+Portugal | Observador | https://observador.pt/feed/
+Europe | EUbusiness | https://www.eubusiness.com/feed/
+Afrique | Le Monde Afrique | https://www.lemonde.fr/afrique/rss_full.xml
+Afrique | The Africa Report | https://www.theafricareport.com/feed/
+Amériques | Le Monde Amériques | https://www.lemonde.fr/ameriques/rss_full.xml
+Asie | Le Monde Asie-Pacifique | https://www.lemonde.fr/asie-pacifique/rss_full.xml
+Monde | Folha Mundo | https://feeds.folha.uol.com.br/mundo/rss091.xml
