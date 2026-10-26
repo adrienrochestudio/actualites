@@ -142,3 +142,33 @@ Pour les posts StepUP, l'anglais britannique prime quand le lexique donne les de
 - Garder les noms propres, labels et marques tels quels sauf équivalent officiel.
 - Vérifier chaque faux ami : actually (en fait), eventually (finalement), sensible (raisonnable), library (bibliothèque), achieve (atteindre), assume (supposer), control (maîtrise ou contrôle selon le cas).
 - Après traduction, passer `scripts/audit.py` sur le texte cible dans sa langue.
+- Pour le pt-BR, voir la section suivante.
+
+## Français vers portugais du Brésil
+Usage type : la newsletter quotidienne rédigée en français puis traduite pour une lectrice brésilienne. La version pt-BR doit se lire comme écrite par un journaliste de la Folha, de Piauí ou de Nexo, pas comme une traduction.
+
+Méthode
+- Traduire le sens, puis réécrire chaque phrase comme un Brésilien l'écrirait. Ne jamais suivre l'ordre des mots ni le découpage des phrases françaises par défaut.
+- Sujet et verbe tôt dans la phrase. Une incise française en tête de phrase passe en fin de phrase ou dans une phrase à part.
+- Passer le passif à l'actif quand l'agent est connu : « a décidé par le gouvernement » n'existe pas, « O governo decidiu » oui.
+- Retirer les connecteurs que le français impose et que le portugais n'a pas besoin de dire (en effet, ainsi, or, d'ailleurs en début de paragraphe).
+- Relire avec `lexique-pt.md`, sections « Calques du français » et « Gallicismes de traduction » : « é que » en cascade, « de fato », « o fato de que », « ao nível de », « se trata de » mal placé, article oublié devant un pays.
+
+Ce qui ne change pas
+- Chiffres, noms de personnes, titres d'œuvres, dates et sources restent identiques à la version française. Aucun chiffre arrondi, aucune source ajoutée ou retirée.
+- Un titre d'œuvre garde son titre original ; ajouter le titre brésilien seulement s'il existe et qu'on le connaît.
+
+Noms propres d'institutions françaises
+- Garder le nom ou le sigle français et l'expliquer au premier emploi : « o CNC, o Centro Nacional do Cinema francês », « a Assemblée nationale, a Câmara dos Deputados francesa », « o Conseil d'État, o mais alto tribunal administrativo da França ».
+- Ne pas inventer de traduction officielle. Une institution qui a un équivalent brésilien évident (Sénat, Senado ; ministère de la Culture, Ministério da Cultura) se traduit directement, en précisant « francês » si le contexte ne le dit pas.
+- Les partis, syndicats et médias français gardent leur nom, avec une glose courte la première fois (« o Rassemblement National, de extrema direita »).
+
+Formats à convertir
+- Nombres : 3,5 reste 3,5 ; 12 500 devient 12.500 ; 4,2 % devient 4,2%.
+- Grands nombres : 1,5 milliard devient 1,5 bilhão ; 2 milliards, 2 bilhões. Jamais « mil milhões » ni « bilião ».
+- Dates : « lundi 26 octobre » devient « segunda-feira (26) » ou « 26 de outubro », en minuscule.
+- Monnaies : un montant en euros reste en euros (« 37 milhões de euros »). Ajouter l'équivalent en reais seulement si la source le donne, au format « R$ 210 milhões ». Ne jamais calculer soi-même une conversion.
+- Heures : 14 h 30 devient 14h30. Préciser « horário de Paris » ou « horário de Brasília » quand l'heure compte pour la lectrice.
+
+Contrôle
+- `python3 scripts/audit.py texte-pt.txt --lang pt` : aucune alerte rouge avant livraison.

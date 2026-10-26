@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Compare la version produite par Claude et la version reprise par l'utilisateur.
 
-Usage : python3 compare.py ia.txt humain.txt [--lang fr|en] [--json]
+Usage : python3 compare.py ia.txt humain.txt [--lang fr|en|pt] [--json]
 Sortie : métriques avant/après, liste des écarts classés, candidats pour le lexique.
 Sert d'entrée à la procédure "Apprendre d'une correction" du SKILL.md.
 """
@@ -15,9 +15,11 @@ TOKEN = re.compile(r"\w+(?:['’-]\w+)*|[^\w\s]")
 CONNECT = {
     "fr": {"et", "aussi", "d'ailleurs", "d’ailleurs", "bien", "sûr", "puis", "donc", "mais", "car", "alors", "ensuite", "parce"},
     "en": {"and", "also", "of", "course", "so", "but", "then", "because", "actually"},
+    "pt": {"e", "também", "aliás", "claro", "depois", "então", "mas", "porque", "afinal", "enfim"},
 }
 FIRST = {"fr": {"je", "j", "j'", "j’", "nous", "on", "mon", "ma", "mes", "notre", "nos"},
-         "en": {"i", "we", "my", "our", "me", "us"}}
+         "en": {"i", "we", "my", "our", "me", "us"},
+         "pt": {"eu", "nós", "a gente", "meu", "minha", "meus", "minhas", "nosso", "nossa", "nossos", "nossas", "me", "nos"}}
 PUNCT = {"tiret cadratin": "—", "tiret demi-cadratin": "–", "deux-points": ":", "point-virgule": ";",
          "parenthèse": "(", "guillemet français": "«", "point d'exclamation": "!"}
 
@@ -194,7 +196,7 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("ia")
     ap.add_argument("humain")
-    ap.add_argument("--lang", choices=["fr", "en"])
+    ap.add_argument("--lang", choices=["fr", "en", "pt"])
     ap.add_argument("--json", action="store_true")
     o = ap.parse_args()
     ia = Path(o.ia).read_text(encoding="utf-8")

@@ -1,11 +1,13 @@
 ---
 name: "sans-trace-ia"
-description: "Rédaction et relecture de tout texte en français ou en anglais pour qu'il ne porte aucune trace d'écriture IA - vocabulaire, tournures, typographie, fautes typiques des modèles, traductions conformes au lexique de l'utilisateur. Utiliser ce skill dès que Claude rédige, réécrit, traduit ou relit un texte destiné à être lu par d'autres - post LinkedIn, e-mail, article, rapport, guide, document Word, page web, communiqué, sous-titre, présentation - même si l'utilisateur ne parle pas d'IA. Utiliser aussi quand l'utilisateur demande si un texte \"fait IA\", veut le rendre plus naturel, passer un détecteur (GPTZero, Pangram, Turnitin, ZeroGPT) ou traduire avec son lexique. Utiliser aussi quand l'utilisateur dit avoir repris, corrigé ou réécrit un texte produit par Claude, colle sa propre version ou demande d'entraîner le skill : comparer les deux versions et intégrer les leçons au skill."
+description: "Rédaction et relecture de tout texte en français, en anglais ou en portugais du Brésil pour qu'il ne porte aucune trace d'écriture IA - vocabulaire, tournures, typographie, fautes typiques des modèles, traductions conformes au lexique de l'utilisateur, dont la traduction FR vers pt-BR de la newsletter. Utiliser ce skill dès que Claude rédige, réécrit, traduit ou relit un texte destiné à être lu par d'autres - post LinkedIn, e-mail, article, rapport, guide, document Word, page web, communiqué, sous-titre, présentation - même si l'utilisateur ne parle pas d'IA. Utiliser aussi quand l'utilisateur demande si un texte \"fait IA\", veut le rendre plus naturel, passer un détecteur (GPTZero, Pangram, Turnitin, ZeroGPT) ou traduire avec son lexique. Utiliser aussi quand l'utilisateur dit avoir repris, corrigé ou réécrit un texte produit par Claude, colle sa propre version ou demande d'entraîner le skill : comparer les deux versions et intégrer les leçons au skill."
 ---
 
 # sans-trace-ia
 
 Objectif : un texte qu'un lecteur attentif ou un détecteur ne rattache pas à une IA, sans tricher sur la qualité. On corrige le fond (précision, faits) autant que la surface (mots, typographie).
+
+Langues couvertes : français, anglais, portugais du Brésil (pt-BR). Les règles de ce fichier valent pour les trois.
 
 ## Pourquoi le fond d'abord
 
@@ -13,11 +15,11 @@ Un modèle de langue tend vers la formulation la plus probable. Il remplace les 
 
 ## Procédure
 
-1. **Lexique de traduction** : si le texte est une traduction ou touche à un terme métier, lire `references/traduction.md` avant d'écrire. Les équivalences qu'il impose priment sur tout le reste du skill.
+1. **Lexique de traduction** : si le texte est une traduction ou touche à un terme métier, lire `references/traduction.md` avant d'écrire. Pour une traduction FR vers pt-BR, lire sa section « Français vers portugais du Brésil » et `references/lexique-pt.md` avant d'écrire, pas seulement en relecture. Les équivalences qu'il impose priment sur tout le reste du skill.
 2. **Rédiger** en appliquant les règles ci-dessous. Pour un texte fourni à réécrire, ne pas garder sa structure comme acquise : repérer d'abord les signaux, du plus fort au plus faible, puis réécrire.
-3. **Relire** avec `references/structures.md` (tournures) et le lexique de la langue : `references/lexique-fr.md` ou `references/lexique-en.md`. Vérifier ensuite que chaque phrase a un verbe conjugué (voir "Phrases complètes") : l'audit ne le contrôle pas. Puis se poser une seule question sur le brouillon : "qu'est-ce qui fait encore IA ici ?" Corriger ce qui en ressort avant de livrer la version finale.
+3. **Relire** avec `references/structures.md` (tournures) et le lexique de la langue : `references/lexique-fr.md`, `references/lexique-en.md` ou `references/lexique-pt.md` (pt-BR, avec les gallicismes de traduction). Vérifier ensuite que chaque phrase a un verbe conjugué (voir "Phrases complètes") : l'audit ne le contrôle pas. Puis se poser une seule question sur le brouillon : "qu'est-ce qui fait encore IA ici ?" Corriger ce qui en ressort avant de livrer la version finale.
 4. **Auditer** quand le texte dépasse environ 80 mots ou qu'il sort en fichier :
-   `python3 scripts/audit.py fichier.txt --lang fr` (ou `--lang en`, ou texte sur l'entrée standard).
+   `python3 scripts/audit.py fichier.txt --lang fr` (ou `--lang en`, `--lang pt`, ou texte sur l'entrée standard).
    Corriger chaque alerte rouge. Les alertes orange se jugent en contexte.
 5. **Ne pas annoncer** la relecture à l'utilisateur sauf demande : livrer le texte propre.
 
@@ -113,9 +115,10 @@ Ce qu'on ne fait pas
 
 - `references/lexique-fr.md` : mots et expressions marqués en français, avec remplacements
 - `references/lexique-en.md` : idem en anglais, classés par génération de modèle
+- `references/lexique-pt.md` : idem en portugais du Brésil, avec les calques du français et les marques du pt-BR
 - `references/structures.md` : tournures IA avec exemples avant/après (les deux langues)
-- `references/typographie.md` : règles FR et EN, fautes typiques des modèles
-- `references/traduction.md` : lexique de traduction de l'utilisateur et calques à éviter
+- `references/typographie.md` : règles FR, EN et pt-BR, fautes typiques des modèles
+- `references/traduction.md` : lexique de traduction de l'utilisateur, calques à éviter, méthode FR vers pt-BR
 - `references/detecteurs.md` : fonctionnement des détecteurs, à lire si l'utilisateur pose la question
 - `scripts/audit.py` : contrôle chiffré, lit les lexiques ci-dessus
 - `references/lecons.md` : journal des corrections de l'utilisateur et des leçons tirées

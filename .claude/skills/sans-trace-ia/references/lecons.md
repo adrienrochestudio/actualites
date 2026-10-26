@@ -11,7 +11,7 @@ Format d'une entrée :
 - Occurrences : 1 (augmenter quand la même leçon revient)
 
 Catégories d'intégration :
-- lexique : mot ou expression retiré ou remplacé -> `lexique-fr.md` ou `lexique-en.md`
+- lexique : mot ou expression retiré ou remplacé -> `lexique-fr.md`, `lexique-en.md` ou `lexique-pt.md`
 - traduction : terme rendu autrement -> `traduction.md`, section lexique de l'utilisateur
 - tournure : construction de phrase -> `structures.md`, avec l'avant/après réel
 - typographie : ponctuation, tirets, guillemets, majuscules -> `typographie.md`, et `audit.py` si un motif suffit à la repérer
