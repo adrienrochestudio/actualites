@@ -1,5 +1,8 @@
 // Rendu des éditions (schémas : voir outils/publier.py).
 // Tout le texte passe par textContent : aucun HTML venu des données n'est interprété.
+// Textes de l'interface : textes.js, selon le profil choisi.
+
+import { t } from "./textes.js";
 
 function el(balise, classe, texte) {
   const n = document.createElement(balise);
@@ -19,7 +22,7 @@ function lien(source, texte) {
 function ligneSources(sources, apres) {
   const p = el("p", "note");
   if (!sources?.length) return p;
-  p.append(sources.length === 1 ? "Source : " : "Sources : ");
+  p.append(sources.length === 1 ? t("source") : t("sources"));
   sources.forEach((s, i) => {
     if (i) p.append(", ");
     p.append(lien(s));
@@ -33,7 +36,7 @@ function legende(element) {
   const c = el("figcaption", "note", element.legende || "");
   if (element.lien) {
     if (c.textContent) c.append(" ");
-    c.append(lien({ url: element.lien }, "Version interactive"), ".");
+    c.append(lien({ url: element.lien }, t("versionInteractive")), ".");
   }
   if (element.credit) {
     if (c.textContent) c.append(" ");
@@ -45,7 +48,7 @@ function legende(element) {
 function image(element, { zoom = true } = {}) {
   const img = el("img");
   img.src = element.src || element.url;
-  img.alt = element.type === "carte" ? `Carte : ${element.ville}` : (element.legende || "");
+  img.alt = element.type === "carte" ? `${t("carte")}${element.ville}` : (element.legende || "");
   img.loading = "lazy";
   img.decoding = "async";
   if (zoom) {
@@ -113,7 +116,7 @@ function corps(r) {
     const n = bloc(b);
     if (n) frag.append(n);
   }
-  if (r.a_retenir) frag.append(el("h3", "sous-titre", "À retenir"), el("p", "texte", r.a_retenir));
+  if (r.a_retenir) frag.append(el("h3", "sous-titre", t("aRetenir")), el("p", "texte", r.a_retenir));
   const fin = ligneSources(r.sources, r.note_sources);
   fin.classList.add("sources");
   frag.append(fin);
@@ -122,10 +125,11 @@ function corps(r) {
 
 function une(ed) {
   const s = el("section", "une");
+  s.id = "une";
   s.setAttribute("aria-labelledby", "une-titre");
-  const t = el("h2", "rubrique-nom", "Actu");
-  t.id = "une-titre";
-  s.append(t, el("p", "une-texte", ed.une.texte), ligneSources(ed.une.sources));
+  const titre = el("h2", "rubrique-nom", t("actu"));
+  titre.id = "une-titre";
+  s.append(titre, el("p", "une-texte", ed.une.texte), ligneSources(ed.une.sources));
   return s;
 }
 
@@ -139,7 +143,7 @@ function rubrique(r, i) {
 function breves(liste) {
   const s = el("section", "breves");
   s.id = "breves";
-  s.append(el("h2", "titre", "En bref"));
+  s.append(el("h2", "titre", t("enBref")));
   const l = el("div", "breves-liste");
   for (const br of liste) {
     const d = el("div", "breve");
@@ -155,7 +159,7 @@ function breves(liste) {
 // Dossiers de la semaine : repliés, représentés par leur image, ouverts au toucher.
 function semaine(heb) {
   const s = el("section", "semaine");
-  s.append(el("h2", "titre semaine-entete", "Dossiers de la semaine"));
+  s.append(el("h2", "titre semaine-entete", t("dossiersSemaine")));
   heb.sujets.forEach((sujet, i) => {
     const d = el("details", "dossier");
     d.id = `s${i + 1}`;
@@ -170,7 +174,7 @@ function semaine(heb) {
     const textes = el("div", "dossier-entete");
     textes.append(el("p", "rubrique-nom", sujet.etiquette), el("h3", "titre", sujet.titre));
     if (sujet.chapo) textes.append(el("p", "chapo", sujet.chapo));
-    textes.append(el("p", "note ouvrir", "Lire le dossier"));
+    textes.append(el("p", "note ouvrir", t("lireDossier")));
     resume.append(textes);
     const contenu = el("div", "dossier-corps");
     const l = sujet.couverture ? legende(sujet.couverture) : null;
@@ -178,7 +182,7 @@ function semaine(heb) {
     contenu.append(corps(sujet));
     d.append(resume, contenu);
     d.addEventListener("toggle", () => {
-      d.querySelector(".ouvrir").textContent = d.open ? "Replier" : "Lire le dossier";
+      d.querySelector(".ouvrir").textContent = d.open ? t("replier") : t("lireDossier");
     });
     s.append(d);
   });
@@ -194,19 +198,33 @@ export function rendre(conteneur, vue, ed, heb) {
     if (ed.une) frag.append(une(ed));
     (ed.rubriques ?? []).forEach((r, i) => frag.append(rubrique(r, i)));
     if (ed.breves?.length) frag.append(breves(ed.breves));
-    const jour = (ed.date_texte || "").split(" ").slice(1).join(" ");
-    pied.append(el("p", "note", `Rédigé par Claude à partir de sources publiques consultées le ${jour}.`));
+    // "Lundi 26 octobre 2026" ou "Segunda-feira, 26 de outubro de 2026" : on retire le jour de la semaine.
+    const jour = (ed.date_texte || "").replace(/^[^\s,]+,?\s+/, "");
+    pied.append(el("p", "note", t("piedJour")(jour)));
   } else if (vue === "semaine" && heb?.sujets?.length) {
     frag.append(semaine(heb));
-    pied.append(el("p", "note", "Dossiers rédigés par Claude à partir de sources publiques, publiés chaque lundi."));
+    pied.append(el("p", "note", t("piedSemaine")));
   } else {
-    frag.append(el("p", "note", vue === "semaine"
-      ? "Pas encore d'édition de la semaine sur cet appareil."
-      : "Pas encore d'édition du jour sur cet appareil."));
+    frag.append(el("p", "note", vue === "semaine" ? t("videSemaine") : t("videJour")));
   }
   frag.append(pied);
   conteneur.replaceChildren(frag);
   return pied;
+}
+
+// Entrées du menu "Rubriques" pour la vue affichée : { id, nom } dans l'ordre de lecture.
+export function ancres(vue, ed, heb) {
+  if (vue === "jour" && ed) {
+    return [
+      ...(ed.une ? [{ id: "une", nom: t("actu") }] : []),
+      ...(ed.rubriques ?? []).map((r, i) => ({ id: `r${i + 1}`, nom: r.etiquette })),
+      ...(ed.breves?.length ? [{ id: "breves", nom: t("enBref") }] : []),
+    ];
+  }
+  if (vue === "semaine" && heb?.sujets) {
+    return heb.sujets.map((s, i) => ({ id: `s${i + 1}`, nom: s.etiquette || s.titre }));
+  }
+  return [];
 }
 
 export function message(conteneur, texte) {

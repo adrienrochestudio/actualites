@@ -52,7 +52,7 @@ a:focus-visible, button:focus-visible, summary:focus-visible, img:focus-visible 
   text-align: center;
 }
 .marque { display: inline-flex; align-items: center; gap: 10px; }
-.marque img { width: 34px; height: 34px; }
+.marque canvas { display: block; width: 34px; height: 34px; }
 .marque h1 { font-size: 40px; line-height: 44px; font-weight: 640; margin: 0; letter-spacing: -0.015em; }
 .onglets {
   display: flex;
@@ -184,6 +184,104 @@ figure.photo:not(.large) img { max-width: 360px; }
 }
 .zoom p { max-width: var(--colonne); margin: 0 auto; font-style: italic; }
 
+/* Voile du haut (téléphone) : sous l'heure et la batterie, le texte qui défile s'efface en douceur
+   au lieu de passer sous les indicateurs. Hauteur nulle quand l'écran n'a pas d'encoche. */
+.voile {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 3;
+  height: calc(env(safe-area-inset-top) + min(22px, env(safe-area-inset-top) * 100));
+  background: linear-gradient(to bottom, var(--fond) 0, var(--fond) env(safe-area-inset-top), rgb(255 255 255 / 0) 100%);
+  pointer-events: none;
+}
+
+/* Bouton du menu : trois traits, toujours accessible en haut à gauche */
+.ouvrir-menu, .fermer-menu {
+  position: fixed;
+  z-index: 4;
+  top: calc(env(safe-area-inset-top) + 6px);
+  left: calc(env(safe-area-inset-left) + 6px);
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  border: 0;
+  border-radius: 22px;
+  background: rgb(255 255 255 / 0.86);
+  cursor: pointer;
+  display: grid;
+  place-content: center;
+  gap: 5px;
+}
+.ouvrir-menu span, .fermer-menu span { display: block; width: 18px; height: 1.5px; background: var(--encre); }
+.fermer-menu { position: absolute; background: none; }
+.fermer-menu span { position: absolute; left: 13px; top: 21px; }
+.fermer-menu span:first-child { transform: rotate(45deg); }
+.fermer-menu span:last-child { transform: rotate(-45deg); }
+
+/* Menu latéral */
+.menu {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  width: min(300px, 84vw);
+  max-width: none;
+  height: 100dvh;
+  max-height: none;
+  background: var(--fond);
+  color: var(--encre);
+  box-shadow: 1px 0 0 #e3e3e3;
+  translate: -100% 0;
+  transition: translate 0.22s ease, overlay 0.22s allow-discrete, display 0.22s allow-discrete;
+}
+.menu[open] { translate: 0 0; }
+@starting-style { .menu[open] { translate: -100% 0; } }
+.menu::backdrop { background: rgb(18 18 18 / 0.18); }
+.menu nav {
+  position: relative;
+  height: 100%;
+  overflow-y: auto;
+  padding: calc(env(safe-area-inset-top) + 64px) 0 calc(env(safe-area-inset-bottom) + 24px) env(safe-area-inset-left);
+}
+.menu-titre { font-size: 13px; line-height: 19px; font-weight: 400; color: var(--note); margin: 22px 24px 4px; }
+.menu-titre:first-of-type { margin-top: 0; }
+.menu-liste { list-style: none; margin: 0; padding: 0; }
+.menu-liste button {
+  display: block;
+  width: 100%;
+  min-height: 44px;
+  padding: 10px 24px;
+  border: 0;
+  background: none;
+  text-align: left;
+  font: 18px/24px var(--serif);
+  color: var(--encre);
+  cursor: pointer;
+}
+.menu-liste button[aria-current="true"] { color: var(--marque); font-weight: 600; }
+@media (prefers-reduced-motion: reduce) { .menu { transition: none; } }
+
+/* Tirer pour actualiser : le globe descend avec le doigt, puis tourne vite pendant le chargement */
+.tirer {
+  --tirage: 0px;
+  position: fixed;
+  z-index: 2;
+  top: calc(env(safe-area-inset-top) + var(--tirage) - 40px);
+  left: 0;
+  right: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  opacity: 0;
+  pointer-events: none;
+  transition: top 0.18s ease, opacity 0.18s ease;
+}
+.tirer.visible { opacity: 1; }
+.tirer.glisse { transition: opacity 0.18s ease; }
+.tirer canvas { display: block; }
+
 /* Bandeau de mise à jour */
 .maj {
   position: sticky;
@@ -232,7 +330,6 @@ figure.photo:not(.large) img { max-width: 360px; }
   :root { --colonne: 680px; --large: 920px; }
   .titre-journal { padding-top: 40px; }
   .marque h1 { font-size: 54px; line-height: 58px; }
-  .marque img { width: 42px; height: 42px; }
   .texte { font-size: 19px; line-height: 31px; }
   .une-texte { font-size: 23px; line-height: 35px; }
   .rubrique { padding-top: 80px; }

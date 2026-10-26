@@ -2,21 +2,25 @@
 """Publie une édition d'Actualités dans l'app (branche `pages`, servie par GitHub Pages).
 
 Usage :
-  python3 outils/publier.py [jour|semaine] chemin.json             construit _site/ et contrôle
-  python3 outils/publier.py [jour|semaine] chemin.json --pousser   idem puis publie sur `pages`
-  python3 outils/publier.py [jour|semaine] chemin.json --texte     écrit le .txt (audit sans-trace-ia)
-  Sans genre : "jour".
+  python3 outils/publier.py [jour|semaine] a.json [b.json]             construit _site/ et contrôle
+  python3 outils/publier.py [jour|semaine] a.json [b.json] --pousser   idem puis publie sur `pages`
+  python3 outils/publier.py [jour|semaine] a.json --texte              écrit le .txt (audit sans-trace-ia)
+  Sans genre : "jour". Le profil de chaque JSON vient de son champ "langue" ("fr" par défaut).
+  Publier les deux profils en une commande : un seul envoi sur `pages`.
 
-Le dépôt garde deux branches :
-- main  : le code de l'app et ces outils.
-- pages : le site publié = l'app + l'édition du jour (edition/) + l'édition de la semaine (hebdo/).
-          Un unique commit, réécrit à chaque publication : l'historique ne grossit pas.
-          Publier l'un reprend l'autre tel qu'il est en ligne ; si pages change pendant la
-          construction (les deux tâches en même temps), la publication recommence.
+Le dépôt garde trois branches :
+- main       : le code de l'app et ces outils.
+- pages      : le site publié = l'app + pour chaque profil (fr : Adrien, pt : Ana) l'édition du jour
+               ({profil}/edition/) et l'édition de la semaine ({profil}/hebdo/).
+               Un unique commit, réécrit à chaque publication : l'historique ne grossit pas.
+               Publier un contenu reprend les autres tels qu'ils sont en ligne ; si pages change pendant
+               la construction, la publication recommence.
+- historique : sujets déjà traités.
 
 Schéma de edition.json (textes en texte brut) :
 {
-  "date_texte": "Lundi 19 octobre 2026",
+  "langue": "fr" ou "pt",
+  "date_texte": "Lundi 19 octobre 2026" (pt : "Segunda-feira, 19 de outubro de 2026"),
   "une": {"texte": "...", "sources": [{"titre": "...", "url": "..."}]},
   "rubriques": [
     {"etiquette": "Monde", "titre": "...",
@@ -73,13 +77,18 @@ import locator  # noqa: E402
 FICHIERS_APP = [
     "index.html", "styles.css", "app.js", "edition.js", "rendu.js", "sw.js", "manifest.webmanifest",
     "icons/logo-96.png", "icons/icon-180.png", "icons/icon-192.png", "icons/icon-512.png",
-    "icons/icon-512-maskable.png",
+    "icons/icon-512-maskable.png", "textes.js", "globe.js", "geo/terre.json",
     "fonts/source-serif-4-var.woff2", "fonts/source-serif-4-var-italic.woff2", "fonts/LICENSE-OFL.txt",
 ]
 TYPES = {"p", "sous_titre", "liste", "image", "duo", "carte", "schema"}
-MOIS = ["janvier", "février", "mars", "avril", "mai", "juin", "juillet", "août",
-        "septembre", "octobre", "novembre", "décembre"]
-LIMITE_SITE = 5 * 1024 * 1024
+MOIS = {
+    "fr": ["janvier", "février", "mars", "avril", "mai", "juin", "juillet", "août",
+           "septembre", "octobre", "novembre", "décembre"],
+    "pt": ["janeiro", "fevereiro", "março", "abril", "maio", "junho", "julho", "agosto",
+           "setembro", "outubro", "novembro", "dezembro"],
+}
+PROFILS = ("fr", "pt")
+LIMITE_SITE = 10 * 1024 * 1024  # deux profils, chacun avec ses images
 MOTS_DOSSIER = 1200
 MAX_IMAGE = 4 * 1024 * 1024
 LARGEUR_MAX = 1100
@@ -90,11 +99,12 @@ def erreur(msg):
     sys.exit(f"ERREUR : {msg}")
 
 
-def date_iso(date_texte):
-    m = re.fullmatch(r"\s*\w+\s+(\d{1,2})(?:er)?\s+(\w+)\s+(\d{4})\s*", date_texte.lower())
-    if not m or m.group(2) not in MOIS:
-        erreur(f"date_texte illisible : {date_texte!r} (attendu : 'Lundi 19 octobre 2026')")
-    return dt.date(int(m.group(3)), MOIS.index(m.group(2)) + 1, int(m.group(1))).isoformat()
+def date_iso(date_texte, langue="fr"):
+    m = re.fullmatch(r"\s*[\w-]+,?\s+(\d{1,2})(?:er|º)?\s+(?:de\s+)?(\w+)\s+(?:de\s+)?(\d{4})\s*", date_texte.lower())
+    if not m or m.group(2) not in MOIS[langue]:
+        erreur(f"date_texte illisible : {date_texte!r} (attendu : 'Lundi 19 octobre 2026' "
+               f"ou 'Segunda-feira, 19 de outubro de 2026')")
+    return dt.date(int(m.group(3)), MOIS[langue].index(m.group(2)) + 1, int(m.group(1))).isoformat()
 
 
 def slug(t):
@@ -113,6 +123,8 @@ GENRES = {
 
 
 def verifier(ed, genre):
+    if ed.setdefault("langue", "fr") not in PROFILS:
+        erreur(f"langue inconnue : {ed['langue']} (attendu : {', '.join(PROFILS)})")
     liste = GENRES[genre]["liste"]
     for cle in ("date_texte", liste):
         if cle not in ed:
@@ -153,7 +165,7 @@ def compresser(png):
 
 
 def preparer(ed, genre, dossier_json, site):
-    rel = f"{GENRES[genre]['dossier']}/img"
+    rel = f"{ed['langue']}/{GENRES[genre]['dossier']}/img"
     dossier_img = os.path.join(site, rel)
     os.makedirs(dossier_img, exist_ok=True)
     for el in images(ed, genre):
@@ -209,9 +221,10 @@ def distant():
                           capture_output=True, text=True).stdout.strip()
 
 
-def reprendre_en_ligne(site, genre):
-    """Copie dans le site l'autre contenu tel qu'il est publié sur la branche pages. Renvoie le commit lu."""
-    autre = GENRES["semaine" if genre == "jour" else "jour"]["dossier"]
+def reprendre_en_ligne(site, publies):
+    """Copie dans le site les contenus en ligne sur pages qui ne sont pas republiés maintenant.
+    `publies` : ensemble de chemins "{profil}/{dossier}". Renvoie le commit lu (None si pages n'existe pas).
+    Migration : un contenu de l'ancienne organisation (edition/, hebdo/ à la racine) devient fr/edition/, fr/hebdo/."""
     tmp = os.path.join(RACINE, "_pages")
     shutil.rmtree(tmp, ignore_errors=True)
     r = subprocess.run(["git", "clone", "-q", "--depth", "1", "--branch", "pages", distant(), tmp],
@@ -219,17 +232,48 @@ def reprendre_en_ligne(site, genre):
     if r.returncode != 0:
         return None  # branche pages absente : premier déploiement
     sha = subprocess.run(["git", "rev-parse", "HEAD"], cwd=tmp, capture_output=True, text=True).stdout.strip()
-    if os.path.isdir(os.path.join(tmp, autre)):
-        shutil.copytree(os.path.join(tmp, autre), os.path.join(site, autre))
+    for g in GENRES.values():
+        for profil in PROFILS:
+            chemin = f"{profil}/{g['dossier']}"
+            if chemin in publies:
+                continue
+            source = os.path.join(tmp, chemin)
+            ancien = os.path.join(tmp, g["dossier"])
+            if os.path.isdir(source):
+                shutil.copytree(source, os.path.join(site, chemin))
+            elif profil == "fr" and os.path.isfile(os.path.join(ancien, g["fichier"])):
+                shutil.copytree(ancien, os.path.join(site, chemin))
+                f = os.path.join(site, chemin, g["fichier"])
+                ed = json.load(open(f, encoding="utf-8"))
+                ed["langue"] = "fr"
+                brut = json.dumps(ed, ensure_ascii=False, separators=(",", ":"))
+                open(f, "w", encoding="utf-8").write(brut.replace(f'"{g["dossier"]}/img/', f'"{chemin}/img/'))
     shutil.rmtree(tmp, ignore_errors=True)
     return sha
 
 
-def construire(chemin_json, genre, reprendre=True):
-    ed = json.load(open(chemin_json, encoding="utf-8"))
-    verifier(ed, genre)
-    ed["date"] = date_iso(ed["date_texte"])
-    ed["publie"] = dt.datetime.now(dt.timezone.utc).isoformat(timespec="seconds")
+def copies_anciennes(site):
+    """Transition (à retirer après le 30 novembre 2026) : les apps pas encore mises à jour lisent
+    edition/edition.json et hebdo/hebdo.json. On y recopie le JSON du profil fr ; les images restent sous fr/."""
+    for g in GENRES.values():
+        source = os.path.join(site, "fr", g["dossier"], g["fichier"])
+        if os.path.isfile(source):
+            os.makedirs(os.path.join(site, g["dossier"]), exist_ok=True)
+            shutil.copyfile(source, os.path.join(site, g["dossier"], g["fichier"]))
+
+
+def construire(chemins_json, genre, reprendre=True):
+    g = GENRES[genre]
+    eds = []
+    for chemin in chemins_json:
+        ed = json.load(open(chemin, encoding="utf-8"))
+        verifier(ed, genre)
+        ed["date"] = date_iso(ed["date_texte"], ed["langue"])
+        ed["publie"] = dt.datetime.now(dt.timezone.utc).isoformat(timespec="seconds")
+        eds.append((chemin, ed))
+    publies = {f"{ed['langue']}/{g['dossier']}" for _, ed in eds}
+    if len(publies) != len(eds):
+        erreur("deux éditions du même profil dans une seule publication")
 
     site = os.path.join(RACINE, "_site")
     shutil.rmtree(site, ignore_errors=True)
@@ -239,19 +283,21 @@ def construire(chemin_json, genre, reprendre=True):
         shutil.copyfile(os.path.join(RACINE, f), cible)
     open(os.path.join(site, ".nojekyll"), "w").close()
 
-    base = reprendre_en_ligne(site, genre) if reprendre else None
-    g = GENRES[genre]
-    preparer(ed, genre, os.path.dirname(os.path.abspath(chemin_json)), site)
-    with open(os.path.join(site, g["dossier"], g["fichier"]), "w", encoding="utf-8") as f:
-        json.dump(ed, f, ensure_ascii=False, separators=(",", ":"))
+    base = reprendre_en_ligne(site, publies) if reprendre else None
+    resume = []
+    for chemin, ed in eds:
+        preparer(ed, genre, os.path.dirname(os.path.abspath(chemin)), site)
+        with open(os.path.join(site, ed["langue"], g["dossier"], g["fichier"]), "w", encoding="utf-8") as f:
+            json.dump(ed, f, ensure_ascii=False, separators=(",", ":"))
+        nb_cartes = sum(1 for el in images(ed, genre) if el.get("type") == "carte")
+        resume.append(f"{ed['langue']} {ed['date']} : {len(ed[g['liste']])} articles, {nb_cartes} carte(s)")
+    copies_anciennes(site)
 
     total = sum(os.path.getsize(os.path.join(d, x)) for d, _, fs in os.walk(site) for x in fs)
     if total > LIMITE_SITE:
         erreur(f"site trop lourd : {total // 1024} Ko (limite {LIMITE_SITE // 1024} Ko)")
-    nb_cartes = sum(1 for el in images(ed, genre) if el.get("type") == "carte")
-    print(f"{'Édition' if genre == 'jour' else 'Semaine'} {ed['date']} : {len(ed[g['liste']])} articles, "
-          f"{nb_cartes} carte(s), site {total // 1024} Ko")
-    return site, ed["date"], base
+    print(f"{'Édition' if genre == 'jour' else 'Semaine'} : {' ; '.join(resume)} ; site {total // 1024} Ko")
+    return site, max(ed["date"] for _, ed in eds), base
 
 
 def texte(ed):
@@ -288,16 +334,18 @@ def pousser(site, date, genre, base):
 if __name__ == "__main__":
     a = argparse.ArgumentParser()
     a.add_argument("genre", nargs="?", choices=["jour", "semaine"], default="jour")
-    a.add_argument("edition")
+    a.add_argument("editions", nargs="+")
     a.add_argument("--pousser", action="store_true")
     a.add_argument("--texte", action="store_true", help="écrit le .txt à côté du JSON et s'arrête")
     x = a.parse_args()
     if x.texte:
-        sortie = os.path.splitext(x.edition)[0] + ".txt"
-        open(sortie, "w", encoding="utf-8").write(texte(json.load(open(x.edition, encoding="utf-8"))))
-        sys.exit(print(sortie))
+        for chemin in x.editions:
+            sortie = os.path.splitext(chemin)[0] + ".txt"
+            open(sortie, "w", encoding="utf-8").write(texte(json.load(open(chemin, encoding="utf-8"))))
+            print(sortie)
+        sys.exit()
     for essai in range(3):
-        site, date, base = construire(x.edition, x.genre, reprendre=x.pousser)
+        site, date, base = construire(x.editions, x.genre, reprendre=x.pousser)
         if not x.pousser:
             break
         if pousser(site, date, x.genre, base):

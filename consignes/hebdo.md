@@ -1,24 +1,29 @@
 # Édition de la semaine : consignes
 
-Cinq dossiers de fond publiés chaque dimanche par la tâche quotidienne, après l'édition du jour, et affichés jusqu'au dimanche suivant en bas de l'app, repliés derrière leur image. Le lecteur les ouvre quand il a le temps : ce sont des articles longs, qui expliquent un sujet complexe jusqu'au bout.
+Cinq dossiers de fond par profil, publiés chaque dimanche par la tâche quotidienne, après l'édition du jour, et affichés jusqu'au dimanche suivant dans l'onglet Hebdomadaire, repliés derrière leur image. Le lecteur les ouvre quand il a le temps : ce sont des articles longs, qui expliquent un sujet complexe jusqu'au bout.
+
+Comme pour le jour : une seule rédaction en français (`hebdo-base.json`), les dossiers d'Ana traduits à la fin. Ligne éditoriale : celle de `consignes/quotidien.md`.
 
 ## Déroulé
 
 1. Charger le skill `.claude/skills/actualites-quotidiennes` (sources, images, règles d'écriture) et le skill `.claude/skills/sans-trace-ia`.
 2. Date du jour (dimanche), fuseau Europe/Paris. `date_texte` : la date du dimanche, "Dimanche 1 novembre 2026". `date_texte_semaine` : la semaine qui commence le lendemain, "Semaine du 2 novembre 2026".
 3. Historique : lire `historique/hebdo.txt` (branche `historique`, déjà récupérée par l'édition du jour). Lire aussi `historique/quotidien.txt` pour ne pas refaire un "Comprendre" récent. Aucun sujet déjà traité dans les 6 derniers mois.
-4. Choix des 5 sujets, un par thème :
-   - Géopolitique ou géoéconomie (hors du flux habituel : pas Iran, Ukraine ou Trump sauf cas exceptionnel)
-   - Finance ou économie (un mécanisme : dette, monnaie, marchés, fiscalité, assurance, commerce)
-   - IA et technologie (industrie, matières premières, énergie, puces, régulation, usages)
-   - Énergie, climat ou environnement
-   - Société, science ou culture (dont cinéma et industrie audiovisuelle, plutôt France)
+4. Choix de 7 sujets, un par thème. Chaque dossier porte `"profils"` :
+   - Géopolitique ou géoéconomie (hors du flux habituel : pas Iran, Ukraine, Trump ou Bolsonaro sauf cas exceptionnel) : `["fr", "pt"]`
+   - Énergie, climat ou environnement : `["fr", "pt"]`
+   - Société, science ou culture (dont cinéma et industrie audiovisuelle, plutôt France) : `["fr", "pt"]`
+   - Finance ou économie (un mécanisme : dette, monnaie, marchés, fiscalité, assurance, commerce) : `["fr"]`
+   - IA et technologie (industrie, matières premières, énergie, puces, régulation, usages) : `["fr"]`
+   - Architecture ou urbanisme : `["pt"]`
+   - Politique du Brésil (institutions, lois, budget, réformes ; pas de petites phrases) : `["pt"]`
    Chaque sujet part d'un fait des 7 derniers jours, mais traite la question de fond qui est derrière.
-5. Recherche : vagues parallèles, au plus 40 recherches et 25 lectures de page au total. Sources primaires en priorité (institutions, rapports, données), presse de référence ensuite.
-6. Rédaction de `hebdo.json` selon le schéma en tête de `outils/publier.py`.
-7. Contrôle : `python3 outils/publier.py semaine hebdo.json --texte`, puis l'audit du skill sans-trace-ia sur le .txt (`--lang fr`). Corriger les alertes rouges.
-8. Publication : `python3 outils/publier.py semaine hebdo.json --pousser`. Le script reprend l'édition du jour déjà en ligne.
-9. Historique : ajouter les 5 lignes à `historique/hebdo.txt` au format `AAAA-MM-JJ | etiquette | sujet`, supprimer les lignes de plus de 6 mois (garder l'en-tête), puis commit et `git push origin historique`.
+5. Recherche : vagues parallèles, au plus 50 recherches et 32 lectures de page au total. Sources primaires en priorité (institutions, rapports, données), presse de référence ensuite.
+6. Rédaction de `hebdo-base.json` en français selon le schéma en tête de `outils/publier.py`, avec le champ `profils` de chaque dossier.
+7. Contrôle FR : `python3 outils/publier.py semaine hebdo-base.json --texte`, puis l'audit sans-trace-ia sur le .txt (`--lang fr`). Corriger les alertes rouges.
+8. `python3 outils/profils.py preparer hebdo-base.json --semaine` (écrit `hebdo-fr.json` et `a-traduire.json`), traduction dans `traduit.json` (mêmes règles que pour le jour), puis `python3 outils/profils.py assembler hebdo-base.json traduit.json --semaine` (écrit `hebdo-pt.json`). Contrôle `--texte` et audit `--lang pt` sur `hebdo-pt.json`.
+9. Publication des deux profils en un envoi : `python3 outils/publier.py semaine hebdo-fr.json hebdo-pt.json --pousser`. Le script reprend les éditions du jour déjà en ligne.
+10. Historique : ajouter les 7 lignes à `historique/hebdo.txt` au format `AAAA-MM-JJ | etiquette | sujet`, supprimer les lignes de plus de 6 mois (garder l'en-tête), puis commit et `git push origin historique`.
 
 ## Chaque dossier
 
@@ -34,5 +39,5 @@ Cinq dossiers de fond publiés chaque dimanche par la tâche quotidienne, après
 
 ## En cas d'échec
 
-- Un dossier sans matière fiable : en publier quatre.
+- Un dossier sans matière fiable : le profil concerné en publie quatre.
 - Échec complet : un seul mail court via Gmail `send_message` à adrienroche6@gmail.com, objet "Actualités · édition de la semaine non produite", avec la cause en une phrase. L'édition de la semaine précédente reste en ligne. L'édition du jour, déjà publiée, n'est pas concernée.

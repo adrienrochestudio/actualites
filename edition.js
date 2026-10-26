@@ -1,11 +1,19 @@
 // Accès aux contenus publiés : réseau d'abord, copie locale ensuite.
-// Deux contenus indépendants : l'édition du jour et l'édition de la semaine.
-// Un seul exemplaire de chacun est gardé hors ligne : enregistrer() supprime les précédents.
+// Deux contenus indépendants par profil (fr, pt) : l'édition du jour et l'édition de la semaine,
+// publiés dans {profil}/edition/edition.json et {profil}/hebdo/hebdo.json.
+// Hors ligne, un seul exemplaire de chacun et pour le seul profil choisi : enregistrer() supprime
+// les précédents, ceux de l'autre profil et ceux de l'ancienne organisation (caches "edition-AAAA-MM-JJ").
 
-export const CONTENUS = {
-  jour: { url: new URL("./edition/edition.json", location.href).href, prefixe: "edition-" },
-  semaine: { url: new URL("./hebdo/hebdo.json", location.href).href, prefixe: "hebdo-" },
-};
+const CHEMINS = { jour: ["edition", "edition.json"], semaine: ["hebdo", "hebdo.json"] };
+
+function contenu(cle, profil) {
+  const [dossier, fichier] = CHEMINS[cle];
+  return {
+    url: new URL(`./${profil}/${dossier}/${fichier}`, location.href).href,
+    prefixe: `${dossier}-`,
+    nom: (date) => `${dossier}-${profil}-${date}`,
+  };
+}
 const DELAI_RESEAU_MS = 8000;
 
 async function depuisReseau(url) {
@@ -29,8 +37,8 @@ async function depuisCache(url) {
 }
 
 // Renvoie { donnees, source: "reseau" | "cache" } ou null si rien n'est disponible.
-export async function charger(cle) {
-  const { url } = CONTENUS[cle];
+export async function charger(cle, profil) {
+  const { url } = contenu(cle, profil);
   const enLigne = await depuisReseau(url);
   if (enLigne) return { donnees: enLigne, source: "reseau" };
   const locale = await depuisCache(url);
@@ -54,10 +62,10 @@ export function imagesDe(donnees) {
 }
 
 // Enregistre le contenu et ses images pour la lecture hors ligne. Renvoie le nombre d'images manquées.
-export async function enregistrer(cle, donnees) {
+export async function enregistrer(cle, profil, donnees) {
   if (!("caches" in self) || !donnees?.date) return 0;
-  const { url, prefixe } = CONTENUS[cle];
-  const nom = prefixe + donnees.date;
+  const { url, prefixe, nom: nommer } = contenu(cle, profil);
+  const nom = nommer(donnees.date);
   const cache = await caches.open(nom);
   await cache.put(url, new Response(JSON.stringify(donnees), {
     headers: { "Content-Type": "application/json; charset=utf-8" },

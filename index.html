@@ -18,24 +18,46 @@
 <script type="module" src="./app.js"></script>
 </head>
 <body>
+<div class="voile" aria-hidden="true"></div>
+<button type="button" id="ouvrir-menu" class="ouvrir-menu" aria-haspopup="dialog" aria-controls="menu" data-t-label="menu">
+  <span></span><span></span><span></span>
+</button>
+<div id="tirer" class="tirer" aria-hidden="true">
+  <canvas></canvas>
+  <p class="note"></p>
+</div>
 <div id="maj" class="maj" hidden>
-  <span>Nouvelle version de l'app.</span>
-  <button type="button" id="maj-bouton">Recharger</button>
+  <span data-t="nouvelleVersion">Nouvelle version de l'app.</span>
+  <button type="button" id="maj-bouton" data-t="recharger">Recharger</button>
 </div>
 <header class="titre-journal">
   <div class="marque">
-    <img src="./icons/logo-96.png" alt="" width="34" height="34">
+    <canvas id="logo" width="34" height="34" aria-hidden="true"></canvas>
     <h1>Actualités</h1>
   </div>
-  <nav class="onglets" aria-label="Éditions">
-    <button type="button" data-vue="jour" aria-pressed="true">Quotidien</button>
-    <button type="button" data-vue="semaine" aria-pressed="false">Hebdomadaire</button>
+  <nav class="onglets" data-t-label="editions" aria-label="Éditions">
+    <button type="button" data-vue="jour" data-t="quotidien" aria-pressed="true">Quotidien</button>
+    <button type="button" data-vue="semaine" data-t="hebdomadaire" aria-pressed="false">Hebdomadaire</button>
   </nav>
   <p class="date" id="date"></p>
 </header>
 <main id="journal" class="journal" aria-live="polite">
-  <p class="note">Chargement de l'édition.</p>
+  <p class="note" data-t="chargement">Chargement de l'édition.</p>
 </main>
+<dialog id="menu" class="menu" data-t-label="menu" aria-label="Menu">
+  <nav>
+    <button type="button" class="fermer-menu" data-t-label="fermer" aria-label="Fermer"><span></span><span></span></button>
+    <h2 class="menu-titre" data-t="edition">Édition</h2>
+    <ul class="menu-liste" id="menu-vues">
+      <li><button type="button" data-vue="jour" data-t="quotidien">Quotidien</button></li>
+      <li><button type="button" data-vue="semaine" data-t="hebdomadaire">Hebdomadaire</button></li>
+    </ul>
+    <h2 class="menu-titre" data-t="langue">Langue</h2>
+    <ul class="menu-liste" id="menu-langues"></ul>
+    <h2 class="menu-titre" data-t="rubriques">Rubriques</h2>
+    <ul class="menu-liste" id="menu-rubriques"></ul>
+  </nav>
+</dialog>
 <dialog id="zoom" class="zoom" aria-label="Image agrandie">
   <img alt="">
   <p class="note"></p>

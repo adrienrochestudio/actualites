@@ -1,6 +1,6 @@
 // Changer VERSION à chaque modification de l'app, sinon l'iPhone garde l'ancienne version.
 // Les éditions ne passent pas par VERSION : edition.js les gère dans des caches "edition-AAAA-MM-JJ".
-const VERSION = "2026-10-22.7";
+const VERSION = "2026-10-26.1";
 const CACHE_APP = `app-${VERSION}`;
 const FICHIERS = [
   "./",
@@ -9,8 +9,10 @@ const FICHIERS = [
   "./app.js",
   "./edition.js",
   "./rendu.js",
+  "./textes.js",
+  "./globe.js",
+  "./geo/terre.json",
   "./manifest.webmanifest",
-  "./icons/logo-96.png",
   "./fonts/source-serif-4-var.woff2",
   "./fonts/source-serif-4-var-italic.woff2",
   "./icons/icon-180.png",
@@ -39,7 +41,7 @@ self.addEventListener("fetch", (e) => {
   if (req.method !== "GET") return;
   const url = new URL(req.url);
 
-  // Éditions du jour et de la semaine : edition.js gère réseau puis cache lui-même.
+  // Éditions du jour et de la semaine ({profil}/edition/, {profil}/hebdo/) : edition.js gère réseau puis cache lui-même.
   if (url.pathname.endsWith("/edition/edition.json") || url.pathname.endsWith("/hebdo/hebdo.json")) return;
 
   // Images (cartes de l'édition, images libres externes) : copie locale d'abord.
