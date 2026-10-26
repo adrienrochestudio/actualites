@@ -1,6 +1,7 @@
 import Foundation
 
 // Schémas de edition.json et hebdo.json (voir outils/publier.py). Les champs inconnus sont ignorés.
+// Publiés par profil : {profil}/edition/edition.json et {profil}/hebdo/hebdo.json ; "langue" ("fr" ou "pt") est facultatif.
 
 struct Source: Codable, Hashable {
     let titre: String
@@ -88,6 +89,8 @@ struct Breve: Codable, Hashable, Identifiable {
 
 struct Edition: Codable {
     let date: String
+    let publie: String?
+    let langue: String?
     let date_texte: String
     let une: Une?
     let rubriques: [Article]
@@ -96,6 +99,8 @@ struct Edition: Codable {
 
 struct Semaine: Codable {
     let date: String
+    let publie: String?
+    let langue: String?
     let date_texte: String
     let date_texte_semaine: String?
     let sujets: [Article]
@@ -104,7 +109,13 @@ struct Semaine: Codable {
 /// Ce que l'app sait télécharger et garder : l'édition du jour ou celle de la semaine.
 protocol Publication: Codable {
     var date: String { get }
+    var publie: String? { get }
     var images: [String] { get }
+}
+
+extension Publication {
+    /// Identifie une publication : date et horodatage de publication (une édition corrigée le même jour compte comme nouvelle).
+    var version: String { date + "|" + (publie ?? "") }
 }
 
 extension Edition: Publication {
