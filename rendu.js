@@ -57,8 +57,19 @@ function legende(element) {
   return c;
 }
 
+// Graphique Our World in Data : la version interactive s'ouvre à l'agrandissement.
+function interactif(url) {
+  try {
+    const h = new URL(url).hostname;
+    return h === "ourworldindata.org" || h.endsWith(".ourworldindata.org");
+  } catch {
+    return false;
+  }
+}
+
 function image(element, { zoom = true } = {}) {
   const img = el("img");
+  if (zoom && element.lien && interactif(element.lien)) img.dataset.interactif = element.lien;
   img.src = element.src || element.url;
   img.alt = element.type === "carte" ? `${t("carte")}${element.ville}` : (element.legende || "");
   img.loading = "lazy";
@@ -126,7 +137,19 @@ function bloc(b) {
   }
 }
 
-function corps(r) {
+// Bouton "Garder" en fin d'article ; app.js en gère l'état (cle : "date|id").
+function actions(cle, options) {
+  const p = el("p", "note actions");
+  if (!cle || !options.garder) return p;
+  const b = el("button", "action-garder");
+  b.type = "button";
+  b.dataset.garder = cle;
+  options.garder.etiqueter(b);
+  p.append(b);
+  return p;
+}
+
+function corps(r, cle, options = {}) {
   const frag = document.createDocumentFragment();
   for (const b of r.blocs ?? []) {
     const n = bloc(b);
@@ -135,7 +158,7 @@ function corps(r) {
   if (r.a_retenir) frag.append(el("h3", "sous-titre", t("aRetenir")), el("p", "texte", r.a_retenir));
   const fin = ligneSources(r.sources, r.note_sources);
   fin.classList.add("sources");
-  frag.append(fin);
+  frag.append(fin, actions(cle, options));
   return frag;
 }
 
@@ -151,10 +174,61 @@ function une(ed) {
   return s;
 }
 
-function rubrique(r, i) {
+function rubrique(r, id, cle, options, nom = r.etiquette) {
   const s = el("article", "rubrique");
-  s.id = `r${i + 1}`;
-  s.append(el("p", "rubrique-nom", r.etiquette), el("h2", "titre", r.titre), corps(r));
+  s.id = id;
+  s.append(el("p", "rubrique-nom", nom), el("h2", "titre", r.titre), corps(r, cle, options));
+  return s;
+}
+
+// Quiz de fin d'édition : un choix par question, réponse et explication aussitôt.
+function quiz(questions, etat) {
+  const s = el("section", "quiz");
+  s.id = "quiz";
+  s.append(el("h2", "titre", t("quiz")));
+  const reponses = etat.reponses.slice();
+  const score = el("p", "note quiz-score");
+  const majScore = () => {
+    const faites = reponses.filter((r) => r >= 0).length;
+    const justes = questions.filter((q, i) => reponses[i] === q.reponse).length;
+    score.textContent = faites === questions.length ? t("sur")(justes, questions.length) : "";
+  };
+  questions.forEach((q, i) => {
+    const bloc = el("div", "question");
+    bloc.append(el("p", "texte question-texte", q.question));
+    const liste = el("div", "choix");
+    const suite = el("div", "reponse");
+    const montrer = () => {
+      const r = reponses[i];
+      if (r < 0) return;
+      [...liste.children].forEach((b, j) => {
+        b.disabled = true;
+        b.classList.toggle("juste", j === q.reponse);
+        b.classList.toggle("faux", j === r && r !== q.reponse);
+      });
+      const verdict = el("p", "texte");
+      verdict.append(el("strong", null, r === q.reponse ? t("exact") : t("non")));
+      if (q.explication) verdict.append(" ", q.explication);
+      suite.replaceChildren(verdict);
+    };
+    q.choix.forEach((c, j) => {
+      const b = el("button", "choix-bouton", `${"ABCD"[j] ?? j + 1}. ${c}`);
+      b.type = "button";
+      b.addEventListener("click", () => {
+        if (reponses[i] >= 0) return;
+        reponses[i] = j;
+        etat.enregistrer(reponses);
+        montrer();
+        majScore();
+      });
+      liste.append(b);
+    });
+    bloc.append(liste, suite);
+    s.append(bloc);
+    montrer();
+  });
+  majScore();
+  s.append(score);
   return s;
 }
 
@@ -175,7 +249,7 @@ function breves(liste) {
 }
 
 // Dossiers de la semaine : repliés, représentés par leur image, ouverts au toucher.
-function semaine(heb) {
+function semaine(heb, options) {
   const s = el("section", "semaine");
   s.append(el("h2", "titre semaine-entete", t("dossiersSemaine")));
   heb.sujets.forEach((sujet, i) => {
@@ -197,7 +271,7 @@ function semaine(heb) {
     const contenu = el("div", "dossier-corps");
     const l = sujet.couverture ? legende(sujet.couverture) : null;
     if (l) contenu.append(l);
-    contenu.append(corps(sujet));
+    contenu.append(corps(sujet, heb.date ? `${heb.date}|s${i + 1}` : null, options));
     d.append(resume, contenu);
     d.addEventListener("toggle", () => {
       d.querySelector(".ouvrir").textContent = d.open ? t("replier") : t("lireDossier");
@@ -207,17 +281,28 @@ function semaine(heb) {
   return s;
 }
 
-// Affiche l'édition du jour ("jour") ou de la semaine ("semaine").
-export function rendre(conteneur, vue, ed, heb) {
+// Date sans le jour de la semaine : "27 octobre 2026", "27 de outubro de 2026".
+function sansJour(dateTexte) {
+  return (dateTexte || "").replace(/^[^\s,]+,?\s+/, "");
+}
+
+// Affiche l'édition du jour ("jour"), de la semaine ("semaine") ou les articles gardés ("gardes").
+// options : { garder: { etiqueter(bouton) }, gardes: [{ cle, date_texte, article }], quiz: { reponses, enregistrer } }
+export function rendre(conteneur, vue, ed, heb, options = {}) {
   const frag = document.createDocumentFragment();
   const pied = el("footer", "pied");
   if (vue === "jour" && ed) {
     if (ed.une) frag.append(une(ed));
-    (ed.rubriques ?? []).forEach((r, i) => frag.append(rubrique(r, i)));
+    (ed.rubriques ?? []).forEach((r, i) => frag.append(rubrique(r, `r${i + 1}`, ed.date ? `${ed.date}|r${i + 1}` : null, options)));
     if (ed.breves?.length) frag.append(breves(ed.breves));
-
+    if (ed.quiz?.length && options.quiz) frag.append(quiz(ed.quiz, options.quiz));
   } else if (vue === "semaine" && heb?.sujets?.length) {
-    frag.append(semaine(heb));
+    frag.append(semaine(heb, options));
+  } else if (vue === "gardes") {
+    const liste = options.gardes ?? [];
+    if (!liste.length) frag.append(el("p", "note vide", t("aucunGarde")));
+    liste.forEach((g, i) => frag.append(rubrique(g.article, `g${i + 1}`, g.cle, options,
+      `${g.article.etiquette} · ${sansJour(g.date_texte)}`)));
   } else {
     frag.append(el("p", "note", vue === "semaine" ? t("videSemaine") : t("videJour")));
   }
@@ -233,6 +318,7 @@ export function ancres(vue, ed, heb) {
       ...(ed.une ? [{ id: "une", nom: t("actu") }] : []),
       ...(ed.rubriques ?? []).map((r, i) => ({ id: `r${i + 1}`, nom: r.etiquette })),
       ...(ed.breves?.length ? [{ id: "breves", nom: t("enBref") }] : []),
+      ...(ed.quiz?.length ? [{ id: "quiz", nom: t("quiz") }] : []),
     ];
   }
   if (vue === "semaine" && heb?.sujets) {
@@ -246,15 +332,26 @@ export function message(conteneur, texte) {
 }
 
 // Agrandissement d'une image au toucher ou au clic (cartes, graphiques, portraits).
+// Graphique Our World in Data en ligne : sa version interactive (pays, années) remplace l'image.
 export function activerZoom(racine, dialogue) {
   const vue = dialogue.querySelector("img");
   const texte = dialogue.querySelector("p");
+  const cadre = dialogue.querySelector("iframe");
   const ouvrir = (img) => {
+    const url = img.dataset.interactif;
+    const enLigne = url && navigator.onLine;
+    dialogue.classList.toggle("interactif", Boolean(enLigne));
+    cadre.src = enLigne ? url : "about:blank";
     vue.src = img.currentSrc || img.src;
     vue.alt = img.alt;
     texte.textContent = img.closest("figure")?.querySelector("figcaption")?.textContent ?? "";
     dialogue.showModal();
   };
+  dialogue.addEventListener("close", () => { cadre.src = "about:blank"; });
+  dialogue.querySelector(".fermer-zoom").addEventListener("click", (e) => {
+    e.stopPropagation();
+    dialogue.close();
+  });
   racine.addEventListener("click", (e) => {
     const img = e.target.closest?.("img[data-zoom]");
     if (img) ouvrir(img);
@@ -265,5 +362,6 @@ export function activerZoom(racine, dialogue) {
       ouvrir(e.target);
     }
   });
-  dialogue.addEventListener("click", () => dialogue.close());
+  // Hors graphique interactif, toucher n'importe où referme ; sinon seulement le bouton Fermer.
+  dialogue.addEventListener("click", () => { if (!dialogue.classList.contains("interactif")) dialogue.close(); });
 }

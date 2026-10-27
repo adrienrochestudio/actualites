@@ -119,6 +119,12 @@ def champs(ed, liste):
         for cle in ("a_retenir", "note_sources"):
             if r.get(cle):
                 yield r, cle
+    for x in ed.get("quiz", []):
+        for cle in ("question", "explication"):
+            if x.get(cle):
+                yield x, cle
+        for i in range(len(x.get("choix", []))):
+            yield x["choix"], i
     for br in ed.get("breves", []):
         if br["rubrique"] not in NOMS_PT:
             yield br, "rubrique"

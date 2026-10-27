@@ -165,6 +165,46 @@ figure.photo:not(.large) img { max-width: 360px; }
 .dossier-corps { padding-bottom: 28px; }
 
 .pied { padding-top: 64px; }
+
+/* Garder un article : lien discret en fin de rubrique */
+.actions { padding-top: 8px; }
+.action-garder {
+  font: inherit;
+  color: var(--note);
+  background: none;
+  border: 0;
+  padding: 10px 0;
+  min-height: 44px;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  cursor: pointer;
+}
+.vide { padding-top: 28px; }
+
+/* Quiz de fin d'édition */
+.quiz { padding-top: 72px; }
+.quiz > .titre { padding-bottom: 6px; }
+.question { padding-top: 26px; }
+.question-texte { font-weight: 600; margin-bottom: 8px; }
+.choix { border-top: 1px solid #e3e3e3; }
+.choix-bouton {
+  display: block;
+  width: 100%;
+  min-height: 48px;
+  padding: 11px 0;
+  border: 0;
+  border-bottom: 1px solid #e3e3e3;
+  background: none;
+  text-align: left;
+  font: 17px/25px var(--serif);
+  color: var(--encre);
+  cursor: pointer;
+}
+.choix-bouton:disabled { cursor: default; color: var(--note); }
+.choix-bouton.juste { color: var(--marque); font-weight: 600; }
+.choix-bouton.faux { color: var(--encre); text-decoration: line-through; }
+.reponse .texte { margin: 12px 0 0; }
+.quiz-score { padding-top: 22px; }
 .pied .note + .note { margin-top: 6px; }
 
 /* Image agrandie */
@@ -189,6 +229,22 @@ figure.photo:not(.large) img { max-width: 360px; }
   cursor: zoom-out;
 }
 .zoom p { max-width: var(--colonne); margin: 0 auto; font-style: italic; }
+.zoom iframe { display: none; width: 100%; height: calc(100dvh - 150px); border: 0; margin-top: max(env(safe-area-inset-top), 24px); }
+.zoom.interactif iframe { display: block; }
+.zoom.interactif img { display: none; }
+.fermer-zoom {
+  position: absolute;
+  top: calc(env(safe-area-inset-top) + 6px);
+  right: calc(env(safe-area-inset-right) + 8px);
+  min-height: 44px;
+  padding: 0 12px;
+  border: 0;
+  background: var(--fond);
+  font: 15px/20px var(--serif);
+  color: var(--encre);
+  text-decoration: underline;
+  cursor: pointer;
+}
 
 /* Voile du haut (téléphone) : sous l'heure et la batterie, fond plein, puis fondu sur 24 px :
    le texte qui défile s'efface au lieu de passer sous les indicateurs. */
@@ -278,6 +334,7 @@ figure.photo:not(.large) img { max-width: 360px; }
   color: var(--encre);
   cursor: pointer;
 }
+.menu-liste button.lu { color: var(--note); }
 .menu-liste button[aria-current="true"] { color: var(--marque); font-weight: 600; }
 @media (prefers-reduced-motion: reduce) { .menu { transition: none; } }
 

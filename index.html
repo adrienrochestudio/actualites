@@ -49,11 +49,16 @@
     <button type="button" class="fermer-menu" data-t-label="fermer" aria-label="Fermer"><span></span><span></span></button>
     <h2 class="menu-titre" data-t="langue">Langue</h2>
     <ul class="menu-liste" id="menu-langues"></ul>
-    <h2 class="menu-titre" data-t="rubriques">Rubriques</h2>
+    <h2 class="menu-titre" id="menu-rubriques-titre">Rubriques</h2>
     <ul class="menu-liste" id="menu-rubriques"></ul>
+    <h2 class="menu-titre" data-t="gardes" id="menu-gardes-titre" hidden>Gardés</h2>
+    <ul class="menu-liste" id="menu-gardes"></ul>
   </nav>
 </dialog>
 <dialog id="zoom" class="zoom" aria-label="Image agrandie">
+  <button type="button" class="fermer-zoom" data-t="fermer">Fermer</button>
+  <iframe title="Graphique interactif" loading="lazy" referrerpolicy="no-referrer"
+          sandbox="allow-scripts allow-same-origin allow-popups"></iframe>
   <img alt="">
   <p class="note"></p>
 </dialog>

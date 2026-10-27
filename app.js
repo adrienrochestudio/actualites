@@ -2,6 +2,7 @@ import { charger, enregistrer } from "./edition.js";
 import { rendre, message, activerZoom, ancres } from "./rendu.js";
 import { t, PROFILS, profilActuel, changerProfil, nomLangue } from "./textes.js";
 import { globe, pendantChargement } from "./globe.js";
+import * as suivi from "./suivi.js";
 
 const journal = document.getElementById("journal");
 const RELECTURE_MIN_MS = 10 * 60 * 1000;
@@ -23,15 +24,68 @@ function traduirePage() {
   for (const n of document.querySelectorAll("[data-t-label]")) n.setAttribute("aria-label", t(n.dataset.tLabel));
 }
 
+// Rubriques lues de l'édition du jour affichée.
+let lecture = null;
+const observateur = "IntersectionObserver" in window ? new IntersectionObserver((entrees) => {
+  for (const e of entrees) {
+    // Fin visible, ou déjà passée au-dessus de l'écran (lecture rapide, saut par le menu).
+    if ((e.isIntersecting || e.boundingClientRect.bottom < 0) && lecture?.marquer(e.target.dataset.fin)) observateur.unobserve(e.target);
+  }
+}, { rootMargin: "0px 0px -10% 0px" }) : null;
+
+// Une rubrique est lue quand sa fin (sources, dernière brève, score du quiz) est passée à l'écran.
+function suivreLecture() {
+  observateur?.disconnect();
+  const ed = contenus.jour?.donnees;
+  if (vue !== "jour" || !ed?.date || !observateur) return;
+  lecture = suivi.lus(profilActuel(), ed.date);
+  for (const { id } of ancres("jour", ed)) {
+    const fin = document.getElementById(id)?.lastElementChild;
+    if (!fin || lecture.ids.has(id)) continue;
+    fin.dataset.fin = id;
+    observateur.observe(fin);
+  }
+}
+
+const etiqueterGarde = (b) => {
+  b.textContent = suivi.estGarde(profilActuel(), b.dataset.garder) ? `${t("garde")} · ${t("retirer")}` : t("garder");
+};
+
 function dessiner() {
   for (const b of boutonsVue) b.setAttribute("aria-pressed", String(b.dataset.vue === vue));
   const { jour, semaine } = contenus;
-  ligneDate.textContent = vue === "jour"
-    ? (jour?.donnees.date_texte ?? "")
-    : (semaine?.donnees.date_texte_semaine ?? semaine?.donnees.date_texte ?? "");
-  rendre(journal, vue, jour?.donnees, semaine?.donnees);
-  document.title = vue === "jour" ? "Actualités" : t("titreSemaine");
+  const ed = jour?.donnees;
+  ligneDate.textContent = vue === "jour" ? (ed?.date_texte ?? "")
+    : vue === "semaine" ? (semaine?.donnees.date_texte_semaine ?? semaine?.donnees.date_texte ?? "")
+    : t("articlesGardes");
+  rendre(journal, vue, ed, semaine?.donnees, {
+    garder: { etiqueter: etiqueterGarde },
+    gardes: suivi.gardes(profilActuel()),
+    quiz: ed?.quiz?.length && ed.date ? suivi.reponsesQuiz(profilActuel(), ed.date, ed.quiz.length) : null,
+  });
+  suivreLecture();
+  document.title = vue === "semaine" ? t("titreSemaine") : "Actualités";
 }
+
+// Garder ou retirer un article (bouton en fin de rubrique ou de dossier).
+journal.addEventListener("click", async (e) => {
+  const b = e.target.closest?.("button[data-garder]");
+  if (!b) return;
+  const cle = b.dataset.garder;
+  const profil = profilActuel();
+  if (suivi.estGarde(profil, cle)) {
+    await suivi.retirer(profil, cle);
+    if (vue === "gardes") return dessiner();
+  } else {
+    const [, id] = cle.split("|");
+    const source = id.startsWith("s") ? contenus.semaine?.donnees : contenus.jour?.donnees;
+    const liste = id.startsWith("s") ? source?.sujets : source?.rubriques;
+    const article = liste?.[Number(id.slice(1)) - 1];
+    if (!article) return;
+    await suivi.garder(profil, cle, source, article);
+  }
+  etiqueterGarde(b);
+});
 
 function changerVue(v) {
   if (v === vue) return;
@@ -79,15 +133,19 @@ async function afficher({ silencieux = false } = {}) {
   return true;
 }
 
-// Menu latéral : édition, langue (= profil), rubriques de la vue affichée.
+// Menu latéral : langue (= profil), rubriques de la vue affichée, articles gardés.
 const menu = document.getElementById("menu");
 const listeLangues = document.getElementById("menu-langues");
 const listeRubriques = document.getElementById("menu-rubriques");
+const titreRubriques = document.getElementById("menu-rubriques-titre");
+const listeGardes = document.getElementById("menu-gardes");
+const titreGardes = document.getElementById("menu-gardes-titre");
 
-function bouton(texte, actif, action) {
+function bouton(texte, actif, action, lu = false) {
   const li = document.createElement("li");
   const b = Object.assign(document.createElement("button"), { type: "button", textContent: texte });
   if (actif) b.setAttribute("aria-current", "true");
+  if (lu) b.classList.add("lu");
   b.addEventListener("click", action);
   li.append(b);
   return li;
@@ -115,11 +173,23 @@ function remplirMenu() {
     scrollTo(0, 0);
     afficher();
   })));
-  const liste = ancres(vue, contenus.jour?.donnees, contenus.semaine?.donnees);
+  const liste = vue === "gardes" ? [] : ancres(vue, contenus.jour?.donnees, contenus.semaine?.donnees);
   const courante = rubriqueCourante(liste);
+  const lues = vue === "jour" && lecture ? lecture.ids : new Set();
+  titreRubriques.hidden = !liste.length;
+  titreRubriques.textContent = vue === "jour" && liste.length
+    ? `${t("rubriques")} · ${t("sur")(liste.filter((r) => lues.has(r.id)).length, liste.length)}`
+    : t("rubriques");
   listeRubriques.replaceChildren(...liste.map(({ id, nom }) => bouton(nom, id === courante, () => {
     menu.close();
     document.getElementById(id)?.scrollIntoView({ block: "start" });
+  }, lues.has(id))));
+  const gardes = suivi.gardes(profilActuel());
+  titreGardes.hidden = !gardes.length;
+  listeGardes.replaceChildren(...gardes.map((g, i) => bouton(g.article.titre, false, () => {
+    menu.close();
+    changerVue("gardes");
+    document.getElementById(`g${i + 1}`)?.scrollIntoView({ block: "start" });
   })));
 }
 

@@ -41,7 +41,8 @@ Schéma de edition.json (textes en texte brut) :
      "sources": [{"titre": "...", "url": "..."}],
      "note_sources": "phrase facultative après les sources"}
   ],
-  "breves": [{"rubrique": "Paris", "items": ["..."], "sources": [{"titre": "...", "url": "..."}]}]
+  "breves": [{"rubrique": "Paris", "items": ["..."], "sources": [{"titre": "...", "url": "..."}]}],
+  "quiz": [{"question": "...", "choix": ["...", "...", "..."], "reponse": 1, "explication": "..."}]   (3 questions)
 }
 Schéma de hebdo.json (édition de la semaine, mêmes blocs) :
 {
@@ -81,7 +82,7 @@ import schema as dessin  # noqa: E402
 FICHIERS_APP = [
     "index.html", "styles.css", "app.js", "edition.js", "rendu.js", "sw.js", "manifest.webmanifest",
     "icons/logo-96.png", "icons/icon-180.png", "icons/icon-192.png", "icons/icon-512.png",
-    "icons/icon-512-maskable.png", "textes.js", "globe.js", "geo/terre.json",
+    "icons/icon-512-maskable.png", "textes.js", "globe.js", "suivi.js", "geo/terre.json",
     "fonts/source-serif-4-var.woff2", "fonts/source-serif-4-var-italic.woff2", "fonts/LICENSE-OFL.txt",
 ]
 TYPES = {"p", "sous_titre", "liste", "image", "duo", "carte", "schema", "barres"}
@@ -146,7 +147,7 @@ TYPO_FR = [
     (re.compile(r" »"), NBSP + "»"),
 ]
 CHAMPS_TEXTE = {"texte", "titre", "legende", "a_retenir", "chapo", "detail", "valeur", "boite", "fleche",
-                "note_sources", "items", "date_texte", "date_texte_semaine"}
+                "note_sources", "items", "date_texte", "date_texte_semaine", "question", "choix", "explication"}
 
 
 def typographie(ed):
@@ -430,6 +431,13 @@ def controler(ed):
     avec = sum(1 for r in rubriques if any(b["type"] in ("image", "carte", "duo", "schema", "barres") for b in r["blocs"]))
     if rubriques and avec < TAUX_VISUELS * len(rubriques):
         manques.append(f"visuels : {avec} rubrique(s) illustrée(s) sur {len(rubriques)}, minimum {-(-int(TAUX_VISUELS * len(rubriques) * 10) // 10)}")
+    q = ed.get("quiz") or []
+    if len(q) != 3:
+        manques.append(f"quiz : {len(q)} question(s), il en faut 3")
+    for i, x in enumerate(q):
+        if not (3 <= len(x.get("choix", [])) <= 4) or not 0 <= x.get("reponse", -1) < len(x.get("choix", [])) \
+                or not x.get("question") or not x.get("explication"):
+            manques.append(f"quiz, question {i + 1} : question, 3 ou 4 choix, index de réponse valide et explication")
     for br in ed.get("breves", []):
         if len(br.get("items", [])) < 2:
             manques.append(f"brèves {br['rubrique']} : au moins 2 items, ou retirer la zone")
@@ -450,6 +458,8 @@ def texte(ed):
         lignes.append(r.get("a_retenir", ""))
     for br in ed.get("breves", []):
         lignes += br["items"]
+    for x in ed.get("quiz", []):
+        lignes += [x.get("question", ""), x.get("explication", "")] + x.get("choix", [])
     return "\n\n".join(x for x in lignes if x)
 
 
