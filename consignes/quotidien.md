@@ -13,8 +13,8 @@ Seuls fichiers à lire : celui-ci et `consignes/ecriture.md`. Ne pas charger les
 | Monde | Monde |
 | France | Brésil |
 | Brésil | France |
-| Le chiffre | Politique du Brésil |
-| Comprendre | Le chiffre |
+| Le chiffre du jour | Politique du Brésil |
+| Comprendre | Le chiffre du jour |
 | Finance | Architecture |
 | Intelligence artificielle | Cinéma |
 | IA, technique | Environnement |
@@ -33,7 +33,7 @@ Dans `base.json`, l'ordre n'a pas d'importance : `outils/profils.py` répartit e
 - À la pointe sur la technologie et la finance : nouveautés de la veille ou de la semaine, expliquées jusqu'au mécanisme.
 - Faits précis, chiffres, dates, noms. Jamais de généralités. Ne jamais écrire ce que les sources ne disent pas (« le chiffre n'est pas donné ») : chercher l'information ou ne pas en parler.
 - Pas deux rubriques sur le même sujet, la même entreprise ou le même événement : une actualité dominante va dans une seule rubrique, les autres prennent d'autres sujets.
-- Les longueurs sont des cibles à atteindre, pas des plafonds. `publier.py` refuse une rubrique sous 75 % de sa cible, moins de 80 % de rubriques illustrées, trop peu de données, de portraits ou de logos (voir Visuels), une zone de brèves à un seul item. "À retenir" : 2 phrases en fin de chaque rubrique sauf Le chiffre.
+- Les longueurs sont des cibles à atteindre, pas des plafonds. `publier.py` refuse une rubrique sous 75 % de sa cible, moins de 80 % de rubriques illustrées, trop peu de données, de portraits ou de logos (voir Visuels), une zone de brèves à un seul item. "À retenir" : 2 phrases en fin de chaque rubrique sauf Le chiffre du jour.
 
 ## Rubriques (longueurs indicatives en mots)
 
@@ -42,7 +42,7 @@ Dans `base.json`, l'ordre n'a pas d'importance : `outils/profils.py` répartit e
 - **France** (350) : politique, économie, société, sciences ou régions ; une décision ou un fait à impact réel, hors polémiques du jour. Paris y entre quand c'est utile.
 - **Brésil** (350) : société, économie, culture, sciences, environnement. Pas la politique nationale.
 - **Politique du Brésil** (350, Ana) : institutions, lois, budget, décisions des ministères, États et villes. Les figures nationales seulement quand une décision en découle. Pas de petites phrases ni de sondages.
-- **Le chiffre** (250) : une statistique de source fiable (AIE, Eurostat, INSEE, FMI, OCDE, Banque mondiale, BRI, Our World in Data). Le titre est le chiffre. Expliquer l'ordre de grandeur et ce qu'il dit.
+- **Le chiffre du jour** (250, affiché en encart) : une statistique de source fiable (AIE, Eurostat, INSEE, FMI, OCDE, Banque mondiale, BRI, Our World in Data). Le titre est le chiffre. Expliquer l'ordre de grandeur et ce qu'il dit.
 - **Comprendre** (600) : une notion de finance ou de géoéconomie expliquée à partir d'une actu de la semaine, avec sous-titres, et un `schema` quand un circuit d'argent ou un montage s'y prête.
 - **Finance** (350) : 3 ou 4 mouvements de marché de la veille ou de la semaine (indices, taux, pétrole, or, devises, une action) : niveau, variation, raison précise.
 - **Intelligence artificielle** (400) : nouveauté Claude ou Anthropic en priorité (lire anthropic.com/news, qui n'a pas de flux), puis OpenAI, Mistral, modèles chinois, marché, matières premières de l'IA, ou article critique.
@@ -51,7 +51,7 @@ Dans `base.json`, l'ordre n'a pas d'importance : `outils/profils.py` répartit e
 - **Cinéma** (300) : industrie du cinéma et de l'audiovisuel, plutôt France (fréquentation, financement, tournages, festivals, métiers). Pas de classement du box-office.
 - **Environnement** (350) : climat, énergie, biodiversité, pollution ; un fait mesuré et ce qu'il change. Les solutions qui fonctionnent ont leur place.
 - **Carte expliquée** (350) : une seule carte, lue en détail : ce qu'elle représente, comment la lire, ce qu'on y voit d'étonnant, ce qui l'explique. Pleine largeur (`"largeur": 1100`), Our World in Data (`?tab=map`), Wikimedia Commons ou institution publique sous licence libre, avec `"lien"` vers la version interactive. Sans lien obligatoire avec l'actualité.
-- **Quiz** (`quiz`) : 3 questions sur l'édition du jour, en fin d'édition. Chaque question porte sur un fait ou un mécanisme expliqué dans une rubrique (un chiffre, un acteur, une cause), pas sur un détail anecdotique. 3 ou 4 choix plausibles, un seul juste (`reponse` : index à partir de 0, à varier d'une question à l'autre), `explication` en une ou deux phrases qui rappelle la rubrique. Les questions portent sur des rubriques présentes dans les deux profils (Une, Monde, France, Brésil, Le chiffre, Cinéma, Environnement, Carte expliquée), pour que le quiz traduit corresponde à l'édition d'Ana.
+- **Quiz** (`quiz`) : 10 questions sur l'édition du jour, en fin d'édition, au moins une par rubrique commune aux deux profils, le reste sur les brèves. Chaque question porte sur un fait ou un mécanisme expliqué dans une rubrique (un chiffre, un acteur, une cause), pas sur un détail anecdotique. 3 ou 4 choix plausibles, un seul juste (`reponse` : index à partir de 0, à varier d'une question à l'autre), `explication` en une ou deux phrases qui rappelle la rubrique. Les questions portent sur des rubriques présentes dans les deux profils (Une, Monde, France, Brésil, Le chiffre du jour, Cinéma, Environnement, Carte expliquée, brèves), pour que le quiz traduit corresponde à l'édition d'Ana.
 - **Brèves** (`breves`), dans cet ordre : Portugal, Europe, Afrique, Amériques, Asie, Océanie. 2 ou 3 items par zone, une zone sans info notable est omise. Chaque brève donne le contexte pour être comprise seule (qui est qui, pourquoi ça compte).
 
 ## Réseau et sources
@@ -94,7 +94,7 @@ Dépendances : Pillow et matplotlib (`pip install pillow matplotlib` si l'import
 
 0. Journal d'exécution : à chaque étape numérotée terminée, et à tout arrêt, `python3 outils/historique.py journal "<étape>" "<ok, ou cause exacte>"` (il pousse aussitôt). Il sert à comprendre un échec sans relancer. Ne jamais s'arrêter sans une ligne de journal qui donne la cause.
 1. Historique : `git fetch origin historique`, `git worktree add -B historique historique origin/historique`. Puis `python3 outils/historique.py notions` (notions et dossiers récents à ne pas refaire). Ne pas lire les fichiers de l'historique.
-2. Veille : `git fetch origin veille && git worktree add veille FETCH_HEAD`, puis lire `veille/veille.txt` (sa première ligne donne l'heure de la veille). Choisir les sujets, `python3 outils/veille.py lien <numéros>` pour leurs adresses, lire les articles retenus avec WebFetch. Recherches web seulement pour ce que la veille ne couvre pas (Le chiffre, Carte expliquée, IA, technique, compléments).
+2. Veille : `git fetch origin veille && git worktree add veille FETCH_HEAD`, puis lire `veille/veille.txt` (sa première ligne donne l'heure de la veille). Choisir les sujets, `python3 outils/veille.py lien <numéros>` pour leurs adresses, lire les articles retenus avec WebFetch. Recherches web seulement pour ce que la veille ne couvre pas (Le chiffre du jour, Carte expliquée, IA, technique, compléments).
    Si la branche `veille` manque ou date de plus de 12 heures : chercher l'actualité avec WebSearch en mode extended, une requête par rubrique, jusqu'à 18 recherches.
 3. Pistes pour le dimanche : pour 1 à 3 sujets de fond repérés et non traités, `python3 outils/historique.py piste "thème" "sujet en une ligne" "url"`. Thèmes : Géopolitique, Environnement, Société, Finance, IA, Architecture, Politique du Brésil.
 4. Rédaction de `base.json` en français, toutes les rubriques des deux profils et les brèves. Puis `python3 outils/historique.py verifier base.json` : changer de sujet si une rubrique reprend un sujet déjà traité.

@@ -46,15 +46,46 @@ export function lus(profil, date) {
   };
 }
 
-// Réponses au quiz d'une édition : tableau d'index, -1 si pas encore répondu.
-export function reponsesQuiz(profil, date, nombre) {
-  const cle = `quiz.${profil}.${date}`;
-  nettoyer(`quiz.${profil}.`, cle);
-  const r = lire(cle, []);
+// Quiz : une entrée par édition, gardée 30 jours pour l'historique des scores.
+// { reponses: [index ou -1], date_texte, justes, total }
+const JOURS_QUIZ = 30;
+
+export function reponsesQuiz(profil, edition, dateTexte) {
+  const cle = `quiz.${profil}.${edition.date}`;
+  const limite = new Date(Date.now() - JOURS_QUIZ * 864e5).toISOString().slice(0, 10);
+  try {
+    for (let i = localStorage.length - 1; i >= 0; i--) {
+      const k = localStorage.key(i);
+      if (k?.startsWith(`quiz.${profil}.`) && k.slice(-10) < limite) localStorage.removeItem(k);
+    }
+  } catch {}
+  const brut = lire(cle, {});
+  const r = Array.isArray(brut) ? brut : brut.reponses ?? []; // ancien format : tableau seul
+  const questions = edition.quiz;
   return {
-    reponses: Array.from({ length: nombre }, (_, i) => (Number.isInteger(r[i]) ? r[i] : -1)),
-    enregistrer: (liste) => ecrire(cle, liste),
+    reponses: questions.map((_, i) => (Number.isInteger(r[i]) ? r[i] : -1)),
+    enregistrer: (liste) => ecrire(cle, {
+      reponses: liste,
+      date_texte: dateTexte,
+      total: questions.length,
+      justes: questions.filter((q, i) => liste[i] === q.reponse).length,
+    }),
+    historique: () => historiqueQuiz(profil),
   };
+}
+
+// Quiz terminés des 30 derniers jours, du plus récent au plus ancien.
+export function historiqueQuiz(profil) {
+  const jours = [];
+  try {
+    for (let i = 0; i < localStorage.length; i++) {
+      const k = localStorage.key(i);
+      if (!k?.startsWith(`quiz.${profil}.`)) continue;
+      const v = lire(k, null);
+      if (v && !Array.isArray(v) && v.reponses?.every((x) => x >= 0)) jours.push({ date: k.slice(-10), ...v });
+    }
+  } catch {}
+  return jours.sort((a, b) => b.date.localeCompare(a.date));
 }
 
 // Articles gardés : [{ cle, date, date_texte, article }], du plus récent au plus ancien.

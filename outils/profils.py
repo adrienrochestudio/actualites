@@ -22,15 +22,15 @@ import os
 import sys
 
 ORDRE = {
-    "fr": ["Monde", "France", "Brésil", "Le chiffre", "Comprendre", "Finance", "Intelligence artificielle",
+    "fr": ["Monde", "France", "Brésil", "Le chiffre du jour", "Comprendre", "Finance", "Intelligence artificielle",
            "IA, technique", "Cinéma", "Environnement", "Carte expliquée"],
-    "pt": ["Monde", "Brésil", "France", "Politique du Brésil", "Le chiffre", "Architecture", "Cinéma",
+    "pt": ["Monde", "Brésil", "France", "Politique du Brésil", "Le chiffre du jour", "Architecture", "Cinéma",
            "Environnement", "Carte expliquée"],
 }
 # Étiquettes et noms de brèves connus : traduits ici, sans passer par la traduction.
 NOMS_PT = {
     "Monde": "Mundo", "France": "França", "Brésil": "Brasil", "Politique du Brésil": "Política brasileira",
-    "Le chiffre": "O número", "Comprendre": "Entender", "Finance": "Finanças",
+    "Le chiffre du jour": "O número do dia", "Le chiffre": "O número", "Comprendre": "Entender", "Finance": "Finanças",
     "Intelligence artificielle": "Inteligência artificial", "IA, technique": "IA, técnica", "Cinéma": "Cinema",
     "Environnement": "Meio ambiente", "Architecture": "Arquitetura", "Carte expliquée": "Mapa explicado",
     "Géopolitique": "Geopolítica", "Géoéconomie": "Geoeconomia", "Économie": "Economia",

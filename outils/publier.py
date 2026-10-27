@@ -42,7 +42,7 @@ Schéma de edition.json (textes en texte brut) :
      "note_sources": "phrase facultative après les sources"}
   ],
   "breves": [{"rubrique": "Paris", "items": ["..."], "sources": [{"titre": "...", "url": "..."}]}],
-  "quiz": [{"question": "...", "choix": ["...", "...", "..."], "reponse": 1, "explication": "..."}]   (3 questions)
+  "quiz": [{"question": "...", "choix": ["...", "...", "..."], "reponse": 1, "explication": "..."}]   (10 questions)
 }
 Schéma de hebdo.json (édition de la semaine, mêmes blocs) :
 {
@@ -80,7 +80,7 @@ import locator  # noqa: E402
 import schema as dessin  # noqa: E402
 
 FICHIERS_APP = [
-    "index.html", "styles.css", "app.js", "edition.js", "rendu.js", "sw.js", "manifest.webmanifest",
+    "index.html", "styles.css", "app.js", "edition.js", "rendu.js", "sw.js", "manifest.webmanifest", "manifest-pt.webmanifest",
     "icons/logo-96.png", "icons/icon-180.png", "icons/icon-192.png", "icons/icon-512.png",
     "icons/icon-512-maskable.png", "textes.js", "globe.js", "suivi.js", "geo/terre.json",
     "fonts/source-serif-4-var.woff2", "fonts/source-serif-4-var-italic.woff2", "fonts/LICENSE-OFL.txt",
@@ -376,7 +376,7 @@ def construire(chemins_json, genre, reprendre=True):
 # Mêmes cibles pour le français et le portugais ; étiquettes des deux langues.
 CIBLES = {
     "Monde": 450, "Mundo": 450, "France": 350, "França": 350, "Brésil": 350, "Brasil": 350,
-    "Politique du Brésil": 350, "Política brasileira": 350, "Le chiffre": 250, "O número": 250,
+    "Politique du Brésil": 350, "Política brasileira": 350, "Le chiffre du jour": 250, "O número do dia": 250, "Le chiffre": 250, "O número": 250,
     "Comprendre": 600, "Entender": 600, "Finance": 350, "Finanças": 350,
     "Intelligence artificielle": 400, "Inteligência artificial": 400, "IA, technique": 550, "IA, técnica": 550,
     "Architecture": 350, "Arquitetura": 350, "Cinéma": 300, "Cinema": 300,
@@ -432,8 +432,8 @@ def controler(ed):
     if rubriques and avec < TAUX_VISUELS * len(rubriques):
         manques.append(f"visuels : {avec} rubrique(s) illustrée(s) sur {len(rubriques)}, minimum {-(-int(TAUX_VISUELS * len(rubriques) * 10) // 10)}")
     q = ed.get("quiz") or []
-    if len(q) != 3:
-        manques.append(f"quiz : {len(q)} question(s), il en faut 3")
+    if len(q) != 10:
+        manques.append(f"quiz : {len(q)} question(s), il en faut 10")
     for i, x in enumerate(q):
         if not (3 <= len(x.get("choix", [])) <= 4) or not 0 <= x.get("reponse", -1) < len(x.get("choix", [])) \
                 or not x.get("question") or not x.get("explication"):

@@ -11,6 +11,7 @@
   --note: #666666;
   --fond: #ffffff;
   --marque: #6b1d2a;
+  --encart: #f3f2ef;
   --serif: "Source Serif 4", Georgia, "Times New Roman", serif;
   --colonne: 640px;
   --large: 880px;
@@ -99,8 +100,21 @@ a:focus-visible, button:focus-visible, summary:focus-visible, img:focus-visible 
 figcaption.note, .chapo { font-style: italic; }
 .rubrique-nom { font-size: 14px; line-height: 20px; color: var(--marque); margin: 0 0 8px; font-weight: 600; }
 
+/* Encarts sur fond grisé : l'Actu, le chiffre du jour, le quiz. Angles droits, sans filet ni ombre. */
+.encart {
+  background: var(--encart);
+  padding: 26px 24px;
+}
+@media (max-width: 560px) {
+  .encart { margin-left: calc(-1 * var(--marge)); margin-right: calc(-1 * var(--marge)); padding: 24px var(--marge); }
+}
+.rubrique .chiffre-titre { font-size: 44px; line-height: 48px; padding-bottom: 14px; }
+@media (min-width: 960px) { .rubrique .chiffre-titre { font-size: 54px; line-height: 58px; } }
+.quiz-historique { padding-top: 4px; }
+.quiz-historique .note + .note { margin-top: 4px; }
+
 /* Actu du moment */
-.une { padding: 30px 0 8px; }
+.une { margin-top: 30px; }
 .une-texte { font-size: 22px; line-height: 33px; margin: 0 0 10px; font-weight: 400; }
 
 /* Rubriques du jour */
@@ -113,8 +127,9 @@ figcaption.note, .chapo { font-style: italic; }
 figure { margin: 8px 0 24px; }
 figure img { display: block; width: 100%; height: auto; cursor: zoom-in; }
 figcaption { padding-top: 8px; }
-figure.carte img { max-width: 420px; border: 1px solid #e2e2e2; }
+figure.carte img { max-width: 100%; border: 1px solid #e2e2e2; }
 figure.photo:not(.large) img { max-width: 360px; }
+figure.portrait img { max-width: 170px; }
 
 .duo { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin: 8px 0 24px; align-items: start; }
 .duo figure { margin: 0; }
@@ -182,7 +197,7 @@ figure.photo:not(.large) img { max-width: 360px; }
 .vide { padding-top: 28px; }
 
 /* Quiz de fin d'édition */
-.quiz { padding-top: 72px; }
+.quiz { margin-top: 72px; }
 .quiz > .titre { padding-bottom: 6px; }
 .question { padding-top: 26px; }
 .question-texte { font-weight: 600; margin-bottom: 8px; }
@@ -417,6 +432,7 @@ html.glisse .titre-journal, html.glisse .journal { transition: none; }
   .rubrique > .titre { font-size: 36px; line-height: 42px; }
   figure.carte img { max-width: 100%; }
   figure.photo:not(.large) img { max-width: 420px; }
+  figure.portrait img { max-width: 200px; }
   .duo figure.photo img { max-width: 100%; }
   figure.large {
     margin-left: calc((var(--colonne) - var(--large)) / 2);

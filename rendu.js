@@ -81,8 +81,16 @@ function image(element, { zoom = true } = {}) {
   return img;
 }
 
+// Portraits et logos petits ; cartes de lieu à la largeur de la colonne.
+function genre(element) {
+  if (element.type === "carte" || element.nature === "carte_lieu") return "carte";
+  if (element.nature === "portrait" || element.nature === "logo") return "photo portrait";
+  if (!element.nature && (element.largeur ?? 552) <= 400) return "photo portrait";
+  return "photo";
+}
+
 function figure(element, classe) {
-  const f = el("figure", [element.type === "carte" ? "carte" : "photo", classe].filter(Boolean).join(" "));
+  const f = el("figure", [genre(element), classe].filter(Boolean).join(" "));
   const img = image(element);
   img.addEventListener("error", () => f.remove(), { once: true });
   f.append(img);
@@ -104,7 +112,7 @@ function bloc(b) {
     }
     case "image":
     case "carte":
-      return figure(b, b.type === "image" && (b.largeur ?? 552) >= 500 ? "large" : null);
+      return figure(b, b.type === "image" && (b.largeur ?? 552) >= 500 && genre(b) === "photo" ? "large" : null);
     case "duo": {
       const d = el("div", "duo");
       for (const e of b.elements ?? []) d.append(figure(e));
@@ -163,7 +171,7 @@ function corps(r, cle, options = {}) {
 }
 
 function une(ed) {
-  const s = el("section", "une");
+  const s = el("section", "une encart");
   s.id = "une";
   s.setAttribute("aria-labelledby", "une-titre");
   const titre = el("h2", "rubrique-nom", t("actu"));
@@ -174,8 +182,18 @@ function une(ed) {
   return s;
 }
 
+const CHIFFRE = new Set(["Le chiffre du jour", "O número do dia", "Le chiffre", "O número"]);
+
 function rubrique(r, id, cle, options, nom = r.etiquette) {
-  const s = el("article", "rubrique");
+  const s = el("article", CHIFFRE.has(r.etiquette) ? "rubrique chiffre" : "rubrique");
+  if (CHIFFRE.has(r.etiquette)) {
+    // Le chiffre du jour : encart grisé, le chiffre en grand.
+    const e = el("div", "encart");
+    e.append(el("p", "rubrique-nom", nom), el("h2", "titre chiffre-titre", r.titre), corps(r, cle, options));
+    s.id = id;
+    s.append(e);
+    return s;
+  }
   s.id = id;
   s.append(el("p", "rubrique-nom", nom), el("h2", "titre", r.titre), corps(r, cle, options));
   return s;
@@ -183,7 +201,7 @@ function rubrique(r, id, cle, options, nom = r.etiquette) {
 
 // Quiz de fin d'édition : un choix par question, réponse et explication aussitôt.
 function quiz(questions, etat) {
-  const s = el("section", "quiz");
+  const s = el("section", "quiz encart");
   s.id = "quiz";
   s.append(el("h2", "titre", t("quiz")));
   const reponses = etat.reponses.slice();
@@ -227,8 +245,23 @@ function quiz(questions, etat) {
     s.append(bloc);
     montrer();
   });
+  // Historique : scores des 30 derniers jours, dépliés sous le score du jour.
+  const voir = el("button", "action-garder", t("historiqueQuiz"));
+  voir.type = "button";
+  voir.setAttribute("aria-expanded", "false");
+  const liste = el("div", "quiz-historique");
+  liste.hidden = true;
+  voir.addEventListener("click", () => {
+    liste.hidden = !liste.hidden;
+    voir.setAttribute("aria-expanded", String(!liste.hidden));
+    if (liste.hidden) return;
+    const jours = etat.historique?.() ?? [];
+    liste.replaceChildren(...(jours.length
+      ? jours.map((j) => el("p", "note", `${j.date_texte} · ${t("sur")(j.justes, j.total)}`))
+      : [el("p", "note", t("aucunScore"))]));
+  });
   majScore();
-  s.append(score);
+  s.append(score, voir, liste);
   return s;
 }
 

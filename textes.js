@@ -44,6 +44,8 @@ const TEXTES = {
     exact: "Exact.",
     non: "Non.",
     sur: (n, total) => `${n} sur ${total}`,
+    historiqueQuiz: "Scores des 30 derniers jours",
+    aucunScore: "Aucun quiz terminé ces 30 derniers jours.",
   },
   pt: {
     langueNom: "Português",
@@ -85,14 +87,35 @@ const TEXTES = {
     exact: "Certo.",
     non: "Não.",
     sur: (n, total) => `${n} de ${total}`,
+    historiqueQuiz: "Pontuação dos últimos 30 dias",
+    aucunScore: "Nenhum quiz terminado nos últimos 30 dias.",
   },
 };
 
 let profil = "fr";
+let retenu = null;
 try {
-  const p = localStorage.getItem("profil");
-  if (PROFILS.includes(p)) profil = p;
+  retenu = localStorage.getItem("profil");
+  if (PROFILS.includes(retenu)) profil = retenu;
 } catch {}
+
+// Lien d'installation par profil : ?langue=pt ouvre l'app en portugais au premier lancement.
+// Le manifeste du profil fait démarrer l'app installée sur la même langue (stockage séparé de Safari sur iPhone).
+// Ensuite, la langue choisie dans le menu prime.
+const demande = new URLSearchParams(location.search).get("langue");
+if (PROFILS.includes(demande) && !PROFILS.includes(retenu)) {
+  profil = demande;
+  try { localStorage.setItem("profil", demande); } catch {}
+}
+if (profil === "pt") document.querySelector('link[rel="manifest"]')?.setAttribute("href", "./manifest-pt.webmanifest");
+
+export function retirerParametreLangue() {
+  if (!demande) return;
+  // L'adresse garde ?langue tant que l'app n'est pas installée (Partager, Sur l'écran d'accueil).
+  if (matchMedia("(display-mode: standalone)").matches || navigator.standalone === true) {
+    history.replaceState(null, "", location.pathname);
+  }
+}
 
 export function profilActuel() {
   return profil;

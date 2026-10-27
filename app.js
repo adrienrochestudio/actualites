@@ -1,6 +1,6 @@
 import { charger, enregistrer } from "./edition.js";
 import { rendre, message, activerZoom, ancres } from "./rendu.js";
-import { t, PROFILS, profilActuel, changerProfil, nomLangue } from "./textes.js";
+import { t, PROFILS, profilActuel, changerProfil, nomLangue, retirerParametreLangue } from "./textes.js";
 import { globe, pendantChargement } from "./globe.js";
 import * as suivi from "./suivi.js";
 
@@ -47,6 +47,8 @@ function suivreLecture() {
   }
 }
 
+const sansJourSemaine = (d) => (d || "").replace(/^[^\s,]+,?\s+/, "");
+
 const etiqueterGarde = (b) => {
   b.textContent = suivi.estGarde(profilActuel(), b.dataset.garder) ? `${t("garde")} · ${t("retirer")}` : t("garder");
 };
@@ -61,7 +63,7 @@ function dessiner() {
   rendre(journal, vue, ed, semaine?.donnees, {
     garder: { etiqueter: etiqueterGarde },
     gardes: suivi.gardes(profilActuel()),
-    quiz: ed?.quiz?.length && ed.date ? suivi.reponsesQuiz(profilActuel(), ed.date, ed.quiz.length) : null,
+    quiz: ed?.quiz?.length && ed.date ? suivi.reponsesQuiz(profilActuel(), ed, sansJourSemaine(ed.date_texte)) : null,
   });
   suivreLecture();
   document.title = vue === "semaine" ? t("titreSemaine") : "Actualités";
@@ -177,9 +179,7 @@ function remplirMenu() {
   const courante = rubriqueCourante(liste);
   const lues = vue === "jour" && lecture ? lecture.ids : new Set();
   titreRubriques.hidden = !liste.length;
-  titreRubriques.textContent = vue === "jour" && liste.length
-    ? `${t("rubriques")} · ${t("sur")(liste.filter((r) => lues.has(r.id)).length, liste.length)}`
-    : t("rubriques");
+  titreRubriques.textContent = t("rubriques");
   listeRubriques.replaceChildren(...liste.map(({ id, nom }) => bouton(nom, id === courante, () => {
     menu.close();
     document.getElementById(id)?.scrollIntoView({ block: "start" });
@@ -291,6 +291,7 @@ if ("serviceWorker" in navigator) {
 if (installee) navigator.storage?.persist?.();
 
 traduirePage();
+retirerParametreLangue();
 globe(document.getElementById("logo"), matchMedia("(min-width: 960px)").matches ? 42 : 34);
 globe(tirer.querySelector("canvas"), 28);
 afficher();
