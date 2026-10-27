@@ -1,0 +1,3 @@
+# Journal d'exécution de la tâche Actualités (30 jours)
+# Format : AAAA-MM-JJ HH:MM (Paris) | étape | état ou cause
+2026-10-27 07:06 | 1-2 historique et pages | édition du 2026-10-27 déjà publiée à 06h37 (fr et pt) et historique déjà ajouté : seconde exécution arrêtée sans republier
