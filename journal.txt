@@ -2,3 +2,4 @@
 # Format : AAAA-MM-JJ HH:MM (Paris) | étape | état ou cause
 2026-10-27 07:06 | 1-2 historique et pages | édition du 2026-10-27 déjà publiée à 06h37 (fr et pt) et historique déjà ajouté : seconde exécution arrêtée sans republier
 2026-10-27 07:08 | 1. Historique | ok
+2026-10-27 07:10 | 2. Veille | ok, mais WebFetch hors service (ENOTFOUND, sites refusés) : recherches WebSearch à la place
