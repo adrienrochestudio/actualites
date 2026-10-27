@@ -37,6 +37,14 @@ struct Element: Codable, Hashable {
     var chemin: String? { src ?? url }
     /// Graphique ou photo de paysage : toute la largeur. Portrait : petit.
     var estLarge: Bool { !estCarte && (largeur ?? 552) >= 500 }
+    /// Mini-carte ou carte de lieu : toute la largeur de la colonne.
+    var estPlan: Bool { estCarte || nature == "carte_lieu" }
+    /// Portrait ou logo : nature déclarée, ou image étroite (largeur <= 400).
+    var estPortrait: Bool {
+        if estPlan { return false }
+        if nature == "portrait" || nature == "logo" { return true }
+        return !estLarge && (largeur ?? 552) <= 400
+    }
 }
 
 struct Bloc: Codable, Hashable {
@@ -70,6 +78,12 @@ struct Article: Codable, Hashable, Identifiable {
     let sources: [Source]?
     let note_sources: String?
     var id: String { etiquette + titre }
+
+    /// Rubrique "Le chiffre du jour" : son titre est le chiffre lui-même.
+    var estChiffreDuJour: Bool {
+        let e = etiquette.trimmingCharacters(in: .whitespacesAndNewlines).lowercased()
+        return ["le chiffre du jour", "o número do dia", "le chiffre", "o número"].contains(e)
+    }
 
     var images: [String] {
         var liste = couverture?.chemin.map { [$0] } ?? []
@@ -155,9 +169,44 @@ struct ArticleGarde: Codable, Hashable, Identifiable {
     }
 
     /// "27 octobre 2026" : date en toutes lettres sans le jour de la semaine.
-    var dateCourte: String {
-        guard let i = date_texte.firstIndex(where: \.isNumber) else { return date_texte }
-        return String(date_texte[i...])
+    var dateCourte: String { sansJourSemaine(date_texte) }
+}
+
+/// "mardi 27 octobre 2026" devient "27 octobre 2026" (et "terça-feira, 27 de outubro de 2026", "27 de outubro de 2026").
+func sansJourSemaine(_ dateTexte: String) -> String {
+    guard let i = dateTexte.firstIndex(where: \.isNumber) else { return dateTexte }
+    return String(dateTexte[i...])
+}
+
+/// Quiz d'une date, gardé 30 jours dans UserDefaults sous "quiz.{profil}.{date}" (dictionnaire).
+/// `reponses` : index du choix fait par question, -1 si pas répondu ; `justes` et `total` calculés avec les bonnes réponses.
+struct ScoreQuiz: Hashable, Identifiable {
+    let date: String
+    var reponses: [Int]
+    var date_texte: String
+    var justes: Int
+    var total: Int
+    var id: String { date }
+
+    var termine: Bool { total > 0 && reponses.count >= total && !reponses.prefix(total).contains(-1) }
+
+    init(date: String, reponses: [Int], date_texte: String, justes: Int, total: Int) {
+        self.date = date
+        self.reponses = reponses
+        self.date_texte = date_texte
+        self.justes = justes
+        self.total = total
+    }
+
+    /// Relit le dictionnaire enregistré ; nil si la valeur a une autre forme.
+    init?(date: String, dictionnaire d: [String: Any]) {
+        guard let r = d["reponses"] as? [Int] else { return nil }
+        self.init(date: date, reponses: r, date_texte: d["date_texte"] as? String ?? "",
+                  justes: d["justes"] as? Int ?? 0, total: d["total"] as? Int ?? 0)
+    }
+
+    var dictionnaire: [String: Any] {
+        ["reponses": reponses, "date_texte": date_texte, "justes": justes, "total": total]
     }
 }
 

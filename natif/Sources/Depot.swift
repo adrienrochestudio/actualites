@@ -7,7 +7,7 @@ import SwiftUI
 /// Sur l'appareil : Application Support/Actualites/{profil}/{edition,hebdo}/ (fichier JSON + img/).
 /// Un seul exemplaire de chaque, pour le seul profil choisi.
 /// Articles gardés : Application Support/Actualites/gardes/{profil}/ (gardes.json + img/), conservés d'une édition à l'autre.
-/// Rubriques lues et réponses au quiz : UserDefaults, par profil et date d'édition.
+/// Rubriques lues et réponses au quiz : UserDefaults, par profil et date d'édition (quiz gardés 30 jours).
 @MainActor
 final class Depot: ObservableObject {
     enum Etat: Equatable {
@@ -28,6 +28,8 @@ final class Depot: ObservableObject {
     @Published private(set) var lus: Set<String> = []
     /// Réponses au quiz de l'édition du jour : index du choix fait, -1 si pas répondu.
     @Published private(set) var reponsesQuiz: [Int] = []
+    /// Quiz terminés du profil affiché sur les 30 derniers jours, le plus récent en premier.
+    @Published private(set) var historiqueQuiz: [ScoreQuiz] = []
 
     nonisolated static let base = URL(string: "https://adrienrochestudio.github.io/actualites/")!
     private static let cleProfil = "profil"
@@ -156,34 +158,80 @@ final class Depot: ObservableObject {
     }
 
     func repondre(_ question: Int, _ choix: Int) {
-        guard let cle = cleJour, reponsesQuiz.indices.contains(question), reponsesQuiz[question] < 0 else { return }
+        guard let ed = edition, let cle = cleJour, reponsesQuiz.indices.contains(question), reponsesQuiz[question] < 0 else { return }
         reponsesQuiz[question] = choix
-        UserDefaults.standard.set(reponsesQuiz, forKey: "quiz.\(cle)")
+        enregistrerQuiz(ed, cle: cle)
+        historiqueQuiz = lireHistoriqueQuiz()
     }
 
-    /// Relit l'état de l'édition affichée et supprime celui des autres dates.
+    /// Enregistre les réponses de l'édition affichée avec sa date en toutes lettres et son score.
+    private func enregistrerQuiz(_ ed: Edition, cle: String) {
+        let questions = ed.quiz ?? []
+        let justes = questions.indices.filter { reponsesQuiz.indices.contains($0) && reponsesQuiz[$0] == questions[$0].reponse }.count
+        let s = ScoreQuiz(date: ed.date, reponses: reponsesQuiz, date_texte: ed.date_texte, justes: justes, total: questions.count)
+        UserDefaults.standard.set(s.dictionnaire, forKey: "quiz.\(cle)")
+    }
+
+    /// Quiz terminés du profil affiché sur les 30 derniers jours, du plus récent au plus ancien.
+    private func lireHistoriqueQuiz() -> [ScoreQuiz] {
+        let prefixe = "quiz.\(profil.rawValue)."
+        let limite = Self.limiteQuiz
+        var liste: [ScoreQuiz] = []
+        for (k, v) in UserDefaults.standard.dictionaryRepresentation() where k.hasPrefix(prefixe) {
+            let date = String(k.dropFirst(prefixe.count))
+            guard date >= limite, let d = v as? [String: Any], let s = ScoreQuiz(date: date, dictionnaire: d), s.termine else { continue }
+            liste.append(s)
+        }
+        return liste.sorted { $0.date > $1.date }
+    }
+
+    /// Date ISO d'il y a 30 jours : les quiz plus anciens sont supprimés.
+    private static var limiteQuiz: String {
+        let f = DateFormatter()
+        f.calendar = Calendar(identifier: .gregorian)
+        f.locale = Locale(identifier: "en_US_POSIX")
+        f.dateFormat = "yyyy-MM-dd"
+        return f.string(from: Date().addingTimeInterval(-30 * 86_400))
+    }
+
+    /// Relit l'état de l'édition affichée. Rubriques lues : celles des autres dates sont supprimées.
+    /// Quiz : gardés 30 jours, pour l'historique des scores.
     private func chargerEtatsJour() {
         guard let ed = edition, let cle = cleJour else {
             lus = []
             reponsesQuiz = []
+            historiqueQuiz = lireHistoriqueQuiz()
             return
         }
         let d = UserDefaults.standard
         lus = Set(d.stringArray(forKey: "lus.\(cle)") ?? [])
         let n = ed.quiz?.count ?? 0
-        var r = (d.array(forKey: "quiz.\(cle)") as? [Int]) ?? []
+        // Format actuel (dictionnaire), sinon ancien format (tableau d'Int) repris et réenregistré.
+        var r: [Int] = []
+        var ancien = false
+        if let dict = d.dictionary(forKey: "quiz.\(cle)"), let s = ScoreQuiz(date: ed.date, dictionnaire: dict) {
+            r = s.reponses
+        } else if let a = d.array(forKey: "quiz.\(cle)") as? [Int] {
+            r = a
+            ancien = true
+        }
         if r.count < n { r += Array(repeating: -1, count: n - r.count) }
         reponsesQuiz = Array(r.prefix(n))
-        // Clés "lus.{profil}.{date}" et "quiz.{profil}.{date}" : autres dates du profil affiché,
-        // et dates plus anciennes de l'autre profil.
+        if ancien { enregistrerQuiz(ed, cle: cle) }
+        // Clés "lus.{profil}.{date}" : autres dates du profil affiché, et dates plus anciennes de l'autre profil.
+        // Clés "quiz.{profil}.{date}" : dates de plus de 30 jours, tous profils.
+        let limite = Self.limiteQuiz
         for k in d.dictionaryRepresentation().keys where k.hasPrefix("lus.") || k.hasPrefix("quiz.") {
             let parties = k.split(separator: ".", maxSplits: 2).map(String.init)
             guard parties.count == 3, Profil(rawValue: parties[1]) != nil else { continue }
             let (p, date) = (parties[1], parties[2])
-            if (p == profil.rawValue && date != ed.date) || (p != profil.rawValue && date < ed.date) {
+            if k.hasPrefix("quiz.") {
+                if date < limite { d.removeObject(forKey: k) }
+            } else if (p == profil.rawValue && date != ed.date) || (p != profil.rawValue && date < ed.date) {
                 d.removeObject(forKey: k)
             }
         }
+        historiqueQuiz = lireHistoriqueQuiz()
     }
 
     /// À l'ouverture, au retour au premier plan, avec le bouton Actualiser (⌘R).

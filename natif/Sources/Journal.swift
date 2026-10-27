@@ -92,7 +92,7 @@ struct Journal: View {
                     choix(p.textes.nomLangue, actif: depot.profil == p) { depot.changerProfil(p) }
                 }
                 if !rubriques.isEmpty {
-                    titreMenu(titreRubriques)
+                    titreMenu(t.rubriques)
                     ForEach(rubriques) { r in
                         choix(r.nom, actif: active == r.id, lu: vue == .jour && depot.lus.contains(r.id)) { cible = r.id }
                     }
@@ -118,13 +118,6 @@ struct Journal: View {
             .padding(.top, premier ? 0 : 20)
             .padding(.bottom, 4)
             .accessibilityAddTraits(.isHeader)
-    }
-
-    /// "Rubriques · 7 sur 11" en vue Quotidien.
-    private var titreRubriques: String {
-        guard vue == .jour else { return t.rubriques }
-        let lues = rubriques.filter { depot.lus.contains($0.id) }.count
-        return "\(t.rubriques) · \(t.compte(lues, rubriques.count))"
     }
 
     /// Entrée du menu : active en bordeaux, lue en gris, sinon en encre.
@@ -325,6 +318,7 @@ struct Journal: View {
                         }
                         if let s = ligneSources(une.sources, t) { Note(attribue: s) }
                     }
+                    .encart()
                     .padding(.top, 30)
                     .ancre("une")
                 }

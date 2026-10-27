@@ -49,6 +49,7 @@ struct Textes {
     let exact: String
     let non: String
     let fermer: String
+    let scoresTrenteJours: String
     /// Mot entre deux nombres : "7 sur 11", "7 de 11".
     let sur: String
 
@@ -94,6 +95,7 @@ struct Textes {
         exact: "Exact.",
         non: "Non.",
         fermer: "Fermer",
+        scoresTrenteJours: "Scores des 30 derniers jours",
         sur: "sur"
     )
 
@@ -135,6 +137,7 @@ struct Textes {
         exact: "Certo.",
         non: "Não.",
         fermer: "Fechar",
+        scoresTrenteJours: "Pontuação dos últimos 30 dias",
         sur: "de"
     )
 }

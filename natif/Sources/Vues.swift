@@ -19,6 +19,8 @@ enum Style {
     static let note = Color(red: 0x66 / 255, green: 0x66 / 255, blue: 0x66 / 255)
     static let marque = Color(red: 0x6b / 255, green: 0x1d / 255, blue: 0x2a / 255)
     static let fond = Color.white
+    /// Fond grisé des encarts : l'Actu, le chiffre du jour, le quiz.
+    static let fondEncart = Color(red: 0xf3 / 255, green: 0xf2 / 255, blue: 0xef / 255)
     static let colonne: CGFloat = 680
     /// Largeur des graphiques larges sur grand écran : un peu plus que la colonne de texte.
     static let large: CGFloat = 920
@@ -56,6 +58,17 @@ extension EnvironmentValues {
     var grandEcran: Bool {
         get { self[CleGrandEcran.self] }
         set { self[CleGrandEcran.self] = newValue }
+    }
+}
+
+extension View {
+    /// Encart sur fond grisé, angles droits, sans bordure ni ombre, sur toute la largeur de la colonne.
+    func encart() -> some View {
+        self
+            .padding(.horizontal, 24)
+            .padding(.vertical, 26)
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .background(Style.fondEncart)
     }
 }
 
@@ -165,9 +178,13 @@ struct Figure: View {
     @Environment(\.grandEcran) var grandEcran
 
     private var largeurMax: CGFloat? {
-        if element.estCarte { return grandEcran ? nil : 420 }
+        if element.estPlan { return nil }
+        if element.estPortrait { return Figure.largeurPortrait(grandEcran) }
         return element.estLarge ? nil : (grandEcran ? 420 : 360)
     }
+
+    /// Largeur maximale d'un portrait ou d'un logo.
+    static func largeurPortrait(_ grandEcran: Bool) -> CGFloat { grandEcran ? 200 : 170 }
 }
 
 struct VueBloc: View {
@@ -188,11 +205,17 @@ struct VueBloc: View {
         case "image", "carte":
             Figure(element: b.commeElement)
         case "duo":
+            // Le portrait garde sa petite largeur ; l'autre élément prend le reste de la ligne.
             HStack(alignment: .top, spacing: 14) {
                 ForEach(b.elements ?? [], id: \.self) { e in
-                    Figure(element: Element(type: e.type, url: e.url, src: e.src, largeur: 1100,
-                                            legende: e.legende, lien: e.lien, credit: e.credit, ville: e.ville, nature: e.nature))
-                        .frame(maxWidth: .infinity, alignment: .leading)
+                    if e.estPortrait {
+                        Figure(element: e)
+                            .frame(maxWidth: Figure.largeurPortrait(grandEcran), alignment: .leading)
+                    } else {
+                        Figure(element: Element(type: e.type, url: e.url, src: e.src, largeur: 1100,
+                                                legende: e.legende, lien: e.lien, credit: e.credit, ville: e.ville, nature: e.nature))
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                    }
                 }
             }
         case "schema" where b.src != nil, "barres":
@@ -229,11 +252,13 @@ struct CorpsArticle: View {
     var provenance: Provenance? = nil
     /// Vue des articles gardés : seulement "Retirer".
     var seulRetirer = false
+    /// Faux dans un encart : les graphiques larges restent dans l'encart.
+    var deborder = true
 
     var body: some View {
         VStack(alignment: .leading, spacing: 14) {
             ForEach(Array(a.blocs.enumerated()), id: \.offset) { _, b in
-                if grandEcran && b.type == "image" && b.commeElement.estLarge {
+                if deborder && grandEcran && b.type == "image" && b.commeElement.estLarge {
                     // Graphique large : déborde de la colonne de part et d'autre.
                     VueBloc(b: b).padding(.horizontal, -(Style.large - Style.colonne) / 2)
                 } else {
@@ -285,12 +310,26 @@ struct VueRubrique: View {
     let r: Article
     var provenance: Provenance? = nil
     var body: some View {
-        VStack(alignment: .leading, spacing: 16) {
-            VStack(alignment: .leading, spacing: 6) {
-                NomRubrique(t: r.etiquette)
-                Text(r.titre).font(Style.titre(grandEcran ? 36 : 31)).foregroundStyle(Style.encre).fixedSize(horizontal: false, vertical: true)
+        Group {
+            if r.estChiffreDuJour {
+                // Encart : le titre de la rubrique est le chiffre lui-même.
+                VStack(alignment: .leading, spacing: 16) {
+                    VStack(alignment: .leading, spacing: 6) {
+                        NomRubrique(t: r.etiquette)
+                        Text(r.titre).font(Style.titre(grandEcran ? 54 : 44)).foregroundStyle(Style.encre).fixedSize(horizontal: false, vertical: true)
+                    }
+                    CorpsArticle(a: r, provenance: provenance, deborder: false)
+                }
+                .encart()
+            } else {
+                VStack(alignment: .leading, spacing: 16) {
+                    VStack(alignment: .leading, spacing: 6) {
+                        NomRubrique(t: r.etiquette)
+                        Text(r.titre).font(Style.titre(grandEcran ? 36 : 31)).foregroundStyle(Style.encre).fixedSize(horizontal: false, vertical: true)
+                    }
+                    CorpsArticle(a: r, provenance: provenance)
+                }
             }
-            CorpsArticle(a: r, provenance: provenance)
         }
         .padding(.top, grandEcran ? 80 : 64)
     }
@@ -365,6 +404,7 @@ struct VueQuiz: View {
     @Environment(\.grandEcran) var grandEcran
     @Environment(\.textes) var t
     let questions: [Question]
+    @State private var historiqueOuvert = false
 
     private static let filet = Color(red: 0xe3 / 255, green: 0xe3 / 255, blue: 0xe3 / 255)
 
@@ -388,9 +428,34 @@ struct VueQuiz: View {
             }
             if toutesRepondues {
                 Note(t.compte(score, questions.count)).padding(.top, 18)
+                historique.padding(.top, 10)
             }
         }
+        .encart()
         .padding(.top, 72)
+    }
+
+    /// Bouton qui déplie les scores des 30 derniers jours : "27 octobre 2026 · 7 sur 10", du plus récent au plus ancien.
+    private var historique: some View {
+        VStack(alignment: .leading, spacing: 6) {
+            Button {
+                withAnimation(.easeInOut(duration: 0.2)) { historiqueOuvert.toggle() }
+            } label: {
+                Text(t.scoresTrenteJours).underline()
+                    .font(Style.petit())
+                    .foregroundStyle(Style.note)
+                    .contentShape(Rectangle())
+            }
+            .buttonStyle(.plain)
+            if historiqueOuvert {
+                VStack(alignment: .leading, spacing: 4) {
+                    ForEach(depot.historiqueQuiz) { s in
+                        Note("\(sansJourSemaine(s.date_texte)) · \(t.compte(s.justes, s.total))")
+                    }
+                }
+                .padding(.top, 4)
+            }
+        }
     }
 
     @ViewBuilder
