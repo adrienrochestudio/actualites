@@ -32,7 +32,10 @@ Schéma de edition.json (textes en texte brut) :
         "credit": {"titre": "...", "url": "..."}},
        {"type": "duo", "elements": [{"url": "...", "largeur": 220, "legende": "..."}, {"type": "carte", ...}]},
        {"type": "carte", "ville": "El Paso", "lat": 31.76, "lon": -106.49, "pays": "United States of America", "legende": "..."},
-       {"type": "schema", "etapes": [{"boite": "ligne 1\\nligne 2"}, {"fleche": "..."}], "legende": "..."}
+       {"type": "schema", "titre": "...", "noeuds": [{"id": "a", "texte": "...", "detail": "...", "valeur": "...", "accent": true}],
+        "liens": [{"de": "a", "vers": "b", "texte": "..."}], "legende": "..."}   (voir outils/schema.py)
+       {"type": "barres", "titre": "...", "unite": "Md$", "items": [{"texte": "...", "valeur": 4.1, "accent": true}],
+        "legende": "...", "credit": {...}}                                       (voir outils/schema.py)
      ],
      "a_retenir": "...",
      "sources": [{"titre": "...", "url": "..."}],
@@ -73,6 +76,7 @@ from PIL import Image
 RACINE = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, os.path.join(RACINE, "outils"))
 import locator  # noqa: E402
+import schema as dessin  # noqa: E402
 
 FICHIERS_APP = [
     "index.html", "styles.css", "app.js", "edition.js", "rendu.js", "sw.js", "manifest.webmanifest",
@@ -80,7 +84,7 @@ FICHIERS_APP = [
     "icons/icon-512-maskable.png", "textes.js", "globe.js", "geo/terre.json",
     "fonts/source-serif-4-var.woff2", "fonts/source-serif-4-var-italic.woff2", "fonts/LICENSE-OFL.txt",
 ]
-TYPES = {"p", "sous_titre", "liste", "image", "duo", "carte", "schema"}
+TYPES = {"p", "sous_titre", "liste", "image", "duo", "carte", "schema", "barres"}
 MOIS = {
     "fr": ["janvier", "février", "mars", "avril", "mai", "juin", "juillet", "août",
            "septembre", "octobre", "novembre", "décembre"],
@@ -120,6 +124,55 @@ GENRES = {
     "jour": {"dossier": "edition", "fichier": "edition.json", "liste": "rubriques"},
     "semaine": {"dossier": "hebdo", "fichier": "hebdo.json", "liste": "sujets"},
 }
+
+
+# Espaces insécables : un nombre ne se sépare jamais de son unité, ni un signe de ponctuation de son mot
+# (« 22 h » ne doit pas être coupé en fin de ligne).
+NBSP, NNBSP = "\u00a0", "\u202f"
+UNITES = (r"h|min|s|%|‰|€|\$|£|¥|°C|°|km|km²|m|m²|m³|cm|mm|kg|g|t|Mt|Gt|kt|Md|Mds|Md\$|Md€|M\$|M€|GW|MW|kW|GWh|MWh|"
+          r"kWh|TWh|W|ha|Go|Mo|To|ko|Gbit/s|ans?|mois|jours?|heures?|minutes?|secondes?|semaines?|milliards?|millions?|"
+          r"milliers|sièges|hectares|tonnes|barils|habitants|personnes|euros?|dollars?|députés|voix|"
+          r"bilhões|bilhão|milhões|milhão|mil|anos?|meses|dias?|horas?|reais|toneladas|pessoas|assentos")
+TYPO = [
+    (re.compile(r"(?<=\d) (?=\d{3}(?!\d))"), NBSP),                       # 12 500
+    (re.compile(r"(?<=\d) (?=(?:" + UNITES + r")(?![\w]))"), NBSP),        # 22 h, 4,1 milliards, 37 %
+    (re.compile(r"(?<=\b[hH]) (?=\d)"), NBSP),                             # 14 h 30
+    (re.compile(r"\b(R\$|US\$|n°|p\.|M\.|Mme|Dr) (?=\S)"), r"\1" + NBSP),    # R$ 210, n° 3, M. Dupont
+]
+TYPO_FR = [
+    (re.compile(r" (?=[;!?])"), NNBSP),
+    (re.compile(r" (?=:)"), NBSP),
+    (re.compile(r"« "), "«" + NBSP),
+    (re.compile(r" »"), NBSP + "»"),
+]
+CHAMPS_TEXTE = {"texte", "titre", "legende", "a_retenir", "chapo", "detail", "valeur", "boite", "fleche",
+                "note_sources", "items", "date_texte", "date_texte_semaine"}
+
+
+def typographie(ed):
+    regles = TYPO + (TYPO_FR if ed.get("langue", "fr") == "fr" else [])
+
+    def corriger(t):
+        for motif, rempl in regles:
+            t = motif.sub(rempl, t)
+        return t
+
+    def visiter(o, cle=None):
+        if isinstance(o, dict):
+            for k, v in o.items():
+                if k in ("sources", "credit"):  # noms de médias : laissés tels quels
+                    continue
+                if isinstance(v, str) and k in CHAMPS_TEXTE:
+                    o[k] = corriger(v)
+                else:
+                    visiter(v, k)
+        elif isinstance(o, list):
+            for i, v in enumerate(o):
+                if isinstance(v, str) and cle in CHAMPS_TEXTE:
+                    o[i] = corriger(v)
+                else:
+                    visiter(v, cle)
+    visiter(ed)
 
 
 def verifier(ed, genre):
@@ -170,6 +223,21 @@ def preparer(ed, genre, dossier_json, site):
     rel = f"{ed['langue']}/{GENRES[genre]['dossier']}/img"
     dossier_img = os.path.join(site, rel)
     os.makedirs(dossier_img, exist_ok=True)
+    # Schémas et graphiques en barres : dessinés ici, publiés comme des images.
+    for r in ed[GENRES[genre]["liste"]]:
+        for b in r["blocs"]:
+            if b["type"] in ("schema", "barres"):
+                b["_langue"] = ed["langue"]
+                cle = hashlib.sha1(json.dumps(b, sort_keys=True, ensure_ascii=False).encode()).hexdigest()[:10]
+                nom = f"sch-{cle}.png"
+                cible = os.path.join(dossier_img, nom)
+                try:
+                    dessin.dessiner(b, cible)
+                except Exception as exc:
+                    erreur(f"{b['type']} illisible ({exc}) dans {r['etiquette']}")
+                compresser(cible)
+                b.pop("_langue")
+                b["src"] = f"{rel}/{nom}"
     for el in images(ed, genre):
         if el.get("type") == "carte" or ("ville" in el and "lat" in el):
             nom = f"loc-{slug(el['ville'])}.png"
@@ -271,6 +339,7 @@ def construire(chemins_json, genre, reprendre=True):
         ed = json.load(open(chemin, encoding="utf-8"))
         verifier(ed, genre)
         ed["date"] = date_iso(ed["date_texte"], ed["langue"])
+        typographie(ed)
         ed["publie"] = dt.datetime.now(dt.timezone.utc).isoformat(timespec="seconds")
         eds.append((chemin, ed))
     publies = {f"{ed['langue']}/{g['dossier']}" for _, ed in eds}
@@ -338,6 +407,9 @@ def controler(ed):
         types = {b["type"] for b in r["blocs"]}
         if r["etiquette"] in IMAGE_OBLIGATOIRE and not types & {"image", "duo"}:
             manques.append(f"{r['etiquette']} : image obligatoire (photo ou carte Wikimedia, Our World in Data)")
+        for b in r["blocs"]:
+            if b["type"] == "schema" and not b.get("noeuds"):
+                manques.append(f"{r['etiquette']} : schéma à l'ancien format (etapes), le refaire avec noeuds et liens")
         if r["etiquette"] in SCHEMA_OBLIGATOIRE and "schema" not in types:
             manques.append(f"{r['etiquette']} : schéma obligatoire")
         if r["etiquette"] not in ("Carte expliquée", "Mapa explicado") and len(r.get("sources", [])) < 2:
@@ -349,12 +421,13 @@ def controler(ed):
         if el.get("nature") not in NATURES:
             manques.append(f"image sans \"nature\" ({', '.join(sorted(NATURES))}) : {(el.get('legende') or el.get('url', ''))[:60]}")
         natures.append(el.get("nature"))
+    natures += ["donnees" for r in rubriques for b in r["blocs"] if b["type"] == "barres"]
     if natures.count("donnees") < MIN_DONNEES:
-        manques.append(f"données : {natures.count('donnees')} visuel(s), minimum {MIN_DONNEES} (Our World in Data, cartes thématiques)")
+        manques.append(f"données : {natures.count('donnees')} visuel(s), minimum {MIN_DONNEES} (Our World in Data, cartes thématiques, barres)")
     visages = natures.count("portrait") + natures.count("logo")
     if visages < MIN_VISAGES:
         manques.append(f"portraits et logos : {visages}, minimum {MIN_VISAGES} (personnes peu médiatisées, organisations peu connues)")
-    avec = sum(1 for r in rubriques if any(b["type"] in ("image", "carte", "duo", "schema") for b in r["blocs"]))
+    avec = sum(1 for r in rubriques if any(b["type"] in ("image", "carte", "duo", "schema", "barres") for b in r["blocs"]))
     if rubriques and avec < TAUX_VISUELS * len(rubriques):
         manques.append(f"visuels : {avec} rubrique(s) illustrée(s) sur {len(rubriques)}, minimum {-(-int(TAUX_VISUELS * len(rubriques) * 10) // 10)}")
     for br in ed.get("breves", []):
@@ -369,9 +442,11 @@ def texte(ed):
     for r in ed.get("rubriques", []) + ed.get("sujets", []):
         lignes += [r["titre"], r.get("chapo", ""), (r.get("couverture") or {}).get("legende", "")]
         for b in r["blocs"]:
-            lignes += [b.get("texte", "")] + b.get("items", []) + [b.get("legende", "")]
+            lignes += [b.get("texte", "")] + [i for i in b.get("items", []) if isinstance(i, str)] + [b.get("legende", "")]
             lignes += [e.get("legende", "") for e in b.get("elements", [])]
             lignes += [x.get("boite") or x.get("fleche", "") for x in b.get("etapes", [])]
+            lignes += [b.get("titre", "")] + [" ".join(filter(None, [n.get("texte"), n.get("detail")])) for n in b.get("noeuds", [])]
+            lignes += [l.get("texte", "") for l in b.get("liens", [])] + [i.get("texte", "") for i in b.get("items", []) if isinstance(i, dict)]
         lignes.append(r.get("a_retenir", ""))
     for br in ed.get("breves", []):
         lignes += br["items"]

@@ -97,8 +97,14 @@ func lien(_ s: Source, texte: String? = nil) -> AttributedString {
     return a
 }
 
-func ligneSources(_ sources: [Source]?, _ t: Textes, apres: String? = nil) -> AttributedString? {
-    guard let sources, !sources.isEmpty else { return nil }
+func ligneSources(_ toutes: [Source]?, _ t: Textes, apres: String? = nil) -> AttributedString? {
+    // Un média n'apparaît qu'une fois, sous son nom court (lien vers le premier article cité).
+    var vus = Set<String>()
+    let sources = (toutes ?? []).filter { s in
+        let nom = s.titre.trimmingCharacters(in: .whitespaces).lowercased()
+        return !nom.isEmpty && vus.insert(nom).inserted
+    }
+    guard !sources.isEmpty else { return nil }
     var r = AttributedString(sources.count == 1 ? t.source : t.sources)
     for (i, s) in sources.enumerated() {
         if i > 0 { r += AttributedString(", ") }
@@ -188,6 +194,10 @@ struct VueBloc: View {
                         .frame(maxWidth: .infinity, alignment: .leading)
                 }
             }
+        case "schema" where b.src != nil, "barres":
+            // Dessinés à la publication (outils/schema.py) : une image large, agrandissable.
+            Figure(element: Element(type: "image", url: nil, src: b.src, largeur: 1100, legende: b.legende,
+                                    lien: b.lien, credit: b.credit, ville: nil, nature: "donnees"))
         case "schema":
             VStack(spacing: 5) {
                 ForEach(Array((b.etapes ?? []).enumerated()), id: \.offset) { _, e in

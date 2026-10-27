@@ -1,5 +1,5 @@
 import { charger, enregistrer } from "./edition.js";
-import { rendre, message, ligneEtat, activerZoom, ancres } from "./rendu.js";
+import { rendre, message, activerZoom, ancres } from "./rendu.js";
 import { t, PROFILS, profilActuel, changerProfil, nomLangue } from "./textes.js";
 import { globe, pendantChargement } from "./globe.js";
 
@@ -15,7 +15,6 @@ try { if (localStorage.getItem("vue") === "semaine") vue = "semaine"; } catch {}
 const installee = matchMedia("(display-mode: standalone)").matches || navigator.standalone === true;
 const ligneDate = document.getElementById("date");
 const boutonsVue = [...document.querySelectorAll("[data-vue]")];
-let etat = "";
 
 // Textes fixes de la page (attributs data-t et data-t-label), dans la langue du profil.
 function traduirePage() {
@@ -30,9 +29,7 @@ function dessiner() {
   ligneDate.textContent = vue === "jour"
     ? (jour?.donnees.date_texte ?? "")
     : (semaine?.donnees.date_texte_semaine ?? semaine?.donnees.date_texte ?? "");
-  const pied = rendre(journal, vue, jour?.donnees, semaine?.donnees);
-  if (etat) ligneEtat(pied, etat);
-  if (!installee) pied.append(Object.assign(document.createElement("p"), { className: "note", textContent: t("installer") }));
+  rendre(journal, vue, jour?.donnees, semaine?.donnees);
   document.title = vue === "jour" ? "Actualités" : t("titreSemaine");
 }
 
@@ -68,7 +65,6 @@ async function afficher({ silencieux = false } = {}) {
   affiche = dates;
 
   const enLigne = [jour, semaine].some((c) => c?.source === "reseau");
-  etat = enLigne ? t("enregistrement") : t("horsLigne");
   dessiner();
   for (const id of ouverts) document.getElementById(id)?.setAttribute("open", "");
   if (nouveauJour && vue === "jour") scrollTo(0, 0);
@@ -78,9 +74,7 @@ async function afficher({ silencieux = false } = {}) {
       jour?.source === "reseau" ? enregistrer("jour", profil, jour.donnees) : 0,
       semaine?.source === "reseau" ? enregistrer("semaine", profil, semaine.donnees) : 0,
     ])).reduce((a, b) => a + b, 0);
-    etat = manquees ? t("manquees")(manquees) : t("enregistrees");
-    const pied = journal.querySelector(".pied");
-    if (pied) ligneEtat(pied, etat);
+    if (manquees) console.info(`${manquees} image(s) non enregistrée(s) pour la lecture hors ligne`);
   }
   return true;
 }
@@ -116,7 +110,6 @@ function remplirMenu() {
     traduirePage();
     affiche = { jour: null, semaine: null };
     contenus = { jour: null, semaine: null };
-    etat = "";
     message(journal, t("chargement"));
     menu.close();
     scrollTo(0, 0);
@@ -128,15 +121,8 @@ function remplirMenu() {
     menu.close();
     document.getElementById(id)?.scrollIntoView({ block: "start" });
   })));
-  for (const b of menu.querySelectorAll("[data-vue]")) {
-    if (b.dataset.vue === vue) b.setAttribute("aria-current", "true");
-    else b.removeAttribute("aria-current");
-  }
 }
 
-for (const b of menu.querySelectorAll("[data-vue]")) {
-  b.addEventListener("click", () => { menu.close(); changerVue(b.dataset.vue); });
-}
 document.getElementById("ouvrir-menu").addEventListener("click", () => {
   remplirMenu();
   menu.showModal();

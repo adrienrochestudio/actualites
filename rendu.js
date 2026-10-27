@@ -19,9 +19,21 @@ function lien(source, texte) {
   return a;
 }
 
-function ligneSources(sources, apres) {
+// Un média ou une institution n'apparaît qu'une fois, sous son nom court (lien vers le premier article cité).
+function sourcesUniques(sources) {
+  const vus = new Set();
+  return (sources ?? []).filter((s) => {
+    const nom = (s.titre || "").trim().toLowerCase();
+    if (!nom || vus.has(nom)) return false;
+    vus.add(nom);
+    return true;
+  });
+}
+
+function ligneSources(toutes, apres) {
   const p = el("p", "note");
-  if (!sources?.length) return p;
+  const sources = sourcesUniques(toutes);
+  if (!sources.length) return p;
   p.append(sources.length === 1 ? t("source") : t("sources"));
   sources.forEach((s, i) => {
     if (i) p.append(", ");
@@ -87,7 +99,11 @@ function bloc(b) {
       for (const e of b.elements ?? []) d.append(figure(e));
       return d;
     }
+    case "barres":
+      // Dessiné à la publication (outils/schema.py).
+      return b.src ? figure({ ...b, type: "image", largeur: 1100 }, "large schema-image") : null;
     case "schema": {
+      if (b.src) return figure({ ...b, type: "image", largeur: 1100 }, "large schema-image");
       const d = el("figure", "schema");
       for (const etape of b.etapes ?? []) {
         if ("boite" in etape) {
@@ -191,8 +207,7 @@ function semaine(heb) {
   return s;
 }
 
-// Affiche l'édition du jour ("jour") ou de la semaine ("semaine"). Renvoie le pied de page,
-// que app.js complète avec l'état hors ligne.
+// Affiche l'édition du jour ("jour") ou de la semaine ("semaine").
 export function rendre(conteneur, vue, ed, heb) {
   const frag = document.createDocumentFragment();
   const pied = el("footer", "pied");
@@ -200,12 +215,9 @@ export function rendre(conteneur, vue, ed, heb) {
     if (ed.une) frag.append(une(ed));
     (ed.rubriques ?? []).forEach((r, i) => frag.append(rubrique(r, i)));
     if (ed.breves?.length) frag.append(breves(ed.breves));
-    // "Lundi 26 octobre 2026" ou "Segunda-feira, 26 de outubro de 2026" : on retire le jour de la semaine.
-    const jour = (ed.date_texte || "").replace(/^[^\s,]+,?\s+/, "");
-    pied.append(el("p", "note", t("piedJour")(jour)));
+
   } else if (vue === "semaine" && heb?.sujets?.length) {
     frag.append(semaine(heb));
-    pied.append(el("p", "note", t("piedSemaine")));
   } else {
     frag.append(el("p", "note", vue === "semaine" ? t("videSemaine") : t("videJour")));
   }
@@ -231,16 +243,6 @@ export function ancres(vue, ed, heb) {
 
 export function message(conteneur, texte) {
   conteneur.replaceChildren(el("p", "note", texte));
-}
-
-export function ligneEtat(pied, texte) {
-  let p = pied.querySelector("[data-etat]");
-  if (!p) {
-    p = el("p", "note");
-    p.dataset.etat = "";
-    pied.append(p);
-  }
-  p.textContent = texte;
 }
 
 // Agrandissement d'une image au toucher ou au clic (cartes, graphiques, portraits).

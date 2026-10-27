@@ -69,10 +69,7 @@ struct Journal: View {
     private var menu: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 0) {
-                titreMenu(t.edition, premier: true)
-                choix(t.quotidien, actif: vue == .jour) { changerVue(.jour) }
-                choix(t.hebdomadaire, actif: vue == .semaine) { changerVue(.semaine) }
-                titreMenu(t.langue)
+                titreMenu(t.langue, premier: true)
                 ForEach(Profil.allCases) { p in
                     choix(p.textes.nomLangue, actif: depot.profil == p) { depot.changerProfil(p) }
                 }
@@ -216,11 +213,30 @@ struct Journal: View {
                 Text("Actualités").font(Style.manchette()).foregroundStyle(Style.encre)
             }
             .padding(.top, 40)
-            Rectangle().fill(Color(white: 0.89)).frame(height: 1).padding(.top, 20)
+            // Onglets Quotidien / Hebdomadaire, comme l'app web.
+            HStack(spacing: 32) {
+                onglet(t.quotidien, .jour)
+                onglet(t.hebdomadaire, .semaine)
+            }
+            .padding(.top, 16)
+            Rectangle().fill(Color(white: 0.89)).frame(height: 1)
             Note(ligneDate).padding(.top, 14)
         }
         .frame(maxWidth: Style.large)
         .padding(.horizontal, 24)
+    }
+
+    private func onglet(_ texte: String, _ v: Vue) -> some View {
+        Button { changerVue(v) } label: {
+            VStack(spacing: 8) {
+                Text(texte).font(Style.serif(16, gras: vue == v)).foregroundStyle(vue == v ? Style.encre : Style.note)
+                Rectangle().fill(vue == v ? Style.encre : Color.clear).frame(height: 2)
+            }
+            .fixedSize()
+            .contentShape(Rectangle())
+        }
+        .buttonStyle(.plain)
+        .accessibilityAddTraits(vue == v ? .isSelected : [])
     }
 
     private var ligneDate: String {
@@ -274,22 +290,9 @@ struct Journal: View {
         .padding(.top, 28)
     }
 
+    /// Marge de fin de lecture (plus de mention de rédaction ni d'état hors ligne).
     private var pied: some View {
-        VStack(alignment: .leading, spacing: 6) {
-            if vue == .jour, let ed = depot.edition {
-                // "Lundi 26 octobre 2026" -> "26 octobre 2026" ; "Segunda-feira, 26 de outubro de 2026" -> "26 de outubro de 2026"
-                let jour = ed.date_texte.replacingOccurrences(of: #"^[^\s,]+,?\s+"#, with: "", options: .regularExpression)
-                Note(t.piedJour(jour))
-            } else if vue == .semaine, depot.semaine != nil {
-                Note(t.piedSemaine)
-            }
-            switch depot.etat {
-            case .horsLigne: Note(t.horsLigne)
-            case .aJour: Note(t.enregistrees)
-            default: EmptyView()
-            }
-        }
-        .padding(.top, 64)
+        Color.clear.frame(height: 64)
     }
 
     /// Image agrandie sur fond blanc ; un clic ou Échap referme.

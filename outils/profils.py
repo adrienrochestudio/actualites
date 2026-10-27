@@ -92,11 +92,26 @@ def champs(ed, liste):
         for b in r["blocs"]:
             if b.get("texte"):
                 yield b, "texte"
-            for i in range(len(b.get("items", []))):
-                yield b["items"], i
+            if b["type"] == "liste":
+                for i in range(len(b.get("items", []))):
+                    yield b["items"], i
             yield from element(b)
             for e in b.get("elements", []):
                 yield from element(e)
+            if b["type"] in ("schema", "barres"):
+                for cle in ("titre", "unite"):
+                    if b.get(cle):
+                        yield b, cle
+            for n in b.get("noeuds", []):
+                for cle in ("texte", "detail", "valeur"):
+                    if n.get(cle):
+                        yield n, cle
+            for l in b.get("liens", []):
+                if l.get("texte"):
+                    yield l, "texte"
+            if b["type"] == "barres":
+                for it in b.get("items", []):
+                    yield it, "texte"
             for etape in b.get("etapes", []):
                 for cle in ("boite", "fleche"):
                     if etape.get(cle):

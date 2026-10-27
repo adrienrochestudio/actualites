@@ -76,7 +76,7 @@ struct Article: Codable, Hashable, Identifiable {
         for b in blocs {
             if b.type == "duo" {
                 liste += (b.elements ?? []).compactMap(\.chemin)
-            } else if b.type == "image" || b.type == "carte", let c = b.commeElement.chemin {
+            } else if ["image", "carte", "schema", "barres"].contains(b.type), let c = b.commeElement.chemin {
                 liste.append(c)
             }
         }

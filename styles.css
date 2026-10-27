@@ -87,7 +87,13 @@ a:focus-visible, button:focus-visible, summary:focus-visible, img:focus-visible 
    Graisses : titres 540 en coupe display, intertitres 600, texte 400. Pas de gras lourd. */
 .titre { font-size: 31px; line-height: 37px; font-weight: 540; margin: 0; letter-spacing: -0.01em; }
 .sous-titre { font-size: 19px; line-height: 26px; font-weight: 600; margin: 28px 0 6px; }
-.texte { font-size: 18px; line-height: 30px; margin: 0 0 15px; hyphens: auto; -webkit-hyphens: auto; }
+.texte {
+  font-size: 18px; line-height: 30px; margin: 0 0 15px;
+  /* Coupure des mots : seulement les mots longs, jamais deux lignes coupées de suite. */
+  hyphens: auto; -webkit-hyphens: auto;
+  hyphenate-limit-chars: 8 4 4; -webkit-hyphenate-limit-before: 4; -webkit-hyphenate-limit-after: 4;
+  -webkit-hyphenate-limit-lines: 1;
+}
 .note { font-size: 13px; line-height: 19px; color: var(--note); margin: 0; font-weight: 400; }
 .note a { color: var(--note); }
 figcaption.note, .chapo { font-style: italic; }

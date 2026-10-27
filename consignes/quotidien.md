@@ -55,6 +55,8 @@ Dans `base.json`, l'ordre n'a pas d'importance : `outils/profils.py` répartit e
 
 ## Réseau et sources
 
+- Dans `sources`, `titre` est le nom court du média ou de l'institution (« Jerusalem Post », « CNBC », « FMI »), jamais une description de l'article. Un même média n'apparaît qu'une fois par rubrique.
+
 - Le shell de la tâche n'atteint pas les sites de presse ni Wikimedia (proxy 403) : c'est normal. Seuls git, GitHub et les dépôts de paquets passent. Toute lecture du web passe par les outils WebSearch et WebFetch, qui fonctionnent.
 - La veille (flux de `consignes/veille.txt`) tourne chaque nuit dans GitHub Actions et attend sur la branche `veille` (étape 2). Lire ensuite les articles retenus avec WebFetch, sur l'adresse directe de l'article (jamais une adresse de redirection Google).
 - WebSearch : toujours `mode: "extended"` pour l'actualité datée (le mode standard ne renvoie que des liens). Requêtes précises (sujet, lieu, date), lancées en parallèle dans un seul tour.
@@ -76,7 +78,8 @@ Ce qu'on cherche, dans cet ordre :
 - **Données** : graphiques et cartes Our World in Data (`https://ourworldindata.org/grapher/<graphique>.png?tab=map` ou `tab=chart`, `"lien"` vers la version interactive, crédit "Our World in Data, CC BY"). Chercher le graphique avec WebFetch sur `https://ourworldindata.org/search?q=<sujet>`. Choisir celui qui montre le point de l'article (le pays dans son contexte, l'évolution, l'écart). Pleine largeur (`"largeur": 1100`). Cartes thématiques Wikimedia Commons aussi.
 - **Mini-cartes** (`carte`, générées par `publier.py`) pour chaque ville ou région peu connue citée, sans limite ; pas pour une capitale évidente. Ville frontalière : préciser `"pays"` (nom Natural Earth).
 - **Photos** Wikimedia Commons d'un lieu, d'un bâtiment, d'un objet technique (data center, puce, port, mine), en pleine largeur.
-- **Schémas** (`schema`) pour un mécanisme, un circuit d'argent, un montage.
+- **Schémas** (`schema`) pour un mécanisme, un circuit d'argent, un montage : de vrais schémas, pas une suite de cases. Des nœuds (acteurs, étapes, objets) avec leur `valeur` chiffrée quand elle existe et un `detail` court, et des `liens` libellés qui disent ce qui circule (argent, énergie, données, décisions) et combien. Au moins un embranchement ou une convergence quand le sujet en a ; `accent` sur le nœud central. 3 nœuds au plus par étage, textes courts (4 à 6 mots par nœud, 8 par lien). Format dans `outils/schema.py`, dessiné en image à la publication. L'ancien format `etapes` est refusé.
+- **Barres** (`barres`) pour comparer 2 à 8 quantités quand Our World in Data n'a pas le bon graphique (dette par créancier, parts de marché, budgets) : chiffres sourcés, `accent` sur la barre dont parle l'article. Compte comme visuel de données.
 
 La Une porte une image quand elle nomme une personne ou une organisation peu connue : `"une": {"texte": ..., "image": {...}, "sources": [...]}`.
 
