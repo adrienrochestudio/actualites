@@ -259,18 +259,33 @@ def barres(b, sortie):
         ax.text(MARGE, y, l, fontproperties=police("Titre-Medium", T_TITRE), color=ENCRE, va="top")
         y += T_TITRE * 1.3
     y += 24 if titre else 0
-    utile = LARGEUR - 2 * MARGE - 230
-    for i in items:
-        v = float(i["valeur"])
+    # Valeurs négatives : axe du zéro placé selon l'étendue, barres vers la gauche, signe explicite.
+    valeurs = [float(i["valeur"]) for i in items]
+    negatif = min(valeurs) < 0
+    utile = LARGEUR - 2 * MARGE - (420 if negatif else 230)
+    etendue = (max(0, max(valeurs)) - min(0, min(valeurs))) or 1
+    zero = MARGE + (160 if negatif else 0) + utile * (-min(0, min(valeurs)) / etendue)
+    y0 = y
+    for i, v in zip(items, valeurs):
         ax.text(MARGE, y, i["texte"], fontproperties=police("Texte-Regular", T_NOEUD), color=ENCRE, va="top")
         y += T_NOEUD * 1.25
-        long = max(4, utile * abs(v) / maxi)
+        long = max(4, utile * abs(v) / etendue)
         couleur = MARQUE if i.get("accent") else "#9a9a9a"
-        ax.add_patch(plt.Rectangle((MARGE, y), long, 40, facecolor=couleur, edgecolor="none"))
-        nombre = nombre_fr(v, b.get("_langue", "fr"))
-        ax.text(MARGE + long + 14, y + 20, f"{nombre} {unite}".strip(), fontproperties=police("Texte-Semibold", T_VALEUR),
-                color=MARQUE if i.get("accent") else ENCRE, va="center")
+        x = zero - long if v < 0 else zero
+        ax.add_patch(plt.Rectangle((x, y), long, 40, facecolor=couleur, edgecolor="none"))
+        nombre = nombre_fr(v, b.get("_langue", "fr")).replace("-", "\u2212")
+        if negatif and v > 0:
+            nombre = "+" + nombre
+        etiquette = f"{nombre}\u00a0{unite}".strip() if unite not in ("%",) else f"{nombre}\u00a0%"
+        if v < 0:
+            ax.text(x - 14, y + 20, etiquette, fontproperties=police("Texte-Semibold", T_VALEUR),
+                    color=MARQUE if i.get("accent") else ENCRE, va="center", ha="right")
+        else:
+            ax.text(x + long + 14, y + 20, etiquette, fontproperties=police("Texte-Semibold", T_VALEUR),
+                    color=MARQUE if i.get("accent") else ENCRE, va="center")
         y += 46 + 26
+    if negatif:
+        ax.plot([zero, zero], [y0 + T_NOEUD * 1.25 - 8, y - 26 + 8], color=ENCRE, linewidth=1.6)
     fig.savefig(sortie, dpi=72, facecolor="white")
     plt.close(fig)
 

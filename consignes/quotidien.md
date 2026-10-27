@@ -60,6 +60,7 @@ Dans `base.json`, l'ordre n'a pas d'importance : `outils/profils.py` répartit e
 
 - Le shell de la tâche n'atteint pas les sites de presse ni Wikimedia (proxy 403) : c'est normal. Seuls git, GitHub et les dépôts de paquets passent. Toute lecture du web passe par les outils WebSearch et WebFetch, qui fonctionnent.
 - La veille (flux de `consignes/veille.txt`) tourne chaque nuit dans GitHub Actions et attend sur la branche `veille` (étape 2). Lire ensuite les articles retenus avec WebFetch, sur l'adresse directe de l'article (jamais une adresse de redirection Google).
+- Si WebFetch échoue (ENOTFOUND, site refusé), ne pas insister : WebSearch en mode extended sur le titre exact de l'article ou sur la page Wikimedia donne le contenu et les adresses d'images.
 - WebSearch : toujours `mode: "extended"` pour l'actualité datée (le mode standard ne renvoie que des liens). Requêtes précises (sujet, lieu, date), lancées en parallèle dans un seul tour.
 - Compléments : anthropic.com/news et mistral.ai/news (IA) ; iea.org/reports, ec.europa.eu/eurostat, insee.fr, worldbank.org (chiffres) ; cnc.fr (fréquentation, début de mois) ; paris.fr ; consilium.europa.eu.
 - Une page qui refuse la lecture : passer à une autre source, ne pas insister. Éviter les agrégateurs de faible qualité.

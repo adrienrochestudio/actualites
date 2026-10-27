@@ -392,7 +392,7 @@ MIN_VISAGES = 2  # portraits et logos
 
 
 def mots_corps(r):
-    return sum(len((b.get("texte") or "").split()) + sum(len(i.split()) for i in b.get("items", []))
+    return sum(len((b.get("texte") or "").split()) + sum(len(i.split()) for i in b.get("items", []) if isinstance(i, str))
                for b in r["blocs"])
 
 
