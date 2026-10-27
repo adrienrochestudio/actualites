@@ -31,7 +31,9 @@ Dans `base.json`, l'ordre n'a pas d'importance : `outils/profils.py` répartit e
 - Privilégier ce qui a un impact réel et reste peu traité : décisions, budgets, technologies, matières premières, infrastructures, sciences, régions peu couvertes.
 - Pas d'alarmisme ni de fin du monde à chaque rubrique. Une info grave se traite par les faits et par ce qui est fait pour y répondre. Inclure des avancées réelles quand elles existent, sans tomber dans le tout positif : l'utile d'abord.
 - À la pointe sur la technologie et la finance : nouveautés de la veille ou de la semaine, expliquées jusqu'au mécanisme.
-- Faits précis, chiffres, dates, noms. Jamais de généralités. "À retenir" : 2 phrases en fin de chaque rubrique sauf Le chiffre.
+- Faits précis, chiffres, dates, noms. Jamais de généralités. Ne jamais écrire ce que les sources ne disent pas (« le chiffre n'est pas donné ») : chercher l'information ou ne pas en parler.
+- Pas deux rubriques sur le même sujet, la même entreprise ou le même événement : une actualité dominante va dans une seule rubrique, les autres prennent d'autres sujets.
+- Les longueurs sont des cibles à atteindre, pas des plafonds. `publier.py` refuse une rubrique sous 75 % de sa cible, moins de 70 % de rubriques illustrées, une zone de brèves à un seul item. "À retenir" : 2 phrases en fin de chaque rubrique sauf Le chiffre.
 
 ## Rubriques (longueurs indicatives en mots)
 
@@ -45,7 +47,7 @@ Dans `base.json`, l'ordre n'a pas d'importance : `outils/profils.py` répartit e
 - **Finance** (350) : 3 ou 4 mouvements de marché de la veille ou de la semaine (indices, taux, pétrole, or, devises, une action) : niveau, variation, raison précise.
 - **Intelligence artificielle** (400) : nouveauté Claude ou Anthropic en priorité (lire anthropic.com/news, qui n'a pas de flux), puis OpenAI, Mistral, modèles chinois, marché, matières premières de l'IA, ou article critique.
 - **IA, technique** (550) : un mécanisme technique de l'IA expliqué à un non-ingénieur (refroidissement d'un data center, token, choix du mot suivant, skills et mods de Claude, MCP, quantification, entraînement contre inférence, GPU, InfiniBand, fenêtre de contexte...). Partir d'une situation concrète, définir chaque terme à sa première apparition, `schema` obligatoire, chiffres réels et sourcés (documentation officielle, Nvidia, Google, AIE, Uptime Institute, recherche).
-- **Architecture** (350, Ana) : un projet, un bâtiment, un concours, un prix, l'urbanisme ou les matériaux, au Brésil ou ailleurs. Photo Wikimedia Commons obligatoire, architecte et année dans la légende.
+- **Architecture** (350, Ana) : un projet, un bâtiment, un concours, un prix, l'urbanisme ou les matériaux, au Brésil ou ailleurs. Photo Wikimedia Commons obligatoire, architecte et année dans la légende : choisir un sujet qui a une photo libre. Une nouveauté sans photo libre (cas fréquent des projets publiés par ArchDaily) passe en mention dans le texte, et la rubrique porte sur un bâtiment, un architecte ou un lieu lié qui en a une.
 - **Cinéma** (300) : industrie du cinéma et de l'audiovisuel, plutôt France (fréquentation, financement, tournages, festivals, métiers). Pas de classement du box-office.
 - **Environnement** (350) : climat, énergie, biodiversité, pollution ; un fait mesuré et ce qu'il change. Les solutions qui fonctionnent ont leur place.
 - **Carte expliquée** (350) : une seule carte, lue en détail : ce qu'elle représente, comment la lire, ce qu'on y voit d'étonnant, ce qui l'explique. Pleine largeur (`"largeur": 1100`), Our World in Data (`?tab=map`), Wikimedia Commons ou institution publique sous licence libre, avec `"lien"` vers la version interactive. Sans lien obligatoire avec l'actualité.
@@ -71,18 +73,18 @@ Viser un visuel utile dans 80 % des rubriques. Licences libres uniquement, charg
 
 ## Déroulé
 
-Dépendances : Pillow et matplotlib (`pip install pillow matplotlib` si l'import échoue). Schéma du JSON : en tête de `outils/publier.py`. Au plus 10 recherches web et 16 lectures de page : la veille remplace le reste.
+Dépendances : Pillow et matplotlib (`pip install pillow matplotlib` si l'import échoue). Schéma du JSON : en tête de `outils/publier.py`. Au plus 12 recherches web et 26 lectures de page : la veille remplace le reste.
 
 1. Historique : `git fetch origin historique`, `git worktree add -B historique historique origin/historique`. Puis `python3 outils/historique.py notions` (notions et dossiers récents à ne pas refaire). Ne pas lire les fichiers de l'historique.
 2. Veille : `git fetch origin veille && git worktree add veille FETCH_HEAD`, puis lire `veille/veille.txt` (sa première ligne donne l'heure de la veille). Choisir les sujets, `python3 outils/veille.py lien <numéros>` pour leurs adresses, lire les articles retenus avec WebFetch. Recherches web seulement pour ce que la veille ne couvre pas (Le chiffre, Carte expliquée, IA, technique, compléments).
    Si la branche `veille` manque ou date de plus de 12 heures : chercher l'actualité avec WebSearch en mode extended, une requête par rubrique, jusqu'à 18 recherches.
 3. Pistes pour le dimanche : pour 1 à 3 sujets de fond repérés et non traités, `python3 outils/historique.py piste "thème" "sujet en une ligne" "url"`. Thèmes : Géopolitique, Environnement, Société, Finance, IA, Architecture, Politique du Brésil.
 4. Rédaction de `base.json` en français, toutes les rubriques des deux profils et les brèves. Puis `python3 outils/historique.py verifier base.json` : changer de sujet si une rubrique reprend un sujet déjà traité.
-5. Contrôle FR : `python3 outils/publier.py jour base.json --texte`, puis l'audit sur `base.txt` (`--lang fr`). Corriger les alertes rouges dans le JSON. Les alertes "de plus" dans une comparaison chiffrée sont acceptées.
+5. Contrôle FR : `python3 outils/publier.py jour base.json --texte`. Compléter tout ce qu'il liste en MANQUES (relancer jusqu'à ce qu'il n'en liste plus), puis l'audit sur `base.txt` (`--lang fr`). Corriger les alertes rouges dans le JSON. Les alertes "de plus" dans une comparaison chiffrée sont acceptées.
 6. `python3 outils/profils.py preparer base.json` : écrit `edition-fr.json` et `a-traduire.json` (les seuls textes d'Ana).
 7. Traduction selon `consignes/ecriture.md` : écrire `traduit.json`, mêmes clés, même nombre d'entrées, chaque texte en pt-BR naturel. Ne rien ajouter, ne rien retirer.
 8. `python3 outils/profils.py assembler base.json traduit.json` (écrit `edition-pt.json`), puis `python3 outils/publier.py jour edition-pt.json --texte` et l'audit sur `edition-pt.txt` (`--lang pt`). Corriger les alertes rouges dans `traduit.json` et réassembler.
-9. Publication des deux profils en un envoi : `python3 outils/publier.py jour edition-fr.json edition-pt.json --pousser`. Une image "laissée distante" n'est pas une erreur. Si l'édition pt a échoué, publier `edition-fr.json` seul.
+9. Publication des deux profils en un envoi : `python3 outils/publier.py jour edition-fr.json edition-pt.json --pousser`. Une image "laissée distante" n'est pas une erreur. S'il refuse pour des MANQUES, compléter et relancer ; `--forcer` seulement après 7h40, heure de Paris, pour ne pas manquer 8h. Si l'édition pt a échoué, publier `edition-fr.json` seul.
 10. Historique : `python3 outils/historique.py ajouter base.json`, puis `python3 outils/historique.py envoyer`.
 
 Le dimanche, après l'étape 10 : édition de la semaine selon `consignes/hebdo.md`.

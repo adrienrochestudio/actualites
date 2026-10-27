@@ -300,6 +300,52 @@ def construire(chemins_json, genre, reprendre=True):
     return site, max(ed["date"] for _, ed in eds), base
 
 
+# Contrôle de l'édition du jour : longueurs (mots du corps), visuels, brèves, sources.
+# Mêmes cibles pour le français et le portugais ; étiquettes des deux langues.
+CIBLES = {
+    "Monde": 450, "Mundo": 450, "France": 350, "França": 350, "Brésil": 350, "Brasil": 350,
+    "Politique du Brésil": 350, "Política brasileira": 350, "Le chiffre": 250, "O número": 250,
+    "Comprendre": 600, "Entender": 600, "Finance": 350, "Finanças": 350,
+    "Intelligence artificielle": 400, "Inteligência artificial": 400, "IA, technique": 550, "IA, técnica": 550,
+    "Architecture": 350, "Arquitetura": 350, "Cinéma": 300, "Cinema": 300,
+    "Environnement": 350, "Meio ambiente": 350, "Carte expliquée": 350, "Mapa explicado": 350,
+}
+IMAGE_OBLIGATOIRE = {"Architecture", "Arquitetura", "Carte expliquée", "Mapa explicado"}
+SCHEMA_OBLIGATOIRE = {"IA, technique", "IA, técnica"}
+TAUX_LONGUEUR = 0.75
+TAUX_VISUELS = 0.7
+
+
+def mots_corps(r):
+    return sum(len((b.get("texte") or "").split()) + sum(len(i.split()) for i in b.get("items", []))
+               for b in r["blocs"])
+
+
+def controler(ed):
+    """Liste des manques d'une édition du jour (vide si tout va bien)."""
+    manques = []
+    rubriques = ed.get("rubriques", [])
+    for r in rubriques:
+        cible = CIBLES.get(r["etiquette"])
+        n = mots_corps(r)
+        if cible and n < cible * TAUX_LONGUEUR:
+            manques.append(f"{r['etiquette']} : {n} mots, minimum {int(cible * TAUX_LONGUEUR)} (cible {cible})")
+        types = {b["type"] for b in r["blocs"]}
+        if r["etiquette"] in IMAGE_OBLIGATOIRE and not types & {"image", "duo"}:
+            manques.append(f"{r['etiquette']} : image obligatoire (photo ou carte Wikimedia, Our World in Data)")
+        if r["etiquette"] in SCHEMA_OBLIGATOIRE and "schema" not in types:
+            manques.append(f"{r['etiquette']} : schéma obligatoire")
+        if r["etiquette"] not in ("Carte expliquée", "Mapa explicado") and len(r.get("sources", [])) < 2:
+            manques.append(f"{r['etiquette']} : au moins deux sources")
+    avec = sum(1 for r in rubriques if any(b["type"] in ("image", "carte", "duo", "schema") for b in r["blocs"]))
+    if rubriques and avec < TAUX_VISUELS * len(rubriques):
+        manques.append(f"visuels : {avec} rubrique(s) illustrée(s) sur {len(rubriques)}, minimum {-(-int(TAUX_VISUELS * len(rubriques) * 10) // 10)}")
+    for br in ed.get("breves", []):
+        if len(br.get("items", [])) < 2:
+            manques.append(f"brèves {br['rubrique']} : au moins 2 items, ou retirer la zone")
+    return manques
+
+
 def texte(ed):
     """Texte brut d'une édition (jour ou semaine), pour l'audit sans-trace-ia."""
     lignes = [ed["une"]["texte"]] if ed.get("une") else []
@@ -336,14 +382,26 @@ if __name__ == "__main__":
     a.add_argument("genre", nargs="?", choices=["jour", "semaine"], default="jour")
     a.add_argument("editions", nargs="+")
     a.add_argument("--pousser", action="store_true")
-    a.add_argument("--texte", action="store_true", help="écrit le .txt à côté du JSON et s'arrête")
+    a.add_argument("--texte", action="store_true", help="écrit le .txt à côté du JSON, contrôle et s'arrête")
+    a.add_argument("--forcer", action="store_true",
+                   help="publie malgré les manques (seulement après 7h40, heure de Paris)")
     x = a.parse_args()
+    manques = {}
+    if x.genre == "jour":
+        for chemin in x.editions:
+            m = controler(json.load(open(chemin, encoding="utf-8")))
+            if m:
+                manques[chemin] = m
+    for chemin, m in manques.items():
+        print(f"MANQUES dans {os.path.basename(chemin)} :\n" + "\n".join(f"  - {l}" for l in m))
     if x.texte:
         for chemin in x.editions:
             sortie = os.path.splitext(chemin)[0] + ".txt"
             open(sortie, "w", encoding="utf-8").write(texte(json.load(open(chemin, encoding="utf-8"))))
             print(sortie)
         sys.exit()
+    if manques and not x.forcer:
+        erreur("édition incomplète : compléter le JSON (voir MANQUES ci-dessus) et relancer")
     for essai in range(3):
         site, date, base = construire(x.editions, x.genre, reprendre=x.pousser)
         if not x.pousser:
