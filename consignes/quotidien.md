@@ -105,6 +105,8 @@ Dépendances : Pillow et matplotlib (`pip install pillow matplotlib` si l'import
 9. Publication des deux profils en un envoi : `python3 outils/publier.py jour edition-fr.json edition-pt.json --pousser`. Une image "laissée distante" n'est pas une erreur. S'il refuse pour des MANQUES, compléter et relancer ; `--forcer` seulement après 7h40, heure de Paris, pour ne pas manquer 8h. Si l'édition pt a échoué, publier `edition-fr.json` seul.
 10. Historique : `python3 outils/historique.py ajouter base.json`, puis `python3 outils/historique.py envoyer`.
 
+Relance : une exécution lancée alors que l'édition du jour est déjà en ligne est une relance voulue par Adrien, pour obtenir une meilleure édition. Refaire tout le déroulé et remplacer l'édition en ligne, sans exception. Les sujets de l'édition remplacée peuvent être repris, en mieux ; `historique.py` ignore déjà les lignes du jour et `ajouter` les remplace.
+
 Le dimanche, après l'étape 10 : édition de la semaine selon `consignes/hebdo.md`.
 
 ## En cas d'échec

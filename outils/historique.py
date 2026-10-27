@@ -63,11 +63,18 @@ def champs(ligne):
     return [c.strip() for c in ligne.split("|")]
 
 
+def aujourdhui():
+    return dt.datetime.now(dt.timezone(dt.timedelta(hours=1))).date().isoformat()
+
+
 def sujets_recents():
-    """(rubrique, sujet, mots) pour l'historique quotidien et hebdomadaire."""
+    """(rubrique, sujet, mots) pour l'historique quotidien et hebdomadaire.
+    Les lignes du jour sont ignorées : une relance refait l'édition du jour, elle ne doit pas s'interdire ses sujets."""
     out = []
     for nom in ("quotidien.txt", "hebdo.txt"):
         for l in lire(nom)[1]:
+            if l.startswith(aujourdhui()):
+                continue
             c = champs(l)
             if len(c) >= 3:
                 out.append((c[1], c[2], mots(c[2] + " " + (c[3] if len(c) > 3 else ""))))
@@ -115,7 +122,7 @@ def main(args):
     if action == "notions":
         for l in lire("quotidien.txt")[1]:
             c = champs(l)
-            if len(c) >= 3 and c[1] in A_NOTION:
+            if len(c) >= 3 and c[1] in A_NOTION and not l.startswith(aujourdhui()):
                 print(f"{c[0]} | {c[1]} | {c[2]}")
         for l in lire("hebdo.txt")[1]:
             print(l)
