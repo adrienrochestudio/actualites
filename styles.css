@@ -184,18 +184,28 @@ figure.photo:not(.large) img { max-width: 360px; }
 }
 .zoom p { max-width: var(--colonne); margin: 0 auto; font-style: italic; }
 
-/* Voile du haut (téléphone) : sous l'heure et la batterie, le texte qui défile s'efface en douceur
-   au lieu de passer sous les indicateurs. Hauteur nulle quand l'écran n'a pas d'encoche. */
+/* Voile du haut (téléphone) : sous l'heure et la batterie, fond plein, puis fondu sur 24 px :
+   le texte qui défile s'efface au lieu de passer sous les indicateurs. */
 .voile {
   position: fixed;
   top: 0;
   left: 0;
   right: 0;
   z-index: 3;
-  height: calc(env(safe-area-inset-top) + min(22px, env(safe-area-inset-top) * 100));
-  background: linear-gradient(to bottom, var(--fond) 0, var(--fond) env(safe-area-inset-top), rgb(255 255 255 / 0) 100%);
+  height: env(safe-area-inset-top, 0px);
+  background: var(--fond);
   pointer-events: none;
 }
+.voile::after {
+  content: "";
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  height: 24px;
+  background: linear-gradient(to bottom, #ffffff, rgb(255 255 255 / 0));
+}
+@media (min-width: 960px) { .voile::after { display: none; } }
 
 /* Bouton du menu : trois traits, toujours accessible en haut à gauche */
 .ouvrir-menu, .fermer-menu {
@@ -208,12 +218,15 @@ figure.photo:not(.large) img { max-width: 360px; }
   padding: 0;
   border: 0;
   border-radius: 22px;
-  background: rgb(255 255 255 / 0.86);
+  background: var(--fond);
   cursor: pointer;
+  transition: opacity 0.2s ease, translate 0.2s ease;
   display: grid;
   place-content: center;
   gap: 5px;
 }
+/* Masqué pendant la lecture (défilement vers le bas), revient dès qu'on remonte. */
+.ouvrir-menu.cache { opacity: 0; translate: 0 -12px; pointer-events: none; }
 .ouvrir-menu span, .fermer-menu span { display: block; width: 18px; height: 1.5px; background: var(--encre); }
 .fermer-menu { position: absolute; background: none; }
 .fermer-menu span { position: absolute; left: 13px; top: 21px; }
@@ -262,12 +275,17 @@ figure.photo:not(.large) img { max-width: 360px; }
 .menu-liste button[aria-current="true"] { color: var(--marque); font-weight: 600; }
 @media (prefers-reduced-motion: reduce) { .menu { transition: none; } }
 
-/* Tirer pour actualiser : le globe descend avec le doigt, puis tourne vite pendant le chargement */
+/* Tirer pour actualiser : la page descend avec le doigt et découvre le globe au-dessus d'elle,
+   qui tourne vite pendant le chargement. Rien ne se superpose au titre. */
+.titre-journal, .journal {
+  transform: translateY(var(--decalage, 0px));
+  transition: transform 0.22s ease;
+}
+html.glisse .titre-journal, html.glisse .journal { transition: none; }
 .tirer {
-  --tirage: 0px;
   position: fixed;
   z-index: 2;
-  top: calc(env(safe-area-inset-top) + var(--tirage) - 40px);
+  top: calc(env(safe-area-inset-top, 0px) + 12px);
   left: 0;
   right: 0;
   display: flex;
@@ -276,11 +294,11 @@ figure.photo:not(.large) img { max-width: 360px; }
   gap: 6px;
   opacity: 0;
   pointer-events: none;
-  transition: top 0.18s ease, opacity 0.18s ease;
+  transition: opacity 0.18s ease;
 }
 .tirer.visible { opacity: 1; }
-.tirer.glisse { transition: opacity 0.18s ease; }
 .tirer canvas { display: block; }
+@media (prefers-reduced-motion: reduce) { .titre-journal, .journal { transition: none; } }
 
 /* Bandeau de mise à jour */
 .maj {

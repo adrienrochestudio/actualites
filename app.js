@@ -154,8 +154,8 @@ let distance = 0;
 let actualisation = false;
 
 function poserTirage(d) {
-  tirer.style.setProperty("--tirage", `${d}px`);
-  tirer.classList.toggle("visible", d > 4 || actualisation);
+  document.documentElement.style.setProperty("--decalage", `${d}px`);
+  tirer.classList.toggle("visible", d > 24 || actualisation);
 }
 
 addEventListener("touchstart", (e) => {
@@ -169,7 +169,7 @@ addEventListener("touchmove", (e) => {
   const brut = e.touches[0].clientY - depart;
   if (brut <= 0 || scrollY > 0) { distance = 0; poserTirage(0); return; }
   distance = Math.min(120, brut * 0.5); // résistance
-  tirer.classList.add("glisse");
+  document.documentElement.classList.add("glisse");
   tirerTexte.textContent = distance >= SEUIL ? t("relacher") : t("tirer");
   poserTirage(distance);
 }, { passive: true });
@@ -177,7 +177,7 @@ addEventListener("touchmove", (e) => {
 addEventListener("touchend", async () => {
   if (depart == null) return;
   depart = null;
-  tirer.classList.remove("glisse");
+  document.documentElement.classList.remove("glisse");
   if (distance < SEUIL) { poserTirage(0); return; }
   actualisation = true;
   tirerTexte.textContent = t("actualisation");
@@ -190,6 +190,16 @@ addEventListener("touchend", async () => {
   actualisation = false;
   poserTirage(0);
 });
+
+// Bouton du menu : caché quand on descend dans la lecture, visible en haut de page ou dès qu'on remonte.
+const boutonMenu = document.getElementById("ouvrir-menu");
+let dernierY = scrollY;
+addEventListener("scroll", () => {
+  const y = scrollY;
+  if (Math.abs(y - dernierY) < 6) return;
+  boutonMenu.classList.toggle("cache", y > 80 && y > dernierY);
+  dernierY = y;
+}, { passive: true });
 
 // Retour au premier plan (app restée ouverte depuis la veille) : chercher l'édition du jour.
 document.addEventListener("visibilitychange", () => {
