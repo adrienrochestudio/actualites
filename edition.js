@@ -54,6 +54,7 @@ export function imagesDe(donnees) {
     const src = bloc.src || bloc.url;
     if (src) urls.add(src);
   };
+  visiter(donnees.une?.image);
   for (const r of [...(donnees.rubriques ?? []), ...(donnees.sujets ?? [])]) {
     visiter(r.couverture);
     (r.blocs ?? []).forEach(visiter);

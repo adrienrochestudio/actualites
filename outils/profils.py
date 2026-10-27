@@ -74,6 +74,8 @@ def champs(ed, liste):
     """Tous les textes à traduire, dans un ordre fixe : (objet, clé) ou (liste, index)."""
     if ed.get("une"):
         yield ed["une"], "texte"
+        if (ed["une"].get("image") or {}).get("legende"):
+            yield ed["une"]["image"], "legende"
 
     def element(e):
         if e.get("legende"):

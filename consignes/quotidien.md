@@ -33,7 +33,7 @@ Dans `base.json`, l'ordre n'a pas d'importance : `outils/profils.py` répartit e
 - À la pointe sur la technologie et la finance : nouveautés de la veille ou de la semaine, expliquées jusqu'au mécanisme.
 - Faits précis, chiffres, dates, noms. Jamais de généralités. Ne jamais écrire ce que les sources ne disent pas (« le chiffre n'est pas donné ») : chercher l'information ou ne pas en parler.
 - Pas deux rubriques sur le même sujet, la même entreprise ou le même événement : une actualité dominante va dans une seule rubrique, les autres prennent d'autres sujets.
-- Les longueurs sont des cibles à atteindre, pas des plafonds. `publier.py` refuse une rubrique sous 75 % de sa cible, moins de 70 % de rubriques illustrées, une zone de brèves à un seul item. "À retenir" : 2 phrases en fin de chaque rubrique sauf Le chiffre.
+- Les longueurs sont des cibles à atteindre, pas des plafonds. `publier.py` refuse une rubrique sous 75 % de sa cible, moins de 80 % de rubriques illustrées, trop peu de données, de portraits ou de logos (voir Visuels), une zone de brèves à un seul item. "À retenir" : 2 phrases en fin de chaque rubrique sauf Le chiffre.
 
 ## Rubriques (longueurs indicatives en mots)
 
@@ -63,13 +63,26 @@ Dans `base.json`, l'ordre n'a pas d'importance : `outils/profils.py` répartit e
 
 ## Visuels
 
-Viser un visuel utile dans 80 % des rubriques. Licences libres uniquement, chargées par `"url"` : jamais d'image de presse, d'affiche de film ni de photo de célébrité.
-- Wikimedia Commons : avec WebFetch (pas curl), `https://commons.wikimedia.org/w/api.php?action=query&list=search&srsearch=NOM&srnamespace=6&srlimit=5&format=json`, puis `https://commons.wikimedia.org/w/api.php?action=query&prop=imageinfo&iiprop=url|extmetadata&iiurlwidth=1100&format=json&titles=File:...` sur le fichier choisi ; utiliser `thumburl`, créditer auteur et licence dans `credit`. Les images ne sont pas copiées dans le site (réseau du shell) : l'app les charge elle-même, c'est prévu.
-- Our World in Data : `https://ourworldindata.org/grapher/<graphique>.png?tab=map` (ou `tab=chart`), `"lien"` vers la version interactive, crédit "Our World in Data, CC BY".
-- Portrait : seulement une personne peu médiatisée, petit (`"largeur": 360`), seul ou dans un `duo` avec une carte.
-- Mini-carte (`carte`) pour chaque ville peu connue citée dans une rubrique, sans limite ; pas pour une capitale évidente. Ville frontalière : préciser `"pays"` (nom Natural Earth).
-- Graphique ou paysage en pleine largeur (`"largeur": 1100`). La légende dit ce qu'il faut regarder, pas seulement ce que c'est.
-- Une carte de presse meilleure que tout ce qui existe en libre : un lien "voir la carte" dans la légende, jamais l'image.
+L'édition doit être très illustrée, avec des images qui apprennent quelque chose : un visage qu'on ne connaît pas, une donnée lisible d'un coup d'œil, un lieu qu'on ne situe pas. Une image décorative ne compte pas. Licences libres uniquement, chargées par `"url"` : jamais d'image de presse, d'affiche de film ni de photo de célébrité.
+
+Chaque image porte `"nature"` : `portrait`, `logo`, `donnees`, `photo` ou `carte_lieu`. Minimums par édition de base, vérifiés par `publier.py` :
+- 80 % des rubriques illustrées ;
+- 3 visuels `donnees` au moins (graphiques et cartes Our World in Data, cartes thématiques Wikimedia), dont celui de Carte expliquée ;
+- 2 `portrait` ou `logo` au moins.
+
+Ce qu'on cherche, dans cet ordre :
+- **Portraits des personnes importantes peu médiatisées** : le candidat de l'opposition, une ministre des Finances africaine, le dirigeant d'une entreprise peu connue, un chercheur, un architecte, un juge. Exemple : Gadi Eisenkot plutôt que Nétanyahou. Jamais Trump, Bolsonaro, Lula, Macron ni une figure vue partout. Petit (`"largeur": 360`), seul ou dans un `duo` avec une mini-carte ou un logo. Légende : nom, fonction, et pourquoi il compte aujourd'hui.
+- **Logos des organisations dont on parle** quand elles sont peu connues du grand public (S&P Global Ratings, IMIP, FIAPF, une agence de l'ONU, une entreprise chinoise) : logo Wikimedia Commons (`PD-textlogo` ou licence libre), petit (`"largeur": 240`), de préférence dans un `duo`.
+- **Données** : graphiques et cartes Our World in Data (`https://ourworldindata.org/grapher/<graphique>.png?tab=map` ou `tab=chart`, `"lien"` vers la version interactive, crédit "Our World in Data, CC BY"). Chercher le graphique avec WebFetch sur `https://ourworldindata.org/search?q=<sujet>`. Choisir celui qui montre le point de l'article (le pays dans son contexte, l'évolution, l'écart). Pleine largeur (`"largeur": 1100`). Cartes thématiques Wikimedia Commons aussi.
+- **Mini-cartes** (`carte`, générées par `publier.py`) pour chaque ville ou région peu connue citée, sans limite ; pas pour une capitale évidente. Ville frontalière : préciser `"pays"` (nom Natural Earth).
+- **Photos** Wikimedia Commons d'un lieu, d'un bâtiment, d'un objet technique (data center, puce, port, mine), en pleine largeur.
+- **Schémas** (`schema`) pour un mécanisme, un circuit d'argent, un montage.
+
+La Une porte une image quand elle nomme une personne ou une organisation peu connue : `"une": {"texte": ..., "image": {...}, "sources": [...]}`.
+
+Wikimedia Commons, avec WebFetch (pas curl) : `https://commons.wikimedia.org/w/api.php?action=query&list=search&srsearch=NOM&srnamespace=6&srlimit=5&format=json`, puis `https://commons.wikimedia.org/w/api.php?action=query&prop=imageinfo&iiprop=url|extmetadata&iiurlwidth=1100&format=json&titles=File:...` ; utiliser `thumburl` (`iiurlwidth=500` pour un portrait ou un logo), créditer auteur et licence dans `credit`. Les images ne sont pas copiées dans le site (réseau du shell) : l'app les charge elle-même, c'est prévu.
+
+Légendes : dire ce qu'il faut regarder dans l'image (la zone, la courbe, l'écart), pas seulement ce que c'est. Une carte de presse meilleure que tout ce qui existe en libre (Les Échos, Le Monde) : un lien "voir la carte" dans la légende, jamais l'image.
 
 ## Déroulé
 

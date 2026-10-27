@@ -129,7 +129,9 @@ function une(ed) {
   s.setAttribute("aria-labelledby", "une-titre");
   const titre = el("h2", "rubrique-nom", t("actu"));
   titre.id = "une-titre";
-  s.append(titre, el("p", "une-texte", ed.une.texte), ligneSources(ed.une.sources));
+  s.append(titre, el("p", "une-texte", ed.une.texte));
+  if (ed.une.image) s.append(bloc({ type: "image", largeur: 360, ...ed.une.image }));
+  s.append(ligneSources(ed.une.sources));
   return s;
 }
 

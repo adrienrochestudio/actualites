@@ -10,6 +10,8 @@ struct Source: Codable, Hashable {
 
 struct Une: Codable {
     let texte: String
+    /// Portrait, logo ou photo d'une personne ou d'une organisation citée (facultatif).
+    let image: Element?
     let sources: [Source]?
 }
 
@@ -28,6 +30,7 @@ struct Element: Codable, Hashable {
     let lien: String?
     let credit: Source?
     let ville: String?
+    let nature: String?
 
     var estCarte: Bool { type == "carte" }
     /// Chemin publié : copie du site (src) en priorité, sinon image libre externe (url).
@@ -49,9 +52,10 @@ struct Bloc: Codable, Hashable {
     let lien: String?
     let credit: Source?
     let ville: String?
+    let nature: String?
 
     var commeElement: Element {
-        Element(type: type, url: url, src: src, largeur: largeur, legende: legende, lien: lien, credit: credit, ville: ville)
+        Element(type: type, url: url, src: src, largeur: largeur, legende: legende, lien: lien, credit: credit, ville: ville, nature: nature)
     }
 }
 
@@ -119,7 +123,7 @@ extension Publication {
 }
 
 extension Edition: Publication {
-    var images: [String] { Array(Set(rubriques.flatMap(\.images))) }
+    var images: [String] { Array(Set(rubriques.flatMap(\.images) + (une?.image?.chemin.map { [$0] } ?? []))) }
 }
 
 extension Semaine: Publication {

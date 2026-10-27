@@ -184,7 +184,7 @@ struct VueBloc: View {
             HStack(alignment: .top, spacing: 14) {
                 ForEach(b.elements ?? [], id: \.self) { e in
                     Figure(element: Element(type: e.type, url: e.url, src: e.src, largeur: 1100,
-                                            legende: e.legende, lien: e.lien, credit: e.credit, ville: e.ville))
+                                            legende: e.legende, lien: e.lien, credit: e.credit, ville: e.ville, nature: e.nature))
                         .frame(maxWidth: .infinity, alignment: .leading)
                 }
             }

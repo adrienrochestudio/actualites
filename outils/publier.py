@@ -21,14 +21,14 @@ Schéma de edition.json (textes en texte brut) :
 {
   "langue": "fr" ou "pt",
   "date_texte": "Lundi 19 octobre 2026" (pt : "Segunda-feira, 19 de outubro de 2026"),
-  "une": {"texte": "...", "sources": [{"titre": "...", "url": "..."}]},
+  "une": {"texte": "...", "image": {facultative, comme un bloc image}, "sources": [{"titre": "...", "url": "..."}]},
   "rubriques": [
     {"etiquette": "Monde", "titre": "...",
      "blocs": [
        {"type": "p", "texte": "..."},
        {"type": "sous_titre", "texte": "..."},
        {"type": "liste", "items": ["...", "..."]},
-       {"type": "image", "url": "https://...", "largeur": 552, "legende": "...", "lien": "https://...",
+       {"type": "image", "nature": "portrait|logo|donnees|photo|carte_lieu", "url": "https://...", "largeur": 552, "legende": "...", "lien": "https://...",
         "credit": {"titre": "...", "url": "..."}},
        {"type": "duo", "elements": [{"url": "...", "largeur": 220, "legende": "..."}, {"type": "carte", ...}]},
        {"type": "carte", "ville": "El Paso", "lat": 31.76, "lon": -106.49, "pays": "United States of America", "legende": "..."},
@@ -149,6 +149,8 @@ def verifier(ed, genre):
 
 def images(ed, genre):
     """Tous les blocs, éléments et couvertures qui portent une image ou une carte."""
+    if (ed.get("une") or {}).get("image"):
+        yield ed["une"]["image"]
     for r in ed[GENRES[genre]["liste"]]:
         if r.get("couverture"):
             yield r["couverture"]
@@ -313,7 +315,10 @@ CIBLES = {
 IMAGE_OBLIGATOIRE = {"Architecture", "Arquitetura", "Carte expliquée", "Mapa explicado"}
 SCHEMA_OBLIGATOIRE = {"IA, technique", "IA, técnica"}
 TAUX_LONGUEUR = 0.75
-TAUX_VISUELS = 0.7
+TAUX_VISUELS = 0.8
+NATURES = {"portrait", "logo", "donnees", "photo", "carte_lieu"}
+MIN_DONNEES = 3
+MIN_VISAGES = 2  # portraits et logos
 
 
 def mots_corps(r):
@@ -337,6 +342,18 @@ def controler(ed):
             manques.append(f"{r['etiquette']} : schéma obligatoire")
         if r["etiquette"] not in ("Carte expliquée", "Mapa explicado") and len(r.get("sources", [])) < 2:
             manques.append(f"{r['etiquette']} : au moins deux sources")
+    natures = []
+    for el in images(ed, "jour"):
+        if el.get("type") == "carte" or ("ville" in el and "lat" in el):
+            continue
+        if el.get("nature") not in NATURES:
+            manques.append(f"image sans \"nature\" ({', '.join(sorted(NATURES))}) : {(el.get('legende') or el.get('url', ''))[:60]}")
+        natures.append(el.get("nature"))
+    if natures.count("donnees") < MIN_DONNEES:
+        manques.append(f"données : {natures.count('donnees')} visuel(s), minimum {MIN_DONNEES} (Our World in Data, cartes thématiques)")
+    visages = natures.count("portrait") + natures.count("logo")
+    if visages < MIN_VISAGES:
+        manques.append(f"portraits et logos : {visages}, minimum {MIN_VISAGES} (personnes peu médiatisées, organisations peu connues)")
     avec = sum(1 for r in rubriques if any(b["type"] in ("image", "carte", "duo", "schema") for b in r["blocs"]))
     if rubriques and avec < TAUX_VISUELS * len(rubriques):
         manques.append(f"visuels : {avec} rubrique(s) illustrée(s) sur {len(rubriques)}, minimum {-(-int(TAUX_VISUELS * len(rubriques) * 10) // 10)}")
@@ -348,7 +365,7 @@ def controler(ed):
 
 def texte(ed):
     """Texte brut d'une édition (jour ou semaine), pour l'audit sans-trace-ia."""
-    lignes = [ed["une"]["texte"]] if ed.get("une") else []
+    lignes = [ed["une"]["texte"], (ed["une"].get("image") or {}).get("legende", "")] if ed.get("une") else []
     for r in ed.get("rubriques", []) + ed.get("sujets", []):
         lignes += [r["titre"], r.get("chapo", ""), (r.get("couverture") or {}).get("legende", "")]
         for b in r["blocs"]:

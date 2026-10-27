@@ -237,6 +237,11 @@ struct Journal: View {
                     VStack(alignment: .leading, spacing: 10) {
                         NomRubrique(t: t.actu)
                         Paragraphe(t: une.texte, taille: 23)
+                        if let i = une.image {
+                            // Portrait ou logo : petit par défaut, comme dans l'app web.
+                            Figure(element: Element(type: i.type, url: i.url, src: i.src, largeur: i.largeur ?? 360,
+                                                    legende: i.legende, lien: i.lien, credit: i.credit, ville: i.ville, nature: i.nature))
+                        }
                         if let s = ligneSources(une.sources, t) { Note(attribue: s) }
                     }
                     .padding(.top, 30)
