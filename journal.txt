@@ -9,3 +9,4 @@
 2026-10-27 07:18 | 7. Traduction | ok
 2026-10-27 07:19 | 8. Contrôle PT | ok (audit 0 rouge)
 2026-10-27 07:19 | 9. Publication | ok, fr et pt en ligne
+2026-10-27 07:20 | 10. Historique | ok
