@@ -40,4 +40,4 @@ Comme pour le jour : une seule rédaction en français (`hebdo-base.json`), les 
 ## En cas d'échec
 
 - Un dossier sans matière fiable : le profil concerné en publie quatre.
-- Échec complet : un seul mail court via Gmail `send_message` à adrienroche6@gmail.com, objet "Actualités · édition de la semaine non produite", avec la cause en une phrase. L'édition de la semaine précédente reste en ligne. L'édition du jour, déjà publiée, n'est pas concernée.
+- Échec complet : aucun mail ; terminer par une phrase qui donne la cause. L'édition de la semaine précédente reste en ligne. L'édition du jour, déjà publiée, n'est pas concernée.

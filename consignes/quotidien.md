@@ -107,6 +107,7 @@ Le dimanche, après l'étape 10 : édition de la semaine selon `consignes/hebdo.
 
 ## En cas d'échec
 
-- Accès git refusé : produire quand même l'édition fr et l'envoyer par mail (étapes 6 et 7 du skill `actualites-quotidiennes` : render.py, build.py, Gmail `send_message` à adrien.etks@gmail.com, libellé Actualités). Puis un mail court à adrienroche6@gmail.com, objet "Actualités · app non mise à jour", avec le message d'erreur git exact.
-- Aucune édition possible, seulement après avoir essayé la veille puis au moins 6 recherches WebSearch en mode extended : un seul mail court à adrienroche6@gmail.com, objet "Actualités · édition non produite", avec la cause en une phrase.
+Aucun mail, jamais : tout passe par l'app et par la notification de fin de tâche. Ne pas utiliser Gmail.
+- Accès git refusé : ne rien publier ; terminer par une phrase qui donne le message d'erreur git exact (elle apparaît dans la notification).
+- Aucune édition possible, seulement après avoir essayé la veille puis au moins 6 recherches WebSearch en mode extended : terminer par une phrase qui donne la cause. L'édition de la veille reste en ligne.
 - Une rubrique sans matière fiable est omise ; une image qui échoue part sans image.
