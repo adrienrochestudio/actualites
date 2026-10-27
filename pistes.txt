@@ -2,3 +2,5 @@
 # Format : AAAA-MM-JJ | thème | piste | url
 2026-10-27 | Société | Brésil : 63,9 millions d'adultes sans éducation de base, la filière EJA et son financement | https://f5online.com.br/brasil-tem-639-milhoes-sem-educacao-basica-completa/
 2026-10-27 | Géopolitique | Zambie : restructuration de la dette et partage de l'effort entre Chine, privés et FMI | https://www.agenceecofin.com/actualites/1311-113617-restructuration-de-la-dette-de-la-zambie-la-chine-appelle-les-autres-creanciers-a-assumer-une-charge-equitable
+2026-10-27 | Géopolitique | Zambie après la fin du moratoire de China Exim Bank en juin 2026 : premiers remboursements et cuivre | https://www.state.gov/wp-content/uploads/2026/05/Report_to_Congress_on_outstanding_Chinese_debt_-_007335-Accessible-5.15.2026.pdf
+2026-10-27 | IA | Pénurie de T-glass et de stratifiés cuivrés : Nittobo, Fukushima et la chaîne des circuits imprimés de l'IA | https://www.tomshardware.com/tech-industry/shortages-of-crucial-chip-packaging-material-threatens-ai-accelerator-supply-chains-nittobos-fukushima-plant-is-tripling-capacity-but-itll-take-years-before-market
