@@ -83,8 +83,9 @@ struct Paragraphe: View {
     let t: String
     var taille: CGFloat = 18
     var italique = false
+    var gras = false
     var body: some View {
-        Text(t).font(Style.serif(taille, italique: italique)).foregroundStyle(Style.encre).lineSpacing(taille * 0.6)
+        Text(t).font(Style.serif(taille, gras: gras, italique: italique)).foregroundStyle(Style.encre).lineSpacing(taille * 0.6)
             .fixedSize(horizontal: false, vertical: true)
             .textSelection(.enabled)
     }
@@ -224,6 +225,10 @@ struct CorpsArticle: View {
     @Environment(\.grandEcran) var grandEcran
     @Environment(\.textes) var t
     let a: Article
+    /// Édition d'origine : présente, elle affiche le bouton Garder sous les sources.
+    var provenance: Provenance? = nil
+    /// Vue des articles gardés : seulement "Retirer".
+    var seulRetirer = false
 
     var body: some View {
         VStack(alignment: .leading, spacing: 14) {
@@ -240,20 +245,73 @@ struct CorpsArticle: View {
                 Paragraphe(t: r, taille: grandEcran ? 19 : 18)
             }
             if let s = ligneSources(a.sources, t, apres: a.note_sources) { Note(attribue: s).padding(.top, 6) }
+            if let p = provenance { BoutonGarder(article: a, provenance: p, seulRetirer: seulRetirer) }
         }
+    }
+}
+
+/// "Garder", puis "Gardé · Retirer" : petit bouton texte en fin d'article.
+struct BoutonGarder: View {
+    @EnvironmentObject var depot: Depot
+    @Environment(\.textes) var t
+    let article: Article
+    let provenance: Provenance
+    var seulRetirer = false
+
+    var body: some View {
+        let garde = seulRetirer || depot.estGarde(article, date: provenance.date)
+        Button {
+            withAnimation(.easeInOut(duration: 0.2)) {
+                if garde { depot.retirer(article, date: provenance.date) } else { depot.garder(article, provenance) }
+            }
+        } label: {
+            libelle(garde)
+                .font(Style.petit())
+                .foregroundStyle(Style.note)
+                .contentShape(Rectangle())
+        }
+        .buttonStyle(.plain)
+    }
+
+    private func libelle(_ garde: Bool) -> Text {
+        if seulRetirer { return Text(t.retirer).underline() }
+        if garde { return Text(t.garde + " · ") + Text(t.retirer).underline() }
+        return Text(t.garder).underline()
     }
 }
 
 struct VueRubrique: View {
     @Environment(\.grandEcran) var grandEcran
     let r: Article
+    var provenance: Provenance? = nil
     var body: some View {
         VStack(alignment: .leading, spacing: 16) {
             VStack(alignment: .leading, spacing: 6) {
                 NomRubrique(t: r.etiquette)
                 Text(r.titre).font(Style.titre(grandEcran ? 36 : 31)).foregroundStyle(Style.encre).fixedSize(horizontal: false, vertical: true)
             }
-            CorpsArticle(a: r)
+            CorpsArticle(a: r, provenance: provenance)
+        }
+        .padding(.top, grandEcran ? 80 : 64)
+    }
+}
+
+/// Article gardé : nom de rubrique suivi de la date de son édition, et bouton Retirer.
+struct VueGarde: View {
+    @Environment(\.grandEcran) var grandEcran
+    @Environment(\.textes) var t
+    let g: ArticleGarde
+
+    var body: some View {
+        let a = g.article
+        VStack(alignment: .leading, spacing: 16) {
+            VStack(alignment: .leading, spacing: 6) {
+                NomRubrique(t: [a.etiquette, g.dateCourte].filter { !$0.isEmpty }.joined(separator: " · "))
+                Text(a.titre).font(Style.titre(grandEcran ? 36 : 31)).foregroundStyle(Style.encre).fixedSize(horizontal: false, vertical: true)
+                if let ch = a.chapo { Paragraphe(t: ch, italique: true) }
+            }
+            if let c = a.couverture { Figure(element: c) }
+            CorpsArticle(a: a, provenance: Provenance(date: g.date, dateTexte: g.date_texte), seulRetirer: true)
         }
         .padding(.top, grandEcran ? 80 : 64)
     }
@@ -298,6 +356,82 @@ struct VueBreves: View {
             }
         }
         .padding(.top, 72)
+    }
+}
+
+/// Quiz de fin d'édition : un clic fige les choix, montre le bon et l'explication.
+struct VueQuiz: View {
+    @EnvironmentObject var depot: Depot
+    @Environment(\.grandEcran) var grandEcran
+    @Environment(\.textes) var t
+    let questions: [Question]
+
+    private static let filet = Color(red: 0xe3 / 255, green: 0xe3 / 255, blue: 0xe3 / 255)
+
+    private func reponse(_ i: Int) -> Int {
+        depot.reponsesQuiz.indices.contains(i) ? depot.reponsesQuiz[i] : -1
+    }
+
+    private var toutesRepondues: Bool {
+        !questions.isEmpty && questions.indices.allSatisfy { reponse($0) >= 0 }
+    }
+
+    private var score: Int {
+        questions.indices.filter { reponse($0) == questions[$0].reponse }.count
+    }
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 0) {
+            Text(t.quiz).font(Style.titre()).foregroundStyle(Style.encre).padding(.bottom, 6)
+            ForEach(Array(questions.enumerated()), id: \.offset) { i, q in
+                question(i, q).padding(.top, 22)
+            }
+            if toutesRepondues {
+                Note(t.compte(score, questions.count)).padding(.top, 18)
+            }
+        }
+        .padding(.top, 72)
+    }
+
+    @ViewBuilder
+    private func question(_ i: Int, _ q: Question) -> some View {
+        let taille: CGFloat = grandEcran ? 19 : 18
+        let r = reponse(i)
+        VStack(alignment: .leading, spacing: 0) {
+            Paragraphe(t: q.question, taille: taille, gras: true).padding(.bottom, 8)
+            ForEach(Array(q.choix.enumerated()), id: \.offset) { j, c in
+                if j > 0 { Rectangle().fill(Self.filet).frame(height: 1) }
+                Button {
+                    guard r < 0 else { return }
+                    withAnimation(.easeOut(duration: 0.15)) { depot.repondre(i, j) }
+                } label: {
+                    choix(j, c, bon: r >= 0 && j == q.reponse, barre: r == j && j != q.reponse, taille: taille)
+                }
+                .buttonStyle(.plain)
+            }
+            if r >= 0 {
+                Text(r == q.reponse ? t.exact : t.non).font(Style.serif(taille, gras: true)).foregroundStyle(Style.encre)
+                    .padding(.top, 12)
+                if let e = q.explication, !e.isEmpty { Paragraphe(t: e, taille: taille).padding(.top, 6) }
+            }
+        }
+    }
+
+    private func choix(_ j: Int, _ c: String, bon: Bool, barre: Bool, taille: CGFloat) -> some View {
+        Text("\(Self.lettre(j)). \(c)")
+            .strikethrough(barre)
+            .font(Style.serif(taille, gras: bon))
+            .foregroundStyle(bon ? Style.marque : Style.encre)
+            .multilineTextAlignment(.leading)
+            .lineSpacing(taille * 0.3)
+            .fixedSize(horizontal: false, vertical: true)
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .padding(.vertical, 10)
+            .contentShape(Rectangle())
+    }
+
+    private static func lettre(_ j: Int) -> String {
+        String(Character(Unicode.Scalar(UInt8(65 + min(j, 25)))))
     }
 }
 
@@ -352,7 +486,7 @@ struct VueSemaine: View {
 
             if ouvert {
                 if let c = s.couverture, let l = legende(c, t) { Note(attribue: l, italique: true) }
-                CorpsArticle(a: s)
+                CorpsArticle(a: s, provenance: Provenance(date: semaine.date, dateTexte: semaine.date_texte))
             }
         }
         .padding(.vertical, 24)

@@ -39,6 +39,20 @@ struct Textes {
     let rien: String
     let horsLigne: String
     let enregistrees: String
+    let garder: String
+    let garde: String
+    let retirer: String
+    let gardes: String
+    let articlesGardes: String
+    let aucunGarde: String
+    let quiz: String
+    let exact: String
+    let non: String
+    let fermer: String
+    /// Mot entre deux nombres : "7 sur 11", "7 de 11".
+    let sur: String
+
+    func compte(_ n: Int, _ total: Int) -> String { "\(n) \(sur) \(total)" }
 
     func piedJour(_ date: String) -> String { piedJourModele.replacingOccurrences(of: "{date}", with: date) }
 
@@ -69,7 +83,18 @@ struct Textes {
         videSemaine: "Pas encore d'édition de la semaine sur cet appareil.",
         rien: "Aucune édition enregistrée sur cet appareil. Ouvrir l'app une fois avec une connexion.",
         horsLigne: "Hors ligne : dernières éditions enregistrées.",
-        enregistrees: "Éditions enregistrées pour la lecture hors ligne."
+        enregistrees: "Éditions enregistrées pour la lecture hors ligne.",
+        garder: "Garder",
+        garde: "Gardé",
+        retirer: "Retirer",
+        gardes: "Gardés",
+        articlesGardes: "Articles gardés",
+        aucunGarde: "Aucun article gardé.",
+        quiz: "Quiz",
+        exact: "Exact.",
+        non: "Non.",
+        fermer: "Fermer",
+        sur: "sur"
     )
 
     static let pt = Textes(
@@ -99,6 +124,17 @@ struct Textes {
         videSemaine: "Ainda não há edição da semana neste aparelho.",
         rien: "Nenhuma edição salva neste aparelho. Abra o app uma vez com conexão.",
         horsLigne: "Sem conexão: últimas edições salvas.",
-        enregistrees: "Edições salvas para leitura sem conexão."
+        enregistrees: "Edições salvas para leitura sem conexão.",
+        garder: "Guardar",
+        garde: "Guardado",
+        retirer: "Remover",
+        gardes: "Guardados",
+        articlesGardes: "Artigos guardados",
+        aucunGarde: "Nenhum artigo guardado.",
+        quiz: "Quiz",
+        exact: "Certo.",
+        non: "Não.",
+        fermer: "Fechar",
+        sur: "de"
     )
 }

@@ -91,6 +91,14 @@ struct Breve: Codable, Hashable, Identifiable {
     var id: String { rubrique }
 }
 
+/// Question du quiz de fin d'édition ; `reponse` est l'index (à partir de 0) du bon choix.
+struct Question: Codable, Hashable {
+    let question: String
+    let choix: [String]
+    let reponse: Int
+    let explication: String?
+}
+
 struct Edition: Codable {
     let date: String
     let publie: String?
@@ -99,6 +107,7 @@ struct Edition: Codable {
     let une: Une?
     let rubriques: [Article]
     let breves: [Breve]?
+    let quiz: [Question]?
 }
 
 struct Semaine: Codable {
@@ -124,6 +133,32 @@ extension Publication {
 
 extension Edition: Publication {
     var images: [String] { Array(Set(rubriques.flatMap(\.images) + (une?.image?.chemin.map { [$0] } ?? []))) }
+}
+
+/// Édition d'où vient un article : date ISO et date en toutes lettres.
+struct Provenance: Hashable {
+    let date: String
+    let dateTexte: String
+}
+
+/// Article gardé par le lecteur : enregistré complet, avec la date de son édition et le profil,
+/// dans Application Support/Actualites/gardes/{profil}/gardes.json.
+struct ArticleGarde: Codable, Hashable, Identifiable {
+    let article: Article
+    let date: String
+    let date_texte: String
+    let profil: String
+    var id: String { Self.cle(profil, date, article) }
+
+    static func cle(_ profil: String, _ date: String, _ article: Article) -> String {
+        profil + "|" + date + "|" + article.id
+    }
+
+    /// "27 octobre 2026" : date en toutes lettres sans le jour de la semaine.
+    var dateCourte: String {
+        guard let i = date_texte.firstIndex(where: \.isNumber) else { return date_texte }
+        return String(date_texte[i...])
+    }
 }
 
 extension Semaine: Publication {

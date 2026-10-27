@@ -7,7 +7,7 @@ rm -rf build && mkdir -p build
 APP="build/Actualités.app"
 mkdir -p "$APP/Contents/MacOS" "$APP/Contents/Resources"
 
-SOURCES=(Sources/Modele.swift Sources/Textes.swift Sources/Depot.swift Sources/Vues.swift Sources/Globe.swift Sources/Journal.swift Sources/AppMac.swift)
+SOURCES=(Sources/Modele.swift Sources/Textes.swift Sources/Depot.swift Sources/Vues.swift Sources/Globe.swift Sources/Zoom.swift Sources/Journal.swift Sources/AppMac.swift)
 for arch in arm64 x86_64; do
   swiftc -O -parse-as-library -target "$arch-apple-macos13.0" "${SOURCES[@]}" -o "build/Actualites-$arch"
 done

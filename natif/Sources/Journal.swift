@@ -1,6 +1,7 @@
 import SwiftUI
 
-enum Vue: String { case jour, semaine }
+/// Quotidien, Hebdomadaire, ou articles gardés (aucun onglet actif).
+enum Vue: String { case jour, semaine, gardes }
 
 /// Entrée de la liste des rubriques du menu ; `id` est l'ancre de défilement dans la colonne de lecture.
 struct Rubrique: Identifiable, Hashable {
@@ -16,12 +17,23 @@ struct PositionsRubriques: PreferenceKey {
     }
 }
 
+/// Position du bas de chaque rubrique : passé dans la fenêtre de lecture, la rubrique est lue.
+struct BasRubriques: PreferenceKey {
+    static let defaultValue: [String: CGFloat] = [:]
+    static func reduce(value: inout [String: CGFloat], nextValue: () -> [String: CGFloat]) {
+        value.merge(nextValue(), uniquingKeysWith: { $1 })
+    }
+}
+
 extension View {
-    /// Ancre de défilement (ScrollViewReader) qui signale aussi sa position au menu.
+    /// Ancre de défilement (ScrollViewReader) qui signale aussi sa position (haut et bas) au menu.
     func ancre(_ id: String) -> some View {
         self
             .background(GeometryReader { g in
-                Color.clear.preference(key: PositionsRubriques.self, value: [id: g.frame(in: .named("lecture")).minY])
+                let cadre = g.frame(in: .named("lecture"))
+                Color.clear
+                    .preference(key: PositionsRubriques.self, value: [id: cadre.minY])
+                    .preference(key: BasRubriques.self, value: [id: cadre.maxY])
             })
             .id(id)
     }
@@ -57,7 +69,13 @@ struct Journal: View {
                     }
                 }
         }
-        .overlay { if let e = agrandie { zoom(e) } }
+        .overlay {
+            if let e = agrandie {
+                VueZoom(e: e, fermer: { withAnimation(.easeOut(duration: 0.15)) { agrandie = nil } })
+                    .id(e)
+                    .transition(.opacity)
+            }
+        }
         .environment(\.textes, t)
         .environment(\.colorScheme, .light)
         .preferredColorScheme(.light)
@@ -74,9 +92,15 @@ struct Journal: View {
                     choix(p.textes.nomLangue, actif: depot.profil == p) { depot.changerProfil(p) }
                 }
                 if !rubriques.isEmpty {
-                    titreMenu(t.rubriques)
+                    titreMenu(titreRubriques)
                     ForEach(rubriques) { r in
-                        choix(r.nom, actif: active == r.id) { cible = r.id }
+                        choix(r.nom, actif: active == r.id, lu: vue == .jour && depot.lus.contains(r.id)) { cible = r.id }
+                    }
+                }
+                if !depot.gardes.isEmpty {
+                    titreMenu(t.gardes)
+                    ForEach(depot.gardes) { g in
+                        choix(g.article.titre, actif: vue == .gardes && active == ancreGarde(g)) { ouvrirGarde(g) }
                     }
                 }
             }
@@ -96,11 +120,19 @@ struct Journal: View {
             .accessibilityAddTraits(.isHeader)
     }
 
-    private func choix(_ texte: String, actif: Bool, action: @escaping () -> Void) -> some View {
+    /// "Rubriques · 7 sur 11" en vue Quotidien.
+    private var titreRubriques: String {
+        guard vue == .jour else { return t.rubriques }
+        let lues = rubriques.filter { depot.lus.contains($0.id) }.count
+        return "\(t.rubriques) · \(t.compte(lues, rubriques.count))"
+    }
+
+    /// Entrée du menu : active en bordeaux, lue en gris, sinon en encre.
+    private func choix(_ texte: String, actif: Bool, lu: Bool = false, action: @escaping () -> Void) -> some View {
         Button(action: action) {
             Text(texte)
                 .font(Style.serif(16, gras: actif))
-                .foregroundStyle(actif ? Style.marque : Style.encre)
+                .foregroundStyle(actif ? Style.marque : (lu ? Style.note : Style.encre))
                 .multilineTextAlignment(.leading)
                 .fixedSize(horizontal: false, vertical: true)
                 .frame(maxWidth: .infinity, minHeight: 30, alignment: .leading)
@@ -118,6 +150,19 @@ struct Journal: View {
         active = nil
     }
 
+    private func ancreGarde(_ g: ArticleGarde) -> String { "g|" + g.id }
+
+    /// Affiche la vue des articles gardés, puis va à l'article choisi.
+    private func ouvrirGarde(_ g: ArticleGarde) {
+        let id = ancreGarde(g)
+        if vue == .gardes {
+            cible = id
+        } else {
+            changerVue(.gardes)
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.15) { cible = id }
+        }
+    }
+
     /// Rubriques de la vue en cours, dans l'ordre de lecture.
     private var rubriques: [Rubrique] {
         switch vue {
@@ -127,32 +172,45 @@ struct Journal: View {
             if ed.une != nil { l.append(Rubrique(id: "une", nom: t.actu)) }
             for (i, r) in ed.rubriques.enumerated() { l.append(Rubrique(id: "r\(i + 1)", nom: r.etiquette)) }
             if let b = ed.breves, !b.isEmpty { l.append(Rubrique(id: "breves", nom: t.enBref)) }
+            if let q = ed.quiz, !q.isEmpty { l.append(Rubrique(id: "quiz", nom: t.quiz)) }
             return l
         case .semaine:
             guard let s = depot.semaine else { return [] }
             return s.sujets.enumerated().map { i, sujet in
                 Rubrique(id: "s\(i + 1)", nom: sujet.etiquette.isEmpty ? sujet.titre : sujet.etiquette)
             }
+        case .gardes:
+            return []
         }
     }
 
     /// Rubrique en cours : la dernière dont le haut est passé au-dessus du premier quart de la colonne.
     private func majActive(_ positions: [String: CGFloat], hauteur: CGFloat) {
-        let liste = rubriques
-        var courante = liste.first?.id
-        for r in liste {
-            if let y = positions[r.id], y < hauteur / 4 { courante = r.id }
+        let liste = vue == .gardes ? depot.gardes.map { ancreGarde($0) } : rubriques.map(\.id)
+        var courante = liste.first
+        for id in liste {
+            if let y = positions[id], y < hauteur / 4 { courante = id }
         }
         if courante != active { active = courante }
+    }
+
+    /// Quotidien : une rubrique est lue quand le bas de son contenu est passé dans la fenêtre de lecture.
+    private func majLus(_ bas: [String: CGFloat], hauteur: CGFloat) {
+        guard vue == .jour else { return }
+        for r in rubriques where !depot.lus.contains(r.id) {
+            if let y = bas[r.id], y <= hauteur { depot.marquerLu(r.id) }
+        }
     }
 
     // MARK: - Colonne de lecture
 
     /// Identifie ce qui est affiché : un changement (nouvelle édition, autre langue, autre vue) remplace le contenu en fondu.
     private var cleContenu: String {
-        vue == .jour
-            ? "jour|\(depot.profil.rawValue)|\(depot.edition?.version ?? "")"
-            : "semaine|\(depot.profil.rawValue)|\(depot.semaine?.version ?? "")"
+        switch vue {
+        case .jour: return "jour|\(depot.profil.rawValue)|\(depot.edition?.version ?? "")"
+        case .semaine: return "semaine|\(depot.profil.rawValue)|\(depot.semaine?.version ?? "")"
+        case .gardes: return "gardes|\(depot.profil.rawValue)"
+        }
     }
 
     private var lecture: some View {
@@ -181,6 +239,10 @@ struct Journal: View {
                     .onPreferenceChange(PositionsRubriques.self) { positions in
                         let hauteur = geo.size.height
                         Task { @MainActor in majActive(positions, hauteur: hauteur) }
+                    }
+                    .onPreferenceChange(BasRubriques.self) { bas in
+                        let hauteur = geo.size.height
+                        Task { @MainActor in majLus(bas, hauteur: hauteur) }
                     }
                     .onChange(of: vue) { _ in proxy.scrollTo("haut", anchor: .top) }
                     .onChange(of: depot.profil) { _ in proxy.scrollTo("haut", anchor: .top) }
@@ -240,8 +302,11 @@ struct Journal: View {
     }
 
     private var ligneDate: String {
-        vue == .jour ? (depot.edition?.date_texte ?? "")
-            : (depot.semaine?.date_texte_semaine ?? depot.semaine?.date_texte ?? "")
+        switch vue {
+        case .jour: return depot.edition?.date_texte ?? ""
+        case .semaine: return depot.semaine?.date_texte_semaine ?? depot.semaine?.date_texte ?? ""
+        case .gardes: return t.articlesGardes
+        }
     }
 
     @ViewBuilder
@@ -264,9 +329,10 @@ struct Journal: View {
                     .ancre("une")
                 }
                 ForEach(Array(ed.rubriques.enumerated()), id: \.offset) { i, r in
-                    VueRubrique(r: r).ancre("r\(i + 1)")
+                    VueRubrique(r: r, provenance: Provenance(date: ed.date, dateTexte: ed.date_texte)).ancre("r\(i + 1)")
                 }
                 if let b = ed.breves, !b.isEmpty { VueBreves(breves: b).ancre("breves") }
+                if let q = ed.quiz, !q.isEmpty { VueQuiz(questions: q).ancre("quiz") }
             } else {
                 vide(t.videJour)
             }
@@ -275,6 +341,14 @@ struct Journal: View {
                 VueSemaine(semaine: s)
             } else {
                 vide(t.videSemaine)
+            }
+        case .gardes:
+            if depot.gardes.isEmpty {
+                Note(t.aucunGarde).padding(.top, 28)
+            } else {
+                ForEach(depot.gardes) { g in
+                    VueGarde(g: g).ancre(ancreGarde(g))
+                }
             }
         }
     }
@@ -293,23 +367,5 @@ struct Journal: View {
     /// Marge de fin de lecture (plus de mention de rédaction ni d'état hors ligne).
     private var pied: some View {
         Color.clear.frame(height: 64)
-    }
-
-    /// Image agrandie sur fond blanc ; un clic ou Échap referme.
-    private func zoom(_ e: Element) -> some View {
-        ZStack {
-            Style.fond.ignoresSafeArea()
-            VStack(spacing: 12) {
-                ImageLocale(chemin: e.chemin).padding(.horizontal, 24)
-                if let l = legende(e, t) { Note(attribue: l, italique: true).frame(maxWidth: Style.colonne, alignment: .leading) }
-            }
-            .padding(32)
-        }
-        .contentShape(Rectangle())
-        .onTapGesture { withAnimation(.easeOut(duration: 0.15)) { agrandie = nil } }
-        #if os(macOS)
-        .onExitCommand { agrandie = nil }
-        #endif
-        .transition(.opacity)
     }
 }

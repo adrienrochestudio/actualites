@@ -6,6 +6,8 @@ import SwiftUI
 /// En ligne : {profil}/edition/edition.json et {profil}/hebdo/hebdo.json.
 /// Sur l'appareil : Application Support/Actualites/{profil}/{edition,hebdo}/ (fichier JSON + img/).
 /// Un seul exemplaire de chaque, pour le seul profil choisi.
+/// Articles gardés : Application Support/Actualites/gardes/{profil}/ (gardes.json + img/), conservés d'une édition à l'autre.
+/// Rubriques lues et réponses au quiz : UserDefaults, par profil et date d'édition.
 @MainActor
 final class Depot: ObservableObject {
     enum Etat: Equatable {
@@ -13,11 +15,19 @@ final class Depot: ObservableObject {
     }
 
     @Published private(set) var profil: Profil
-    @Published private(set) var edition: Edition?
+    @Published private(set) var edition: Edition? {
+        didSet { chargerEtatsJour() }
+    }
     @Published private(set) var semaine: Semaine?
     @Published private(set) var etat: Etat = .vide
     /// Vrai pendant une vérification réseau (le globe du logo accélère).
     @Published private(set) var enChargement = false
+    /// Articles gardés du profil affiché, le plus récent en premier.
+    @Published private(set) var gardes: [ArticleGarde] = []
+    /// Ancres des rubriques lues de l'édition du jour ("une", "r1"..., "breves", "quiz").
+    @Published private(set) var lus: Set<String> = []
+    /// Réponses au quiz de l'édition du jour : index du choix fait, -1 si pas répondu.
+    @Published private(set) var reponsesQuiz: [Int] = []
 
     nonisolated static let base = URL(string: "https://adrienrochestudio.github.io/actualites/")!
     private static let cleProfil = "profil"
@@ -47,7 +57,9 @@ final class Depot: ObservableObject {
         }
         edition = lire(Edition.self, p, "edition", "edition.json")
         semaine = lire(Semaine.self, p, "hebdo", "hebdo.json")
+        gardes = lireGardes(p)
         if edition != nil || semaine != nil { etat = .horsLigne }
+        chargerEtatsJour() // les observateurs de propriété ne sont pas appelés dans init
     }
 
     /// Change de langue : affiche ce qui est déjà enregistré pour ce profil, puis télécharge.
@@ -59,6 +71,7 @@ final class Depot: ObservableObject {
             profil = p
             edition = lire(Edition.self, p, "edition", "edition.json")
             semaine = lire(Semaine.self, p, "hebdo", "hebdo.json")
+            gardes = lireGardes(p)
         }
         etat = (edition == nil && semaine == nil) ? .chargement : .horsLigne
         Task { await actualiser(force: true) }
@@ -71,7 +84,106 @@ final class Depot: ObservableObject {
             let u = dossierProfil(profil).appendingPathComponent(dossier).appendingPathComponent("img").appendingPathComponent(nom)
             if FileManager.default.fileExists(atPath: u.path) { return u }
         }
-        return nil
+        let g = dossierGardes(profil).appendingPathComponent("img").appendingPathComponent(nom)
+        return FileManager.default.fileExists(atPath: g.path) ? g : nil
+    }
+
+    // MARK: - Articles gardés
+
+    func estGarde(_ a: Article, date: String) -> Bool {
+        let id = ArticleGarde.cle(profil.rawValue, date, a)
+        return gardes.contains { $0.id == id }
+    }
+
+    /// Enregistre l'article complet et copie ses images, pour qu'il reste lisible après le remplacement de l'édition.
+    func garder(_ a: Article, _ p: Provenance) {
+        guard !estGarde(a, date: p.date) else { return }
+        let fm = FileManager.default
+        let img = dossierGardes(profil).appendingPathComponent("img", isDirectory: true)
+        try? fm.createDirectory(at: img, withIntermediateDirectories: true)
+        for chemin in a.images {
+            let dest = img.appendingPathComponent(Self.nomLocal(chemin))
+            if fm.fileExists(atPath: dest.path) { continue }
+            if let src = imageLocale(chemin) { try? fm.copyItem(at: src, to: dest) }
+        }
+        gardes.insert(ArticleGarde(article: a, date: p.date, date_texte: p.dateTexte, profil: profil.rawValue), at: 0)
+        enregistrerGardes()
+    }
+
+    func retirer(_ a: Article, date: String) {
+        retirer(id: ArticleGarde.cle(profil.rawValue, date, a))
+    }
+
+    /// Retire un article gardé et les images qu'aucun autre article gardé n'utilise.
+    func retirer(id: String) {
+        guard let i = gardes.firstIndex(where: { $0.id == id }) else { return }
+        let ancien = gardes.remove(at: i)
+        let encore = Set(gardes.flatMap { $0.article.images })
+        let img = dossierGardes(profil).appendingPathComponent("img", isDirectory: true)
+        for chemin in ancien.article.images where !encore.contains(chemin) {
+            try? FileManager.default.removeItem(at: img.appendingPathComponent(Self.nomLocal(chemin)))
+        }
+        enregistrerGardes()
+    }
+
+    private func dossierGardes(_ p: Profil) -> URL {
+        racine.appendingPathComponent("gardes", isDirectory: true).appendingPathComponent(p.rawValue, isDirectory: true)
+    }
+
+    private func lireGardes(_ p: Profil) -> [ArticleGarde] {
+        let u = dossierGardes(p).appendingPathComponent("gardes.json")
+        guard let data = try? Data(contentsOf: u) else { return [] }
+        return (try? JSONDecoder().decode([ArticleGarde].self, from: data)) ?? []
+    }
+
+    private func enregistrerGardes() {
+        let dossier = dossierGardes(profil)
+        try? FileManager.default.createDirectory(at: dossier, withIntermediateDirectories: true)
+        guard let data = try? JSONEncoder().encode(gardes) else { return }
+        try? data.write(to: dossier.appendingPathComponent("gardes.json"), options: .atomic)
+    }
+
+    // MARK: - Rubriques lues et quiz de l'édition du jour
+
+    private var cleJour: String? {
+        edition.map { "\(profil.rawValue).\($0.date)" }
+    }
+
+    func marquerLu(_ id: String) {
+        guard let cle = cleJour, !lus.contains(id) else { return }
+        lus.insert(id)
+        UserDefaults.standard.set(Array(lus).sorted(), forKey: "lus.\(cle)")
+    }
+
+    func repondre(_ question: Int, _ choix: Int) {
+        guard let cle = cleJour, reponsesQuiz.indices.contains(question), reponsesQuiz[question] < 0 else { return }
+        reponsesQuiz[question] = choix
+        UserDefaults.standard.set(reponsesQuiz, forKey: "quiz.\(cle)")
+    }
+
+    /// Relit l'état de l'édition affichée et supprime celui des autres dates.
+    private func chargerEtatsJour() {
+        guard let ed = edition, let cle = cleJour else {
+            lus = []
+            reponsesQuiz = []
+            return
+        }
+        let d = UserDefaults.standard
+        lus = Set(d.stringArray(forKey: "lus.\(cle)") ?? [])
+        let n = ed.quiz?.count ?? 0
+        var r = (d.array(forKey: "quiz.\(cle)") as? [Int]) ?? []
+        if r.count < n { r += Array(repeating: -1, count: n - r.count) }
+        reponsesQuiz = Array(r.prefix(n))
+        // Clés "lus.{profil}.{date}" et "quiz.{profil}.{date}" : autres dates du profil affiché,
+        // et dates plus anciennes de l'autre profil.
+        for k in d.dictionaryRepresentation().keys where k.hasPrefix("lus.") || k.hasPrefix("quiz.") {
+            let parties = k.split(separator: ".", maxSplits: 2).map(String.init)
+            guard parties.count == 3, Profil(rawValue: parties[1]) != nil else { continue }
+            let (p, date) = (parties[1], parties[2])
+            if (p == profil.rawValue && date != ed.date) || (p != profil.rawValue && date < ed.date) {
+                d.removeObject(forKey: k)
+            }
+        }
     }
 
     /// À l'ouverture, au retour au premier plan, avec le bouton Actualiser (⌘R).
@@ -113,12 +225,20 @@ final class Depot: ObservableObject {
         racine.appendingPathComponent(p.rawValue, isDirectory: true)
     }
 
-    /// On ne garde hors ligne que le profil choisi.
+    /// On ne garde hors ligne que les éditions du profil choisi.
+    /// Seuls les dossiers d'édition de l'autre profil sont supprimés : gardes/ reste intact.
     private func supprimerAutresProfils(que p: Profil) {
         let fm = FileManager.default
         for autre in Profil.allCases where autre != p {
             let u = dossierProfil(autre)
-            if fm.fileExists(atPath: u.path) { try? fm.removeItem(at: u) }
+            guard fm.fileExists(atPath: u.path) else { continue }
+            for dossier in ["edition", "hebdo", "edition-tmp", "hebdo-tmp"] {
+                let d = u.appendingPathComponent(dossier, isDirectory: true)
+                if fm.fileExists(atPath: d.path) { try? fm.removeItem(at: d) }
+            }
+            if let reste = try? fm.contentsOfDirectory(atPath: u.path), reste.allSatisfy({ $0.hasPrefix(".") }) {
+                try? fm.removeItem(at: u)
+            }
         }
     }
 
