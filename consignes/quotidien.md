@@ -51,16 +51,18 @@ Dans `base.json`, l'ordre n'a pas d'importance : `outils/profils.py` répartit e
 - **Carte expliquée** (350) : une seule carte, lue en détail : ce qu'elle représente, comment la lire, ce qu'on y voit d'étonnant, ce qui l'explique. Pleine largeur (`"largeur": 1100`), Our World in Data (`?tab=map`), Wikimedia Commons ou institution publique sous licence libre, avec `"lien"` vers la version interactive. Sans lien obligatoire avec l'actualité.
 - **Brèves** (`breves`), dans cet ordre : Portugal, Europe, Afrique, Amériques, Asie, Océanie. 2 ou 3 items par zone, une zone sans info notable est omise. Chaque brève donne le contexte pour être comprise seule (qui est qui, pourquoi ça compte).
 
-## Sources
+## Réseau et sources
 
-- `outils/veille.py` couvre la plupart des rubriques (flux listés dans `consignes/veille.txt`). Lire ensuite les articles retenus avec WebFetch.
+- Le shell de la tâche n'atteint pas les sites de presse ni Wikimedia (proxy 403) : c'est normal. Seuls git, GitHub et les dépôts de paquets passent. Toute lecture du web passe par les outils WebSearch et WebFetch, qui fonctionnent.
+- La veille (flux de `consignes/veille.txt`) tourne chaque nuit dans GitHub Actions et attend sur la branche `veille` (étape 2). Lire ensuite les articles retenus avec WebFetch, sur l'adresse directe de l'article (jamais une adresse de redirection Google).
+- WebSearch : toujours `mode: "extended"` pour l'actualité datée (le mode standard ne renvoie que des liens). Requêtes précises (sujet, lieu, date), lancées en parallèle dans un seul tour.
 - Compléments : anthropic.com/news et mistral.ai/news (IA) ; iea.org/reports, ec.europa.eu/eurostat, insee.fr, worldbank.org (chiffres) ; cnc.fr (fréquentation, début de mois) ; paris.fr ; consilium.europa.eu.
 - Une page qui refuse la lecture : passer à une autre source, ne pas insister. Éviter les agrégateurs de faible qualité.
 
 ## Visuels
 
 Viser un visuel utile dans 80 % des rubriques. Licences libres uniquement, chargées par `"url"` : jamais d'image de presse, d'affiche de film ni de photo de célébrité.
-- Wikimedia Commons : chercher avec `curl -s -A "ActualitesNewsletter/1.0" "https://commons.wikimedia.org/w/api.php?action=query&list=search&srsearch=NOM&srnamespace=6&srlimit=5&format=json"`, puis `prop=imageinfo&iiprop=url|extmetadata&iiurlwidth=1100&titles=File:...` sur le fichier choisi ; utiliser `thumburl`, créditer auteur et licence dans `credit`.
+- Wikimedia Commons : avec WebFetch (pas curl), `https://commons.wikimedia.org/w/api.php?action=query&list=search&srsearch=NOM&srnamespace=6&srlimit=5&format=json`, puis `https://commons.wikimedia.org/w/api.php?action=query&prop=imageinfo&iiprop=url|extmetadata&iiurlwidth=1100&format=json&titles=File:...` sur le fichier choisi ; utiliser `thumburl`, créditer auteur et licence dans `credit`. Les images ne sont pas copiées dans le site (réseau du shell) : l'app les charge elle-même, c'est prévu.
 - Our World in Data : `https://ourworldindata.org/grapher/<graphique>.png?tab=map` (ou `tab=chart`), `"lien"` vers la version interactive, crédit "Our World in Data, CC BY".
 - Portrait : seulement une personne peu médiatisée, petit (`"largeur": 360`), seul ou dans un `duo` avec une carte.
 - Mini-carte (`carte`) pour chaque ville peu connue citée dans une rubrique, sans limite ; pas pour une capitale évidente. Ville frontalière : préciser `"pays"` (nom Natural Earth).
@@ -72,7 +74,8 @@ Viser un visuel utile dans 80 % des rubriques. Licences libres uniquement, charg
 Dépendances : Pillow et matplotlib (`pip install pillow matplotlib` si l'import échoue). Schéma du JSON : en tête de `outils/publier.py`. Au plus 10 recherches web et 16 lectures de page : la veille remplace le reste.
 
 1. Historique : `git fetch origin historique`, `git worktree add -B historique historique origin/historique`. Puis `python3 outils/historique.py notions` (notions et dossiers récents à ne pas refaire). Ne pas lire les fichiers de l'historique.
-2. Veille : `python3 outils/veille.py`. Choisir les sujets, `python3 outils/veille.py lien <numéros>` pour leurs adresses, lire les articles retenus. Recherches web seulement pour ce que la veille ne couvre pas (Le chiffre, Carte expliquée, IA, technique, compléments).
+2. Veille : `git fetch origin veille && git worktree add veille FETCH_HEAD`, puis lire `veille/veille.txt` (sa première ligne donne l'heure de la veille). Choisir les sujets, `python3 outils/veille.py lien <numéros>` pour leurs adresses, lire les articles retenus avec WebFetch. Recherches web seulement pour ce que la veille ne couvre pas (Le chiffre, Carte expliquée, IA, technique, compléments).
+   Si la branche `veille` manque ou date de plus de 12 heures : chercher l'actualité avec WebSearch en mode extended, une requête par rubrique, jusqu'à 18 recherches.
 3. Pistes pour le dimanche : pour 1 à 3 sujets de fond repérés et non traités, `python3 outils/historique.py piste "thème" "sujet en une ligne" "url"`. Thèmes : Géopolitique, Environnement, Société, Finance, IA, Architecture, Politique du Brésil.
 4. Rédaction de `base.json` en français, toutes les rubriques des deux profils et les brèves. Puis `python3 outils/historique.py verifier base.json` : changer de sujet si une rubrique reprend un sujet déjà traité.
 5. Contrôle FR : `python3 outils/publier.py jour base.json --texte`, puis l'audit sur `base.txt` (`--lang fr`). Corriger les alertes rouges dans le JSON. Les alertes "de plus" dans une comparaison chiffrée sont acceptées.
@@ -87,5 +90,5 @@ Le dimanche, après l'étape 10 : édition de la semaine selon `consignes/hebdo.
 ## En cas d'échec
 
 - Accès git refusé : produire quand même l'édition fr et l'envoyer par mail (étapes 6 et 7 du skill `actualites-quotidiennes` : render.py, build.py, Gmail `send_message` à adrien.etks@gmail.com, libellé Actualités). Puis un mail court à adrienroche6@gmail.com, objet "Actualités · app non mise à jour", avec le message d'erreur git exact.
-- Aucune édition possible : un seul mail court à adrienroche6@gmail.com, objet "Actualités · édition non produite", avec la cause en une phrase.
+- Aucune édition possible, seulement après avoir essayé la veille puis au moins 6 recherches WebSearch en mode extended : un seul mail court à adrienroche6@gmail.com, objet "Actualités · édition non produite", avec la cause en une phrase.
 - Une rubrique sans matière fiable est omise ; une image qui échoue part sans image.

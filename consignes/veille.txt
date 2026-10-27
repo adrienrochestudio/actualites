@@ -38,7 +38,6 @@ Données | The Conversation France | https://theconversation.com/fr/articles.ato
 Portugal | Observador | https://observador.pt/feed/
 Europe | EUbusiness | https://www.eubusiness.com/feed/
 Afrique | Le Monde Afrique | https://www.lemonde.fr/afrique/rss_full.xml
-Afrique | The Africa Report | https://www.theafricareport.com/feed/
 Amériques | Le Monde Amériques | https://www.lemonde.fr/ameriques/rss_full.xml
 Asie | Le Monde Asie-Pacifique | https://www.lemonde.fr/asie-pacifique/rss_full.xml
 Monde | Folha Mundo | https://feeds.folha.uol.com.br/mundo/rss091.xml

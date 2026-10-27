@@ -2,6 +2,11 @@
 """Veille du matin : lit les flux de consignes/veille.txt et sort une liste compacte des articles récents,
 groupés par rubrique, sans les sujets déjà traités (historique). Remplace la plupart des recherches web.
 
+Le réseau de la tâche planifiée ne laisse pas passer les sites de presse : la veille tourne donc chaque nuit
+dans GitHub Actions (.github/workflows/veille.yml) et sa sortie est publiée sur la branche `veille`
+(veille.txt, liens.json ; le samedi et le dimanche, aussi semaine.txt et liens-semaine.json).
+La tâche lit ces fichiers avec git ; `lien` les retrouve dans le dossier veille/ quand il existe.
+
 Usage :
   python3 outils/veille.py                  dernières 30 heures, 5 articles au plus par flux
   python3 outils/veille.py --heures 168     la semaine (édition du dimanche)
@@ -28,6 +33,7 @@ sys.path.insert(0, os.path.join(RACINE, "outils"))
 from historique import deja_traite, mots, sujets_recents  # noqa: E402
 
 LIENS = os.path.join(RACINE, "_veille.json")
+LIENS_BRANCHE = os.path.join(RACINE, "veille", "liens.json")
 AGENT = "Mozilla/5.0 (compatible; ActualitesVeille/1.0; +https://github.com/adrienrochestudio/actualites)"
 PARIS = dt.timezone(dt.timedelta(hours=1))  # heure d'hiver ; l'affichage n'a pas besoin de plus
 
@@ -92,14 +98,20 @@ def lire_flux(source):
 
 def main():
     if sys.argv[1:2] == ["lien"]:
-        liens = json.load(open(LIENS, encoding="utf-8"))
-        for n in sys.argv[2:]:
+        args = sys.argv[2:]
+        fichier = LIENS_BRANCHE if os.path.isfile(LIENS_BRANCHE) else LIENS
+        if args[:1] == ["--semaine"]:
+            fichier = os.path.join(RACINE, "veille", "liens-semaine.json")
+            args = args[1:]
+        liens = json.load(open(fichier, encoding="utf-8"))
+        for n in args:
             print(f"[{n}] {liens.get(n, 'numéro inconnu')}")
         return
     a = argparse.ArgumentParser()
     a.add_argument("--heures", type=int, default=30)
     a.add_argument("--max", type=int, default=5, help="articles au plus par flux")
     a.add_argument("--rubrique")
+    a.add_argument("--liens", default=LIENS, help="fichier où écrire les adresses")
     x = a.parse_args()
 
     depuis = dt.datetime.now(dt.timezone.utc) - dt.timedelta(hours=x.heures)
@@ -129,7 +141,8 @@ def main():
             liens[num] = nettoyer_url(lien)
             par_rubrique.setdefault(rub, []).append(f"[{num}] {titre[:140]} · {nom} · {quand}")
             n += 1
-    json.dump(liens, open(LIENS, "w", encoding="utf-8"), ensure_ascii=False)
+    json.dump(liens, open(x.liens, "w", encoding="utf-8"), ensure_ascii=False)
+    print(f"Veille du {dt.datetime.now(PARIS).strftime('%d/%m/%Y %Hh%M')} (heure de Paris), {x.heures} dernières heures")
     for rub, lignes in par_rubrique.items():
         print(f"\n## {rub}")
         print("\n".join(lignes))

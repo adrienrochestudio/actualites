@@ -8,7 +8,7 @@ Comme pour le jour : une seule rédaction en français (`hebdo-base.json`), les 
 
 1. Lire `consignes/ecriture.md` (règles d'écriture et de traduction) ; sources et visuels : sections du même nom dans `consignes/quotidien.md`. Ne pas charger les skills.
 2. Date du jour (dimanche), fuseau Europe/Paris. `date_texte` : la date du dimanche, "Dimanche 1 novembre 2026". `date_texte_semaine` : la semaine qui commence le lendemain, "Semaine du 2 novembre 2026".
-3. Point de départ : `python3 outils/historique.py pistes` (sujets de fond repérés pendant la semaine) et `python3 outils/historique.py notions` (dossiers des 6 derniers mois et notions récentes, à ne pas refaire). Compléter au besoin avec `python3 outils/veille.py --heures 168 --max 8`.
+3. Point de départ : `python3 outils/historique.py pistes` (sujets de fond repérés pendant la semaine) et `python3 outils/historique.py notions` (dossiers des 6 derniers mois et notions récentes, à ne pas refaire). Compléter avec la veille de la semaine : `veille/semaine.txt` (branche `veille`, déjà récupérée par l'édition du jour), adresses avec `python3 outils/veille.py lien --semaine <numéros>`.
 4. Choix de 7 sujets, un par thème. Chaque dossier porte `"profils"` :
    - Géopolitique ou géoéconomie (hors du flux habituel : pas Iran, Ukraine, Trump ou Bolsonaro sauf cas exceptionnel) : `["fr", "pt"]`
    - Énergie, climat ou environnement : `["fr", "pt"]`
