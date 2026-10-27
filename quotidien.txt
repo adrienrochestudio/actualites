@@ -23,17 +23,17 @@
 2026-10-26 | ia | Claude sur Google Cloud, Singapour, Frontier Academy, Code Review GA, IA et élection au Brésil |
 2026-10-26 | ia technique | Prefill, décodage, bande passante HBM et cache KV |
 2026-10-26 | ecologie | PNUE Emissions Gap Report 2026 (2,8 °C), COP31 | Antalya
-2026-10-27 | une | Les Israéliens votent aujourd'hui aux législatives. Les derniers sondages donnent l'opposition de Gadi Eisenkot devant l |
-2026-10-27 | Monde | Zambie : 4,1 milliards de dollars dus à la Chine et un nouveau programme du FMI | 
-2026-10-27 | France | Sécheresse : l'eau prélevée par l'agriculture reste mal mesurée | 
-2026-10-27 | Brésil | 63,9 millions de Brésiliens n'ont pas terminé l'éducation de base | 
-2026-10-27 | Politique du Brésil | PEC de la Sécurité publique : le Sénat plénier doit trancher | 
-2026-10-27 | Le chiffre | 50 milliards de dollars | 
-2026-10-27 | Comprendre | Anthropic perd 80,7 milliards de dollars sans les avoir dépensés | 
-2026-10-27 | Finance | Wall Street rebondit avec Anthropic, le pétrole reste au-dessus de 110 dollars | 
-2026-10-27 | Intelligence artificielle | Anthropic dépose son dossier de Bourse : 16,3 milliards de dollars de revenus au semestre | 
-2026-10-27 | IA, technique | Pourquoi une conversation longue pèse 40 gigaoctets en mémoire | 
-2026-10-27 | Cinéma | Tokyo dans la liste A de la FIAPF : un jury qui n'en fait pas un enjeu | 
-2026-10-27 | Environnement | Trèbes : 52 maisons détruites pour donner 13 hectares à l'Aude | Trèbes
-2026-10-27 | Architecture | Santa Rosa, un immeuble de logement social de sept étages en centre de Santiago | Santiago
-2026-10-27 | Carte expliquée | Où l'aide pèse le plus dans le revenu national | 
+2026-10-27 | une | Les Israéliens votent ce mardi pour élire les 120 députés de la Knesset, premier scrutin depuis les attaques du 7 octobr |
+2026-10-27 | Monde | Zambie : comment 4,1 milliards de dollars de prêts chinois ont pesé sur la dette du pays | 
+2026-10-27 | France | Les Forges de Tarbes, seul fabricant français de corps d'obus pour le Caesar, en redressement judiciaire | Tarbes
+2026-10-27 | Brésil | 63,9 millions de Brésiliens n'ont pas terminé l'école, et l'éducation des adultes n'en touche que 1,5 % | 
+2026-10-27 | Politique du Brésil | Sécurité publique : la réforme constitutionnelle attend toujours le vote du Sénat | 
+2026-10-27 | Le chiffre | 35,6 % | 
+2026-10-27 | Comprendre | Le coupe-circuit de la Bourse de São Paulo, ou comment un marché s'arrête de lui-même | 
+2026-10-27 | Finance | Le pétrole recule avec la diplomatie autour de l'Iran, l'or termine à 4 038 dollars | 
+2026-10-27 | Intelligence artificielle | Anthropic dépose son dossier d'entrée en Bourse : 16,3 milliards de dollars de revenus en six mois | 
+2026-10-27 | IA, technique | Le circuit imprimé, la pièce oubliée qui manque aux serveurs d'IA | 
+2026-10-27 | Architecture | À Singapour, le parc Bishan-Ang Mo Kio a remplacé un canal de béton par une rivière | Bishan
+2026-10-27 | Cinéma | La FIAPF réduit à 17 festivals sa liste A, et Tokyo en fait partie | 
+2026-10-27 | Environnement | À Trèbes, la ville a démoli cinquante maisons pour rendre son lit à l'Aude | Trèbes
+2026-10-27 | Carte expliquée | Qui a l'électricité dans le monde | 
