@@ -1,0 +1,4 @@
+# Sujets de fond repérés pendant la semaine, pour l'édition du dimanche (14 jours)
+# Format : AAAA-MM-JJ | thème | piste | url
+2026-10-27 | Société | Brésil : 63,9 millions d'adultes sans éducation de base, la filière EJA et son financement | https://f5online.com.br/brasil-tem-639-milhoes-sem-educacao-basica-completa/
+2026-10-27 | Géopolitique | Zambie : restructuration de la dette et partage de l'effort entre Chine, privés et FMI | https://www.agenceecofin.com/actualites/1311-113617-restructuration-de-la-dette-de-la-zambie-la-chine-appelle-les-autres-creanciers-a-assumer-une-charge-equitable
