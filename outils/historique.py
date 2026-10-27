@@ -15,6 +15,7 @@ Usage :
   historique.py piste "thème" "piste" [url]
   historique.py pistes                  pistes des 7 derniers jours (le dimanche)
   historique.py envoyer                 commit et push de la branche historique
+  historique.py journal "étape" "état ou cause"   trace d'exécution (journal.txt, 30 jours), poussée aussitôt
 """
 import datetime as dt
 import json
@@ -26,7 +27,7 @@ import unicodedata
 
 RACINE = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 DOSSIER = os.path.join(RACINE, "historique")
-DUREES = {"quotidien.txt": 60, "hebdo.txt": 183, "pistes.txt": 14}
+DUREES = {"quotidien.txt": 60, "hebdo.txt": 183, "pistes.txt": 14, "journal.txt": 30}
 A_NOTION = {"Comprendre", "IA, technique", "Carte expliquée", "Architecture", "comprendre", "ia, technique"}
 VIDES = set("""avec dans pour sans sous entre leur leurs mais plus moins comme apres avant depuis contre
 vers chez dont elle elles ils sont etre avoir fait faire cette celle ceux tout tous toute toutes
@@ -155,6 +156,17 @@ def main(args):
         for l in lire("pistes.txt")[1]:
             if l[:10] >= limite:
                 print(l)
+    elif action == "journal":
+        if len(args) < 3:
+            sys.exit('usage : historique.py journal "étape" "état ou cause"')
+        entete, lignes = lire("journal.txt")
+        if not entete:
+            entete = ["# Journal d'exécution de la tâche Actualités (30 jours)",
+                      "# Format : AAAA-MM-JJ HH:MM (Paris) | étape | état ou cause"]
+        heure = dt.datetime.now(dt.timezone(dt.timedelta(hours=1))).strftime("%Y-%m-%d %H:%M")
+        lignes.append(f"{heure} | {args[1]} | {' '.join(args[2:])[:300]}")
+        ecrire("journal.txt", entete, lignes)
+        main(["envoyer"])
     elif action == "envoyer":
         def git(*a, check=True):
             return subprocess.run(["git", *a], cwd=DOSSIER, check=check, capture_output=True, text=True)

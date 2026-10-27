@@ -92,6 +92,7 @@ Légendes : dire ce qu'il faut regarder dans l'image (la zone, la courbe, l'éca
 
 Dépendances : Pillow et matplotlib (`pip install pillow matplotlib` si l'import échoue). Schéma du JSON : en tête de `outils/publier.py`. Au plus 12 recherches web et 26 lectures de page : la veille remplace le reste.
 
+0. Journal d'exécution : à chaque étape numérotée terminée, et à tout arrêt, `python3 outils/historique.py journal "<étape>" "<ok, ou cause exacte>"` (il pousse aussitôt). Il sert à comprendre un échec sans relancer. Ne jamais s'arrêter sans une ligne de journal qui donne la cause.
 1. Historique : `git fetch origin historique`, `git worktree add -B historique historique origin/historique`. Puis `python3 outils/historique.py notions` (notions et dossiers récents à ne pas refaire). Ne pas lire les fichiers de l'historique.
 2. Veille : `git fetch origin veille && git worktree add veille FETCH_HEAD`, puis lire `veille/veille.txt` (sa première ligne donne l'heure de la veille). Choisir les sujets, `python3 outils/veille.py lien <numéros>` pour leurs adresses, lire les articles retenus avec WebFetch. Recherches web seulement pour ce que la veille ne couvre pas (Le chiffre, Carte expliquée, IA, technique, compléments).
    Si la branche `veille` manque ou date de plus de 12 heures : chercher l'actualité avec WebSearch en mode extended, une requête par rubrique, jusqu'à 18 recherches.
