@@ -15,3 +15,4 @@
 2026-10-28 06:03 | 3. Pistes | ok, 2 pistes
 2026-10-28 06:03 | 4. Rédaction | ok, base.json (WebFetch bloqué sauf anthropic.com : lectures par WebSearch)
 2026-10-28 06:03 | 5. Contrôle FR | ok, audit 97/100, 0 rouge
+2026-10-28 06:05 | 6-7. Préparer et traduire | ok, 173 textes
