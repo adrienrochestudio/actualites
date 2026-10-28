@@ -13,3 +13,4 @@
 2026-10-28 05:54 | 1. Historique | ok
 2026-10-28 05:54 | 2. Veille | branche veille du 27/10 06h26, plus de 12 h : recherche WebSearch
 2026-10-28 06:03 | 3. Pistes | ok, 2 pistes
+2026-10-28 06:03 | 4. Rédaction | ok, base.json (WebFetch bloqué sauf anthropic.com : lectures par WebSearch)
