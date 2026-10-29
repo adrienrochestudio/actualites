@@ -30,4 +30,6 @@ jobs:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           gh release view mac >/dev/null 2>&1 || gh release create mac --title "App Mac" --notes "Dernière version de l'app Mac Actualités."
+          # Le zip d'abord, la version ensuite : une app ne voit la nouvelle version qu'une fois le zip en ligne.
           gh release upload mac natif/build/Actualites-mac.zip --clobber
+          gh release upload mac natif/build/mac-version.txt --clobber

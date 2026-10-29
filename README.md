@@ -17,4 +17,6 @@ Une seule tâche planifiée Claude Code, « Actualités », chaque jour à 5h53 
 
 Skills utilisés par la tâche : `.claude/skills/actualites-quotidiennes` et `.claude/skills/sans-trace-ia` (fr, en, pt-BR).
 
-App Mac native : `natif/` (SwiftUI), construite par GitHub Actions, publiée dans la release `mac`.
+App Mac native : `natif/` (SwiftUI), construite par GitHub Actions, publiée dans la release `mac` (zip + `mac-version.txt`).
+Au lancement, l'app compare sa version (`ActualitesBuild` dans Info.plist, le commit) à `mac-version.txt` et se remplace si elle diffère.
+La compilation décode les éditions en ligne avec le modèle de l'app (`natif/Controle`) et ne publie rien si un bloc est perdu.

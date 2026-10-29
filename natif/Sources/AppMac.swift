@@ -40,9 +40,10 @@ struct ActualitesMac: App {
     }
 }
 
-/// Plein écran dès l'ouverture, et l'app se ferme avec sa fenêtre.
+/// Plein écran dès l'ouverture, mise à jour de l'app si une nouvelle version est publiée, et l'app se ferme avec sa fenêtre.
 final class Delegue: NSObject, NSApplicationDelegate {
     func applicationDidFinishLaunching(_ notification: Notification) {
+        Task { await MiseAJour.verifier() }
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
             guard let w = NSApp.windows.first(where: { $0.canBecomeMain }) else { return }
             w.collectionBehavior.insert(.fullScreenPrimary)
