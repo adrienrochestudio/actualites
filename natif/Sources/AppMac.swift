@@ -1,11 +1,13 @@
 import SwiftUI
 import AppKit
+import Combine
 
 @main
 struct ActualitesMac: App {
     @NSApplicationDelegateAdaptor(Delegue.self) var delegue
     @StateObject private var depot = Depot()
-    @Environment(\.scenePhase) private var phase
+    /// Vérification régulière quand l'app reste ouverte (la tâche publie vers 6 h, heure de Paris).
+    private let horloge = Timer.publish(every: 30 * 60, on: .main, in: .common).autoconnect()
 
     var body: some Scene {
         Window("Actualités", id: "journal") {
@@ -13,9 +15,20 @@ struct ActualitesMac: App {
                 .environmentObject(depot)
                 .frame(minWidth: 720, minHeight: 600)
                 .task { await depot.actualiser(force: true) }
+                // scenePhase ne change pas de façon fiable sur macOS : on écoute directement le système.
                 // Retour au premier plan : nouvelle vérification si la dernière date de plus de 10 min.
-                .onChange(of: phase) { p in
-                    if p == .active { Task { await depot.actualiser() } }
+                .onReceive(NotificationCenter.default.publisher(for: NSApplication.didBecomeActiveNotification)) { _ in
+                    Task { await depot.actualiser() }
+                }
+                // Sortie de veille et changement de jour : l'édition a pu changer, vérification immédiate.
+                .onReceive(NSWorkspace.shared.notificationCenter.publisher(for: NSWorkspace.didWakeNotification)) { _ in
+                    Task { await depot.actualiser(force: true) }
+                }
+                .onReceive(NotificationCenter.default.publisher(for: .NSCalendarDayChanged)) { _ in
+                    Task { await depot.actualiser(force: true) }
+                }
+                .onReceive(horloge) { _ in
+                    Task { await depot.actualiser() }
                 }
         }
         .commands {

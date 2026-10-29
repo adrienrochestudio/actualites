@@ -2,6 +2,50 @@ import Foundation
 
 // Schémas de edition.json et hebdo.json (voir outils/publier.py). Les champs inconnus sont ignorés.
 // Publiés par profil : {profil}/edition/edition.json et {profil}/hebdo/hebdo.json ; "langue" ("fr" ou "pt") est facultatif.
+// Lecture tolérante : un bloc, une rubrique ou une question d'un format inattendu est ignoré,
+// au lieu de rendre toute l'édition illisible (l'app restait alors bloquée sur l'édition précédente).
+
+/// Élément ignoré : fait avancer la lecture d'un tableau après un élément illisible.
+private struct Ignore: Decodable {
+    init(from decoder: Decoder) throws {}
+}
+
+/// Texte d'une liste : chaîne simple, ou objet dont seul "texte" sert ({"texte", "valeur", "accent"} des barres).
+private struct TexteSouple: Decodable {
+    let texte: String?
+    init(from decoder: Decoder) throws {
+        let c = try decoder.singleValueContainer()
+        if let s = try? c.decode(String.self) { texte = s; return }
+        struct Objet: Decodable { let texte: String? }
+        texte = (try? c.decode(Objet.self))?.texte
+    }
+}
+
+extension KeyedDecodingContainer {
+    /// Tableau dont les éléments illisibles sont ignorés ; nil si la clé manque ou n'est pas un tableau.
+    func tolerant<T: Decodable>(_ type: [T].Type, _ cle: Key) -> [T]? {
+        guard var u = try? nestedUnkeyedContainer(forKey: cle) else { return nil }
+        var liste: [T] = []
+        while !u.isAtEnd {
+            if let v = try? u.decode(T.self) {
+                liste.append(v)
+            } else if (try? u.decode(Ignore.self)) == nil {
+                break
+            }
+        }
+        return liste
+    }
+
+    /// Liste de textes : chaînes, ou objets réduits à leur "texte".
+    func textes(_ cle: Key) -> [String]? {
+        tolerant([TexteSouple].self, cle)?.compactMap(\.texte)
+    }
+
+    /// Valeur facultative : absente ou d'un autre type, elle vaut nil.
+    func souple<T: Decodable>(_ type: T.Type, _ cle: Key) -> T? {
+        (try? decodeIfPresent(type, forKey: cle)) ?? nil
+    }
+}
 
 struct Source: Codable, Hashable {
     let titre: String
@@ -13,6 +57,13 @@ struct Une: Codable {
     /// Portrait, logo ou photo d'une personne ou d'une organisation citée (facultatif).
     let image: Element?
     let sources: [Source]?
+
+    init(from decoder: Decoder) throws {
+        let c = try decoder.container(keyedBy: CodingKeys.self)
+        texte = try c.decode(String.self, forKey: .texte)
+        image = c.souple(Element.self, .image)
+        sources = c.tolerant([Source].self, .sources)
+    }
 }
 
 struct Etape: Codable, Hashable {
@@ -65,6 +116,23 @@ struct Bloc: Codable, Hashable {
     var commeElement: Element {
         Element(type: type, url: url, src: src, largeur: largeur, legende: legende, lien: lien, credit: credit, ville: ville, nature: nature)
     }
+
+    init(from decoder: Decoder) throws {
+        let c = try decoder.container(keyedBy: CodingKeys.self)
+        type = try c.decode(String.self, forKey: .type)
+        texte = c.souple(String.self, .texte)
+        items = c.textes(.items)
+        elements = c.tolerant([Element].self, .elements)
+        etapes = c.tolerant([Etape].self, .etapes)
+        legende = c.souple(String.self, .legende)
+        url = c.souple(String.self, .url)
+        src = c.souple(String.self, .src)
+        largeur = c.souple(Double.self, .largeur)
+        lien = c.souple(String.self, .lien)
+        credit = c.souple(Source.self, .credit)
+        ville = c.souple(String.self, .ville)
+        nature = c.souple(String.self, .nature)
+    }
 }
 
 /// Rubrique du jour ou dossier de la semaine (chapo et couverture : dossiers seulement).
@@ -78,6 +146,18 @@ struct Article: Codable, Hashable, Identifiable {
     let sources: [Source]?
     let note_sources: String?
     var id: String { etiquette + titre }
+
+    init(from decoder: Decoder) throws {
+        let c = try decoder.container(keyedBy: CodingKeys.self)
+        etiquette = try c.decode(String.self, forKey: .etiquette)
+        titre = try c.decode(String.self, forKey: .titre)
+        chapo = c.souple(String.self, .chapo)
+        couverture = c.souple(Element.self, .couverture)
+        blocs = c.tolerant([Bloc].self, .blocs) ?? []
+        a_retenir = c.souple(String.self, .a_retenir)
+        sources = c.tolerant([Source].self, .sources)
+        note_sources = c.souple(String.self, .note_sources)
+    }
 
     /// Rubrique "Le chiffre du jour" : son titre est le chiffre lui-même.
     var estChiffreDuJour: Bool {
@@ -103,6 +183,13 @@ struct Breve: Codable, Hashable, Identifiable {
     let items: [String]
     let sources: [Source]?
     var id: String { rubrique }
+
+    init(from decoder: Decoder) throws {
+        let c = try decoder.container(keyedBy: CodingKeys.self)
+        rubrique = try c.decode(String.self, forKey: .rubrique)
+        items = c.textes(.items) ?? []
+        sources = c.tolerant([Source].self, .sources)
+    }
 }
 
 /// Question du quiz de fin d'édition ; `reponse` est l'index (à partir de 0) du bon choix.
@@ -122,6 +209,18 @@ struct Edition: Codable {
     let rubriques: [Article]
     let breves: [Breve]?
     let quiz: [Question]?
+
+    init(from decoder: Decoder) throws {
+        let c = try decoder.container(keyedBy: CodingKeys.self)
+        date = try c.decode(String.self, forKey: .date)
+        publie = c.souple(String.self, .publie)
+        langue = c.souple(String.self, .langue)
+        date_texte = try c.decode(String.self, forKey: .date_texte)
+        une = c.souple(Une.self, .une)
+        rubriques = c.tolerant([Article].self, .rubriques) ?? []
+        breves = c.tolerant([Breve].self, .breves)
+        quiz = c.tolerant([Question].self, .quiz)?.filter { $0.choix.indices.contains($0.reponse) }
+    }
 }
 
 struct Semaine: Codable {
@@ -131,6 +230,16 @@ struct Semaine: Codable {
     let date_texte: String
     let date_texte_semaine: String?
     let sujets: [Article]
+
+    init(from decoder: Decoder) throws {
+        let c = try decoder.container(keyedBy: CodingKeys.self)
+        date = try c.decode(String.self, forKey: .date)
+        publie = c.souple(String.self, .publie)
+        langue = c.souple(String.self, .langue)
+        date_texte = try c.decode(String.self, forKey: .date_texte)
+        date_texte_semaine = c.souple(String.self, .date_texte_semaine)
+        sujets = c.tolerant([Article].self, .sujets) ?? []
+    }
 }
 
 /// Ce que l'app sait télécharger et garder : l'édition du jour ou celle de la semaine.

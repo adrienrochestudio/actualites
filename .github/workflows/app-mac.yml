@@ -13,6 +13,16 @@ jobs:
       - uses: actions/checkout@v4
       - name: Construire
         run: natif/construire-mac.sh
+      - name: Contrôler la lecture des éditions publiées
+        # Le modèle de l'app doit lire chaque bloc des éditions en ligne, sinon l'app reste sur une ancienne édition.
+        run: |
+          mkdir -p natif/build/controle
+          swiftc -O natif/Sources/Modele.swift natif/Controle/main.swift -o natif/build/controle/controle
+          cd natif/build/controle
+          for f in fr/edition/edition.json fr/hebdo/hebdo.json pt/edition/edition.json pt/hebdo/hebdo.json; do
+            curl -fsS "https://adrienrochestudio.github.io/actualites/$f" -o "${f%%/*}-$(basename "$f")" || echo "absent : $f"
+          done
+          ./controle *.json
       - name: Publier dans la release "mac"
         # Une autre branche ne fait que vérifier la compilation.
         if: github.ref == 'refs/heads/main'
