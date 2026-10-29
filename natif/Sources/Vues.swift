@@ -21,16 +21,19 @@ enum Style {
     static let fond = Color.white
     /// Fond grisé des encarts : l'Actu, le chiffre du jour, le quiz.
     static let fondEncart = Color(red: 0xf3 / 255, green: 0xf2 / 255, blue: 0xef / 255)
+    /// Marges latérales de la lecture sur grand écran : le texte prend le reste de la largeur.
+    static let marge: CGFloat = 64
+    /// Largeur maximale des images larges, cartes et graphiques (taille des PNG publiés, pas d'agrandissement flou).
+    static let large: CGFloat = 1100
+    /// Largeur des légendes dans la vue agrandie.
     static let colonne: CGFloat = 680
-    /// Largeur des graphiques larges sur grand écran : un peu plus que la colonne de texte.
-    static let large: CGFloat = 920
     static func serif(_ taille: CGFloat, gras: Bool = false, italique: Bool = false) -> Font {
         .custom(gras ? "ActualitesTexte-Semibold" : (italique ? "ActualitesTexte-Italic" : "ActualitesTexte-Regular"), size: taille)
     }
-    static func titre(_ taille: CGFloat = 31) -> Font { .custom("ActualitesTitre-Medium", size: taille) }
+    static func titre(_ taille: CGFloat = 26) -> Font { .custom("ActualitesTitre-Medium", size: taille) }
     static func manchette() -> Font { .custom("ActualitesManchette-Semibold", size: 54) }
-    static func sousTitre() -> Font { serif(19, gras: true) }
-    static func texte() -> Font { serif(18) }
+    static func sousTitre() -> Font { serif(17, gras: true) }
+    static func texte() -> Font { serif(16) }
     static func petit(italique: Bool = false) -> Font { serif(13, italique: italique) }
 }
 
@@ -94,11 +97,11 @@ struct Note: View {
 
 struct Paragraphe: View {
     let t: String
-    var taille: CGFloat = 18
+    var taille: CGFloat = 16
     var italique = false
     var gras = false
     var body: some View {
-        Text(t).font(Style.serif(taille, gras: gras, italique: italique)).foregroundStyle(Style.encre).lineSpacing(taille * 0.6)
+        Text(t).font(Style.serif(taille, gras: gras, italique: italique)).foregroundStyle(Style.encre).lineSpacing(taille * 0.4)
             .fixedSize(horizontal: false, vertical: true)
             .textSelection(.enabled)
     }
@@ -178,9 +181,9 @@ struct Figure: View {
     @Environment(\.grandEcran) var grandEcran
 
     private var largeurMax: CGFloat? {
-        if element.estPlan { return nil }
+        if element.estPlan { return Style.large }
         if element.estPortrait { return Figure.largeurPortrait(grandEcran) }
-        return element.estLarge ? nil : (grandEcran ? 420 : 360)
+        return element.estLarge ? Style.large : (grandEcran ? 420 : 360)
     }
 
     /// Largeur maximale d'un portrait ou d'un logo.
@@ -194,7 +197,7 @@ struct VueBloc: View {
     var body: some View {
         switch b.type {
         case "p":
-            Paragraphe(t: b.texte ?? "", taille: grandEcran ? 19 : 18)
+            Paragraphe(t: b.texte ?? "", taille: 16)
         case "sous_titre":
             Text(b.texte ?? "").font(Style.sousTitre()).foregroundStyle(Style.encre).padding(.top, 10)
                 .fixedSize(horizontal: false, vertical: true)
@@ -252,22 +255,15 @@ struct CorpsArticle: View {
     var provenance: Provenance? = nil
     /// Vue des articles gardés : seulement "Retirer".
     var seulRetirer = false
-    /// Faux dans un encart : les graphiques larges restent dans l'encart.
-    var deborder = true
 
     var body: some View {
         VStack(alignment: .leading, spacing: 14) {
             ForEach(Array(a.blocs.enumerated()), id: \.offset) { _, b in
-                if deborder && grandEcran && b.type == "image" && b.commeElement.estLarge {
-                    // Graphique large : déborde de la colonne de part et d'autre.
-                    VueBloc(b: b).padding(.horizontal, -(Style.large - Style.colonne) / 2)
-                } else {
-                    VueBloc(b: b)
-                }
+                VueBloc(b: b)
             }
             if let r = a.a_retenir {
                 Text(t.aRetenir).font(Style.sousTitre()).foregroundStyle(Style.encre).padding(.top, 10)
-                Paragraphe(t: r, taille: grandEcran ? 19 : 18)
+                Paragraphe(t: r, taille: 16)
             }
             if let s = ligneSources(a.sources, t, apres: a.note_sources) { Note(attribue: s).padding(.top, 6) }
             if let p = provenance { BoutonGarder(article: a, provenance: p, seulRetirer: seulRetirer) }
@@ -316,16 +312,16 @@ struct VueRubrique: View {
                 VStack(alignment: .leading, spacing: 16) {
                     VStack(alignment: .leading, spacing: 6) {
                         NomRubrique(t: r.etiquette)
-                        Text(r.titre).font(Style.titre(grandEcran ? 54 : 44)).foregroundStyle(Style.encre).fixedSize(horizontal: false, vertical: true)
+                        Text(r.titre).font(Style.titre(grandEcran ? 40 : 34)).foregroundStyle(Style.encre).fixedSize(horizontal: false, vertical: true)
                     }
-                    CorpsArticle(a: r, provenance: provenance, deborder: false)
+                    CorpsArticle(a: r, provenance: provenance)
                 }
                 .encart()
             } else {
                 VStack(alignment: .leading, spacing: 16) {
                     VStack(alignment: .leading, spacing: 6) {
                         NomRubrique(t: r.etiquette)
-                        Text(r.titre).font(Style.titre(grandEcran ? 36 : 31)).foregroundStyle(Style.encre).fixedSize(horizontal: false, vertical: true)
+                        Text(r.titre).font(Style.titre(grandEcran ? 28 : 26)).foregroundStyle(Style.encre).fixedSize(horizontal: false, vertical: true)
                     }
                     CorpsArticle(a: r, provenance: provenance)
                 }
@@ -346,7 +342,7 @@ struct VueGarde: View {
         VStack(alignment: .leading, spacing: 16) {
             VStack(alignment: .leading, spacing: 6) {
                 NomRubrique(t: [a.etiquette, g.dateCourte].filter { !$0.isEmpty }.joined(separator: " · "))
-                Text(a.titre).font(Style.titre(grandEcran ? 36 : 31)).foregroundStyle(Style.encre).fixedSize(horizontal: false, vertical: true)
+                Text(a.titre).font(Style.titre(grandEcran ? 28 : 26)).foregroundStyle(Style.encre).fixedSize(horizontal: false, vertical: true)
                 if let ch = a.chapo { Paragraphe(t: ch, italique: true) }
             }
             if let c = a.couverture { Figure(element: c) }
@@ -384,7 +380,7 @@ struct VueBreves: View {
                         ForEach(col) { br in
                             VStack(alignment: .leading, spacing: 10) {
                                 NomRubrique(t: br.rubrique)
-                                ForEach(br.items, id: \.self) { Paragraphe(t: "- \($0)", taille: grandEcran ? 18 : 17) }
+                                ForEach(br.items, id: \.self) { Paragraphe(t: "- \($0)", taille: 16) }
                                 if let s = ligneSources(br.sources, t) { Note(attribue: s) }
                             }
                             .padding(.top, 22)
@@ -460,7 +456,7 @@ struct VueQuiz: View {
 
     @ViewBuilder
     private func question(_ i: Int, _ q: Question) -> some View {
-        let taille: CGFloat = grandEcran ? 19 : 18
+        let taille: CGFloat = 16
         let r = reponse(i)
         VStack(alignment: .leading, spacing: 0) {
             Paragraphe(t: q.question, taille: taille, gras: true).padding(.bottom, 8)

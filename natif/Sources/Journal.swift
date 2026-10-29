@@ -214,13 +214,14 @@ struct Journal: View {
                 ScrollViewReader { proxy in
                     ScrollView {
                         VStack(spacing: 0) {
-                            manchette
+                            manchette.padding(.horizontal, grand ? Style.marge : 24)
                             VStack(alignment: .leading, spacing: 0) {
                                 contenu
                                 pied
                             }
-                            .frame(maxWidth: Style.colonne, alignment: .leading)
-                            .padding(.horizontal, 24)
+                            // Lecture sur presque toute la largeur de la fenêtre, marges latérales seulement.
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                            .padding(.horizontal, grand ? Style.marge : 24)
                             .padding(.bottom, 56)
                             .id(cleContenu)
                             .transition(.opacity)
@@ -277,8 +278,7 @@ struct Journal: View {
             Rectangle().fill(Color(white: 0.89)).frame(height: 1)
             Note(ligneDate).padding(.top, 14)
         }
-        .frame(maxWidth: Style.large)
-        .padding(.horizontal, 24)
+        .frame(maxWidth: .infinity)
     }
 
     private func onglet(_ texte: String, _ v: Vue) -> some View {
@@ -310,7 +310,7 @@ struct Journal: View {
                 if let une = ed.une {
                     VStack(alignment: .leading, spacing: 10) {
                         NomRubrique(t: t.actu)
-                        Paragraphe(t: une.texte, taille: 23)
+                        Paragraphe(t: une.texte, taille: 18)
                         if let i = une.image {
                             // Portrait ou logo : petit par défaut, comme dans l'app web.
                             Figure(element: Element(type: i.type, url: i.url, src: i.src, largeur: i.largeur ?? 360,
