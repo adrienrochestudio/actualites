@@ -21,3 +21,4 @@
 2026-10-28 06:05 | 10. Historique | ok
 2026-10-29 05:54 | 1. historique | ok
 2026-10-29 05:54 | 2. veille | branche veille de 28/10 10h32, plus de 12 h : recherche web
+2026-10-29 05:58 | 2. veille | WebFetch bloqué (ENOTFOUND sur tous les sites) ; 18 recherches WebSearch faites
