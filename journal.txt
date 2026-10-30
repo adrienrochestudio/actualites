@@ -36,3 +36,4 @@
 2026-10-30 06:07 | 6-7. Préparation et traduction | ok
 2026-10-30 06:07 | 8. Assemblage pt et audit | ok, audit rouge 0
 2026-10-30 06:08 | 9. Publication | ok, fr et pt du 2026-10-30 publiés
+2026-10-30 06:08 | 10. Historique | ok
