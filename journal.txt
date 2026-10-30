@@ -34,3 +34,4 @@
 2026-10-30 05:59 | 3. Pistes | ok
 2026-10-30 06:05 | 4-5. Rédaction et contrôle FR | ok, audit rouge 0
 2026-10-30 06:07 | 6-7. Préparation et traduction | ok
+2026-10-30 06:07 | 8. Assemblage pt et audit | ok, audit rouge 0
