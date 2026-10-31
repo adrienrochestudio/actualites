@@ -43,3 +43,4 @@
 2026-10-31 05:59 | 3. pistes | ok (2 pistes)
 2026-10-31 06:05 | 4. rédaction | ok (WebFetch refusé sur tous les domaines : rédaction sur 18 recherches WebSearch ; Architecture sans photo, cartes à la place)
 2026-10-31 06:05 | 5. contrôle FR | ok, audit 0 rouge
+2026-10-31 06:06 | 6-7. préparation et traduction | ok, 195 textes
