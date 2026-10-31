@@ -46,3 +46,4 @@
 2026-10-31 06:06 | 6-7. préparation et traduction | ok, 195 textes
 2026-10-31 06:07 | 8. contrôle PT | ok, audit 0 rouge
 2026-10-31 06:08 | 9. publication | ok, fr et pt en ligne
+2026-10-31 06:08 | 10. historique | ok
