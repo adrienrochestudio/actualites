@@ -53,3 +53,4 @@
 2026-11-01 06:04 | 4-5 rédaction et contrôle FR | ok
 2026-11-01 06:07 | 6-8 profils et traduction | ok
 2026-11-01 06:07 | 9 publication | ok, fr et pt en ligne à 06h07
+2026-11-01 06:07 | 10 historique | ok
