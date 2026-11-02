@@ -63,3 +63,4 @@
 2026-11-02 06:08 | 4. Rédaction | ok, sans Architecture ni Carte expliquée (WebFetch bloqué hors anthropic.com, pas d'image libre vérifiable)
 2026-11-02 06:08 | 5. Contrôle FR | ok, audit sans rouge
 2026-11-02 06:09 | 7. Traduction | ok
+2026-11-02 06:10 | 8. Contrôle pt | audit 0 rouge ; manque 1 portrait ou logo dans pt (aucune image libre vérifiable, réseau bloqué) : publication avec --forcer après 7h40
