@@ -60,3 +60,4 @@
 2026-11-02 05:55 | 2. Veille | veille du 01/11 11h20 périmée (plus de 12 h) : recherches WebSearch extended
 2026-11-02 05:59 | 3. Pistes | en cours
 2026-11-02 05:59 | 3. Pistes | ok
+2026-11-02 06:08 | 4. Rédaction | ok, sans Architecture ni Carte expliquée (WebFetch bloqué hors anthropic.com, pas d'image libre vérifiable)
