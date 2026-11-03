@@ -71,3 +71,4 @@
 2026-11-03 05:58 | 3 recherche | 18 recherches faites ; WebFetch refusé par la plupart des hôtes (lemonde, bbc, nikkei, wikimedia, OWID, wikipedia) : Architecture et Carte expliquée omises faute d'image libre vérifiable
 2026-11-03 05:58 | 3 pistes | ok
 2026-11-03 06:06 | 4-5 rédaction et contrôle FR | ok, aucun manque, audit 0 rouge
+2026-11-03 06:06 | 6 profils préparer | ok
