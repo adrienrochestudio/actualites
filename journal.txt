@@ -68,3 +68,4 @@
 2026-11-02 07:41 | 10. Historique | ok
 2026-11-03 05:54 | 1 historique | ok
 2026-11-03 05:54 | 2 veille | branche veille datée de 18 h, complétée par WebSearch extended
+2026-11-03 05:58 | 3 recherche | 18 recherches faites ; WebFetch refusé par la plupart des hôtes (lemonde, bbc, nikkei, wikimedia, OWID, wikipedia) : Architecture et Carte expliquée omises faute d'image libre vérifiable
