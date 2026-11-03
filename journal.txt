@@ -67,3 +67,4 @@
 2026-11-02 07:41 | 9. Publication | ok, fr et pt en un envoi avec --forcer (pt : 1 portrait sur 2)
 2026-11-02 07:41 | 10. Historique | ok
 2026-11-03 05:54 | 1 historique | ok
+2026-11-03 05:54 | 2 veille | branche veille datée de 18 h, complétée par WebSearch extended
