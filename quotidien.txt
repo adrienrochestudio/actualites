@@ -117,3 +117,15 @@
 2026-11-02 | IA, technique | Le mélange d'experts, ou pourquoi un modèle d'IA n'utilise qu'une petite partie de ses paramètres | 
 2026-11-02 | Cinéma | En Chine, le premier long métrage entièrement généré par IA attire peu de spectateurs | 
 2026-11-02 | Environnement | En Guyane, la sécheresse arrête la navigation sur le Maroni et déclenche un plan d'urgence pour l'eau | Maripasoula
+2026-11-03 | une | Les Américains votent ce mardi pour renouveler les 435 sièges de la Chambre des représentants et 35 des 100 sièges du Sé |
+2026-11-03 | Monde | L'Ouganda commence à retirer de Somalie les soldats qu'il y entretient depuis 2007 | Afgooye
+2026-11-03 | France | Près de 3 000 docteurs juniors en médecine générale commencent à exercer, 80 % dans les zones sous-dotées | Guéret
+2026-11-03 | Brésil | À Alter do Chão, l'incendie est maîtrisé, mais le feu couve encore dans la tourbe | Alter do Chão
+2026-11-03 | Politique du Brésil | Paris sportifs : le STF entend 34 organismes, dont deux ministères et les supermarchés | 
+2026-11-03 | Le chiffre du jour | 86 % | 
+2026-11-03 | Comprendre | Fonds turcs : pourquoi un fonds d'investissement peut bloquer l'argent de ses clients | 
+2026-11-03 | Finance | Le pétrole perd plus de 7 % en une séance, le Nasdaq recule encore | 
+2026-11-03 | Intelligence artificielle | Anthropic accorde 40 % de remise sur Claude à toutes les administrations américaines, jusqu'aux comtés | 
+2026-11-03 | IA, technique | L'appel d'outils, ou comment un modèle d'IA consulte la météo sans jamais sortir de son serveur | 
+2026-11-03 | Cinéma | Au festival de Tokyo, le Japon affiche un objectif de 20 000 milliards de yens d'exportations culturelles | 
+2026-11-03 | Environnement | Au Vietnam, le solaire déplace l'heure de pointe de l'électricité vers le soir | 
