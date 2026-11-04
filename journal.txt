@@ -82,3 +82,4 @@
 2026-11-04 06:03 | 6 préparer | ok, 185 textes
 2026-11-04 06:05 | 7 traduction | ok
 2026-11-04 06:05 | 8 assemblage et contrôle pt | ok
+2026-11-04 06:05 | 9 publication | ok, fr et pt en ligne
