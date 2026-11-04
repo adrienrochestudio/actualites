@@ -129,3 +129,17 @@
 2026-11-03 | IA, technique | L'appel d'outils, ou comment un modèle d'IA consulte la météo sans jamais sortir de son serveur | 
 2026-11-03 | Cinéma | Au festival de Tokyo, le Japon affiche un objectif de 20 000 milliards de yens d'exportations culturelles | 
 2026-11-03 | Environnement | Au Vietnam, le solaire déplace l'heure de pointe de l'électricité vers le soir | 
+2026-11-04 | une | Les démocrates prennent le contrôle du Congrès américain. Selon les projections de NBC News et de CBS News publiées dans |
+2026-11-04 | Monde | La Thaïlande taxe à 35 % les voitures électriques importées pour garder ses usines | Rayong
+2026-11-04 | France | L'aide à mourir entrera en application en janvier, avec ses décrets | 
+2026-11-04 | Brésil | En Amazonas, la sécheresse des rivières touche 146 425 familles | Tefé, Parintins
+2026-11-04 | Politique du Brésil | Le Sénat adopte la réforme constitutionnelle de la sécurité publique | 
+2026-11-04 | Le chiffre du jour | 5 130 morts confirmés d'Ebola, presque tous en RDC | Kinshasa
+2026-11-04 | Comprendre | Ce que dit une phrase retirée d'un communiqué de banque centrale | 
+2026-11-04 | Finance | Les puces relancent le Nasdaq, Apple pèse sur le Dow Jones | 
+2026-11-04 | Intelligence artificielle | Anthropic interdit à Claude Code de recopier des jeux vidéo existants | 
+2026-11-04 | IA, technique | Le cache de l'attention, ou pourquoi la deuxième question coûte moins cher que la première | 
+2026-11-04 | Architecture | Kengo Kuma ouvre en décembre ses bains de brique sur le port de Copenhague | 
+2026-11-04 | Cinéma | Les salles françaises vendent 14,66 millions de billets en octobre | 
+2026-11-04 | Environnement | Le marché carbone européen proposé par Bruxelles ne tiendrait pas l'objectif de 2040 | 
+2026-11-04 | Carte expliquée | Qui vaccine ses enfants contre la rougeole | 
