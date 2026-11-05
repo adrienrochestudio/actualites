@@ -20,3 +20,4 @@ Skills utilisés par la tâche : `.claude/skills/actualites-quotidiennes` et `.c
 App Mac native : `natif/` (SwiftUI), construite par GitHub Actions, publiée dans la release `mac` (zip + `mac-version.txt`).
 Au lancement, l'app compare sa version (`ActualitesBuild` dans Info.plist, le commit) à `mac-version.txt` et se remplace si elle diffère.
 La compilation décode les éditions en ligne avec le modèle de l'app (`natif/Controle`) et ne publie rien si un bloc est perdu.
+Sur les branches autres que `main`, la compilation lance aussi l'app avec `--diagnostic` : quatre changements de langue, délai d'affichage et plus long blocage de l'app (cible : moins de 200 ms).
