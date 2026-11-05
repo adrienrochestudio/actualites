@@ -88,3 +88,4 @@
 2026-11-05 05:57 | 2 veille | veille du 04/11 11h44 (plus de 12 h) ; complétée par 18 recherches WebSearch ; WebFetch refusé sur presse, Wikimedia, OWID
 2026-11-05 06:00 | 3 pistes | ok
 2026-11-05 06:06 | 4 rédaction | ok ; Cinéma omis (aucune source lisible hors CNC d'octobre, déjà traité hier) ; Politique du Brésil changé (PEC déjà traitée)
+2026-11-05 06:15 | 5 contrôle fr | ok (audit 0 rouge)
