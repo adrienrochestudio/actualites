@@ -62,7 +62,12 @@ struct Journal: View {
                         Button {
                             Task { await depot.actualiser(force: true) }
                         } label: {
-                            Text(t.actualiser).font(Style.serif(14))
+                            // Vérification en cours (édition déjà affichée) : petit indicateur à la place du libellé.
+                            if depot.enChargement {
+                                ProgressView().controlSize(.small)
+                            } else {
+                                Text(t.actualiser).font(Style.serif(14))
+                            }
                         }
                         .help(t.actualiser + " (⌘R)")
                         .disabled(depot.enChargement)
@@ -348,14 +353,20 @@ struct Journal: View {
     }
 
     private func vide(_ texte: String) -> some View {
-        VStack(alignment: .leading) {
+        Group {
             switch depot.etat {
-            case .chargement: Note(t.chargement)
-            case .rien: Note(t.rien)
-            default: Note(texte)
+            case .chargement:
+                // Changement de langue ou premier lancement : signe de chargement bien visible au centre de la page.
+                VStack(spacing: 14) {
+                    ProgressView().controlSize(.large)
+                    Text(t.chargement).font(Style.serif(17)).foregroundStyle(Style.note)
+                }
+                .frame(maxWidth: .infinity)
+                .padding(.top, 90)
+            case .rien: Note(t.rien).padding(.top, 28)
+            default: Note(texte).padding(.top, 28)
             }
         }
-        .padding(.top, 28)
     }
 
     /// Marge de fin de lecture (plus de mention de rédaction ni d'état hors ligne).

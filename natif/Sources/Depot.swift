@@ -77,8 +77,9 @@ final class Depot: ObservableObject {
             edition = lire(Edition.self, p, "edition", "edition.json")
             semaine = lire(Semaine.self, p, "hebdo", "hebdo.json")
             gardes = lireGardes(p)
+            // Dans la même transaction : la page bascule directement sur le signe de chargement, sans état intermédiaire.
+            etat = (edition == nil && semaine == nil) ? .chargement : .horsLigne
         }
-        etat = (edition == nil && semaine == nil) ? .chargement : .horsLigne
         Task { await actualiser(force: true) }
     }
 
