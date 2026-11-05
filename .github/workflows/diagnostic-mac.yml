@@ -1,0 +1,23 @@
+name: Diagnostic Mac
+# Lancement manuel : construit l'app et mesure le changement de langue (clic réel) sur une version récente de macOS.
+on:
+  workflow_dispatch:
+    inputs:
+      macos:
+        description: "Image macOS du runner"
+        default: "macos-26"
+jobs:
+  mesurer:
+    runs-on: ${{ inputs.macos }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Construire
+        run: sw_vers && natif/construire-mac.sh
+      - name: Mesurer
+        run: |
+          rm -rf ~/Library/Application\ Support/Actualites
+          "natif/build/Actualités.app/Contents/MacOS/Actualites" --diagnostic > diag.log 2>&1 &
+          pid=$!
+          for i in $(seq 180); do kill -0 $pid 2>/dev/null || break; sleep 1; done
+          kill $pid 2>/dev/null || true
+          grep MESURE diag.log || tail -40 diag.log
