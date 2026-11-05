@@ -220,7 +220,9 @@ struct Journal: View {
                     ScrollView {
                         VStack(spacing: 0) {
                             manchette.padding(.horizontal, grand ? Style.marge : 24)
-                            VStack(alignment: .leading, spacing: 0) {
+                            // Pile paresseuse : seules les rubriques visibles sont construites. Une édition entière
+                            // construite d'un coup bloquait l'app 1,5 à 3 s à chaque changement de langue.
+                            LazyVStack(alignment: .leading, spacing: 0) {
                                 contenu
                                 pied
                             }

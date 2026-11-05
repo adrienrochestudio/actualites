@@ -338,6 +338,9 @@ final class Depot: ObservableObject {
         let manquants = pub.images.filter { !fm.fileExists(atPath: img.appendingPathComponent(Self.nomLocal($0)).path) }
 
         let session = session
+        // Redessin au plus toutes les 0,5 s pendant le téléchargement, puis une fois à la fin.
+        var dernierRedessin = Date.distantPast
+        var enAttente = false
         await withTaskGroup(of: Bool.self) { groupe in
             var suivants = manquants.makeIterator()
             func lancer() {
@@ -351,10 +354,18 @@ final class Depot: ObservableObject {
             }
             for _ in 0..<4 { lancer() }
             for await ok in groupe {
-                if ok && p == profil { images += 1 }
+                if ok && p == profil {
+                    enAttente = true
+                    if Date().timeIntervalSince(dernierRedessin) > 0.5 {
+                        images += 1
+                        dernierRedessin = Date()
+                        enAttente = false
+                    }
+                }
                 lancer()
             }
         }
+        if enAttente && p == profil { images += 1 }
 
         // Images qui n'appartiennent plus à l'édition enregistrée : supprimées.
         guard lire(T.self, p, dossier, fichierDe(dossier))?.version == pub.version,

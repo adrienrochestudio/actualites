@@ -2,14 +2,33 @@ import SwiftUI
 #if os(macOS)
 import AppKit
 typealias ImagePlateforme = NSImage
-func chargerImage(_ url: URL) -> ImagePlateforme? { NSImage(contentsOf: url) }
+func chargerImage(_ url: URL) -> ImagePlateforme? { CacheImages.image(url) { NSImage(contentsOf: $0) } }
 func vueImage(_ i: ImagePlateforme) -> Image { Image(nsImage: i) }
 #else
 import UIKit
 typealias ImagePlateforme = UIImage
-func chargerImage(_ url: URL) -> ImagePlateforme? { UIImage(contentsOfFile: url.path) }
+func chargerImage(_ url: URL) -> ImagePlateforme? { CacheImages.image(url) { UIImage(contentsOfFile: $0.path) } }
 func vueImage(_ i: ImagePlateforme) -> Image { Image(uiImage: i) }
 #endif
+
+/// Images déjà lues, pour ne pas relire le disque à chaque redessin. Clé : chemin et date de modification
+/// (une image remplacée sous le même nom par une nouvelle édition est relue).
+enum CacheImages {
+    private static let cache: NSCache<NSString, ImagePlateforme> = {
+        let c = NSCache<NSString, ImagePlateforme>()
+        c.countLimit = 150
+        return c
+    }()
+
+    static func image(_ url: URL, lire: (URL) -> ImagePlateforme?) -> ImagePlateforme? {
+        let date = (try? url.resourceValues(forKeys: [.contentModificationDateKey]))?.contentModificationDate?.timeIntervalSince1970 ?? 0
+        let cle = "\(url.path)|\(date)" as NSString
+        if let i = cache.object(forKey: cle) { return i }
+        guard let i = lire(url) else { return nil }
+        cache.setObject(i, forKey: cle)
+        return i
+    }
+}
 
 // Référence : apps de quotidiens de qualité (NYT, The Economist, FT), mêmes règles que styles.css :
 // titres en graisse moyenne et coupe display, séparation par l'espace plutôt que par des filets.
