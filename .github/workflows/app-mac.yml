@@ -27,7 +27,11 @@ jobs:
         if: github.ref != 'refs/heads/main'
         run: |
           rm -rf ~/Library/Application\ Support/Actualites
-          timeout 180 "natif/build/Actualités.app/Contents/MacOS/Actualites" --diagnostic 2>&1 | grep MESURE || true
+          "natif/build/Actualités.app/Contents/MacOS/Actualites" --diagnostic > diag.log 2>&1 &
+          pid=$!
+          for i in $(seq 180); do kill -0 $pid 2>/dev/null || break; sleep 1; done
+          kill $pid 2>/dev/null || true
+          grep MESURE diag.log || tail -40 diag.log
       - name: Publier dans la release "mac"
         # Une autre branche ne fait que vérifier la compilation.
         if: github.ref == 'refs/heads/main'
