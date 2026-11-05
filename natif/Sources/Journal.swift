@@ -39,6 +39,15 @@ extension View {
     }
 }
 
+/// Ligne du menu latéral : sans marge, fond ni séparateur ajoutés par la liste, pour garder le dessin du menu.
+private extension View {
+    func ligneMenu() -> some View {
+        self.listRowInsets(EdgeInsets())
+            .listRowBackground(Color.clear)
+            .listRowSeparator(.hidden)
+    }
+}
+
 struct Journal: View {
     @EnvironmentObject var depot: Depot
     @Environment(\.accessibilityReduceMotion) private var reduit
@@ -89,38 +98,43 @@ struct Journal: View {
 
     // MARK: - Menu latéral : édition, langue, rubriques
 
+    /// Menu en liste native (List) et non en ScrollView : sous macOS 27, la colonne latérale en ScrollView
+    /// dessinait les entrées environ 55 pt plus bas que leur zone de clic (clic sur « Français » sans effet
+    /// ou reçu par « Português »). La liste native garde dessin et clic alignés.
     private var menu: some View {
-        ScrollView {
-            VStack(alignment: .leading, spacing: 0) {
-                titreMenu(t.langue, premier: true)
-                ForEach(Profil.allCases) { p in
-                    choix(p.textes.nomLangue, actif: depot.profil == p) {
-                        JournalTechnique.ecrire("action bouton \(p.rawValue), profil avant \(depot.profil.rawValue)")
-                        depot.changerProfil(p)
-                        JournalTechnique.ecrire("profil après \(depot.profil.rawValue), état \(depot.etat)")
-                    }
-                        .background(GeometryReader { g in
-                            Color.clear
-                                .onAppear { Diagnostic.cadres[p] = g.frame(in: .global) }
-                                .onChange(of: g.frame(in: .global)) { Diagnostic.cadres[p] = $0 }
-                        })
+        List {
+            titreMenu(t.langue, premier: true).ligneMenu()
+            ForEach(Profil.allCases) { p in
+                choix(p.textes.nomLangue, actif: depot.profil == p) {
+                    JournalTechnique.ecrire("action bouton \(p.rawValue), profil avant \(depot.profil.rawValue)")
+                    depot.changerProfil(p)
+                    JournalTechnique.ecrire("profil après \(depot.profil.rawValue), état \(depot.etat)")
                 }
-                if !rubriques.isEmpty {
-                    titreMenu(t.rubriques)
-                    ForEach(rubriques) { r in
-                        choix(r.nom, actif: active == r.id, lu: vue == .jour && depot.lus.contains(r.id)) { cible = r.id }
-                    }
-                }
-                if !depot.gardes.isEmpty {
-                    titreMenu(t.gardes)
-                    ForEach(depot.gardes) { g in
-                        choix(g.article.titre, actif: vue == .gardes && active == ancreGarde(g)) { ouvrirGarde(g) }
-                    }
+                .background(GeometryReader { g in
+                    Color.clear
+                        .onAppear { Diagnostic.cadres[p] = g.frame(in: .global) }
+                        .onChange(of: g.frame(in: .global)) { Diagnostic.cadres[p] = $0 }
+                })
+                .ligneMenu()
+            }
+            if !rubriques.isEmpty {
+                titreMenu(t.rubriques).ligneMenu()
+                ForEach(rubriques) { r in
+                    choix(r.nom, actif: active == r.id, lu: vue == .jour && depot.lus.contains(r.id)) { cible = r.id }
+                        .ligneMenu()
                 }
             }
-            .padding(.vertical, 18)
-            .frame(maxWidth: .infinity, alignment: .leading)
+            if !depot.gardes.isEmpty {
+                titreMenu(t.gardes).ligneMenu()
+                ForEach(depot.gardes) { g in
+                    choix(g.article.titre, actif: vue == .gardes && active == ancreGarde(g)) { ouvrirGarde(g) }
+                        .ligneMenu()
+                }
+            }
         }
+        .listStyle(.sidebar)
+        .scrollContentBackground(.hidden)
+        .environment(\.defaultMinListRowHeight, 1)
         .background(Style.fond)
     }
 
@@ -128,8 +142,9 @@ struct Journal: View {
         Text(texte)
             .font(Style.serif(13))
             .foregroundStyle(Style.note)
+            .frame(maxWidth: .infinity, alignment: .leading)
             .padding(.horizontal, 18)
-            .padding(.top, premier ? 0 : 20)
+            .padding(.top, premier ? 18 : 20)
             .padding(.bottom, 4)
             .accessibilityAddTraits(.isHeader)
     }
