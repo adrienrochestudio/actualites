@@ -5,7 +5,8 @@ import SwiftUI
 /// Récupère les éditions publiées sur GitHub Pages et les garde sur l'appareil.
 /// En ligne : {profil}/edition/edition.json et {profil}/hebdo/hebdo.json.
 /// Sur l'appareil : Application Support/Actualites/{profil}/{edition,hebdo}/ (fichier JSON + img/).
-/// Un seul exemplaire de chaque, pour le seul profil choisi.
+/// Un seul exemplaire de chaque, pour le seul profil choisi. L'édition s'affiche dès que son JSON est reçu,
+/// les images arrivent ensuite : changer de langue ne fait attendre qu'un fichier de quelques dizaines de Ko.
 /// Articles gardés : Application Support/Actualites/gardes/{profil}/ (gardes.json + img/), conservés d'une édition à l'autre.
 /// Rubriques lues et réponses au quiz : UserDefaults, par profil et date d'édition (quiz gardés 30 jours).
 @MainActor
@@ -30,6 +31,8 @@ final class Depot: ObservableObject {
     @Published private(set) var reponsesQuiz: [Int] = []
     /// Quiz terminés du profil affiché sur les 30 derniers jours, le plus récent en premier.
     @Published private(set) var historiqueQuiz: [ScoreQuiz] = []
+    /// Nombre d'images arrivées depuis le lancement : change à chaque image enregistrée, pour redessiner les vues.
+    @Published private(set) var images = 0
 
     nonisolated static let base = URL(string: "https://adrienrochestudio.github.io/actualites/")!
     private static let cleProfil = "profil"
@@ -296,55 +299,70 @@ final class Depot: ObservableObject {
         return try? JSONDecoder().decode(T.self, from: data)
     }
 
-    /// Télécharge une publication ; ne réécrit le disque que si elle a changé ou s'il manque des images.
+    /// Télécharge une publication et l'enregistre dès réception du JSON, pour l'afficher sans attendre les images.
+    /// Les images manquantes sont ensuite téléchargées une à une (voir completerImages), et apparaissent au fil de l'eau.
     private func recuperer<T: Publication>(_ type: T.Type, _ p: Profil, _ dossier: String, _ fichier: String) async -> T? {
         do {
             let url = Self.base.appendingPathComponent(p.rawValue).appendingPathComponent(dossier).appendingPathComponent(fichier)
             let (data, rep) = try await session.data(from: url)
             guard (rep as? HTTPURLResponse)?.statusCode == 200 else { return nil }
             let nouvelle = try JSONDecoder().decode(T.self, from: data)
-            let enregistree = lire(T.self, p, dossier, fichier)
-            if nouvelle.version != enregistree?.version || !imagesPresentes(nouvelle, p, dossier) {
-                try await enregistrer(nouvelle, json: data, profil: p, dossier: dossier, fichier: fichier)
+            let cible = dossierProfil(p).appendingPathComponent(dossier, isDirectory: true)
+            if nouvelle.version != lire(T.self, p, dossier, fichier)?.version {
+                try FileManager.default.createDirectory(at: cible.appendingPathComponent("img"), withIntermediateDirectories: true)
+                try data.write(to: cible.appendingPathComponent(fichier), options: .atomic)
             }
+            Task { await completerImages(nouvelle, p, dossier) }
             return nouvelle
         } catch {
             return nil
         }
     }
 
-    private func imagesPresentes<T: Publication>(_ pub: T, _ p: Profil, _ dossier: String) -> Bool {
-        let img = dossierProfil(p).appendingPathComponent(dossier).appendingPathComponent("img")
-        return pub.images.allSatisfy {
-            FileManager.default.fileExists(atPath: img.appendingPathComponent(Self.nomLocal($0)).path)
-        }
-    }
+    /// Blocs dont les images sont en cours de téléchargement ("fr/edition"), pour ne pas les télécharger deux fois.
+    private var enCours: Set<String> = []
 
-    /// Écrit dans un dossier temporaire puis remplace l'ancien exemplaire d'un bloc.
-    /// Les "src" des images sont relatifs à la racine du site (ex. fr/edition/img/loc-durban.png).
-    private func enregistrer<T: Publication>(_ pub: T, json: Data, profil p: Profil, dossier: String, fichier: String) async throws {
+    /// Télécharge les images manquantes d'une publication, quatre à la fois, puis retire celles des éditions précédentes.
+    /// Chaque image arrivée incrémente `images`, ce qui redessine les vues qui l'attendaient.
+    private func completerImages<T: Publication>(_ pub: T, _ p: Profil, _ dossier: String) async {
+        let cle = "\(p.rawValue)/\(dossier)"
+        guard !enCours.contains(cle) else { return }
+        enCours.insert(cle)
+        defer { enCours.remove(cle) }
+
         let fm = FileManager.default
-        let parent = dossierProfil(p)
-        let cible = parent.appendingPathComponent(dossier, isDirectory: true)
-        let tmp = parent.appendingPathComponent("\(dossier)-tmp", isDirectory: true)
-        let img = tmp.appendingPathComponent("img")
-        try? fm.removeItem(at: tmp)
-        try fm.createDirectory(at: img, withIntermediateDirectories: true)
+        let img = dossierProfil(p).appendingPathComponent(dossier).appendingPathComponent("img", isDirectory: true)
+        try? fm.createDirectory(at: img, withIntermediateDirectories: true)
+        let attendus = Set(pub.images.map(Self.nomLocal))
+        let manquants = pub.images.filter { !fm.fileExists(atPath: img.appendingPathComponent(Self.nomLocal($0)).path) }
 
-        await withTaskGroup(of: Void.self) { groupe in
-            for chemin in pub.images {
+        await withTaskGroup(of: Bool.self) { groupe in
+            var suivants = manquants.makeIterator()
+            func lancer() {
+                guard let chemin = suivants.next() else { return }
                 groupe.addTask { [session] in
                     guard let url = URL(string: chemin, relativeTo: Self.base)?.absoluteURL,
                           let reponse = try? await session.data(from: url),
-                          (reponse.1 as? HTTPURLResponse)?.statusCode == 200 else { return }
-                    try? reponse.0.write(to: img.appendingPathComponent(Self.nomLocal(chemin)))
+                          (reponse.1 as? HTTPURLResponse)?.statusCode == 200 else { return false }
+                    return (try? reponse.0.write(to: img.appendingPathComponent(Self.nomLocal(chemin)), options: .atomic)) != nil
                 }
             }
+            for _ in 0..<4 { lancer() }
+            for await ok in groupe {
+                if ok && p == profil { images += 1 }
+                lancer()
+            }
         }
-        try json.write(to: tmp.appendingPathComponent(fichier))
-        try? fm.removeItem(at: cible)
-        try fm.moveItem(at: tmp, to: cible)
+
+        // Images qui n'appartiennent plus à l'édition enregistrée : supprimées.
+        guard lire(T.self, p, dossier, fichierDe(dossier))?.version == pub.version,
+              let presents = try? fm.contentsOfDirectory(atPath: img.path) else { return }
+        for nom in presents where !attendus.contains(nom) && !nom.hasPrefix(".") {
+            try? fm.removeItem(at: img.appendingPathComponent(nom))
+        }
     }
+
+    private func fichierDe(_ dossier: String) -> String { dossier == "hebdo" ? "hebdo.json" : "edition.json" }
 
     nonisolated static func nomLocal(_ chemin: String) -> String {
         let h = SHA256.hash(data: Data(chemin.utf8)).prefix(8).map { String(format: "%02x", $0) }.joined()
