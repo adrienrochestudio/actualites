@@ -42,3 +42,19 @@ jobs:
           # Le zip d'abord, la version ensuite : une app ne voit la nouvelle version qu'une fois le zip en ligne.
           gh release upload mac natif/build/Actualites-mac.zip --clobber
           gh release upload mac natif/build/mac-version.txt --clobber
+  # Branches de contrôle : même mesure sur la version récente de macOS (colonne latérale flottante, autre comportement des clics).
+  diagnostic-recent:
+    if: github.ref != 'refs/heads/main'
+    runs-on: macos-26
+    steps:
+      - uses: actions/checkout@v4
+      - name: Construire
+        run: sw_vers && natif/construire-mac.sh
+      - name: Mesurer le changement de langue
+        run: |
+          rm -rf ~/Library/Application\ Support/Actualites
+          "natif/build/Actualités.app/Contents/MacOS/Actualites" --diagnostic > diag.log 2>&1 &
+          pid=$!
+          for i in $(seq 180); do kill -0 $pid 2>/dev/null || break; sleep 1; done
+          kill $pid 2>/dev/null || true
+          grep MESURE diag.log || tail -40 diag.log
