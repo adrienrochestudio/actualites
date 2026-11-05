@@ -95,6 +95,11 @@ struct Journal: View {
                 titreMenu(t.langue, premier: true)
                 ForEach(Profil.allCases) { p in
                     choix(p.textes.nomLangue, actif: depot.profil == p) { depot.changerProfil(p) }
+                        .background(GeometryReader { g in
+                            Color.clear
+                                .onAppear { Diagnostic.cadres[p] = g.frame(in: .global) }
+                                .onChange(of: g.frame(in: .global)) { Diagnostic.cadres[p] = $0 }
+                        })
                 }
                 if !rubriques.isEmpty {
                     titreMenu(t.rubriques)
