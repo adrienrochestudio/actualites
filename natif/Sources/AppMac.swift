@@ -16,6 +16,7 @@ struct ActualitesMac: App {
                 .frame(minWidth: 720, minHeight: 600)
                 .task {
                     Diagnostic.lancer(depot)
+                    JournalTechnique.demarrer(depot)
                     await depot.actualiser(force: true)
                 }
                 // scenePhase ne change pas de façon fiable sur macOS : on écoute directement le système.

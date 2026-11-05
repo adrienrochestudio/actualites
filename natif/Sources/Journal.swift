@@ -94,7 +94,11 @@ struct Journal: View {
             VStack(alignment: .leading, spacing: 0) {
                 titreMenu(t.langue, premier: true)
                 ForEach(Profil.allCases) { p in
-                    choix(p.textes.nomLangue, actif: depot.profil == p) { depot.changerProfil(p) }
+                    choix(p.textes.nomLangue, actif: depot.profil == p) {
+                        JournalTechnique.ecrire("action bouton \(p.rawValue), profil avant \(depot.profil.rawValue)")
+                        depot.changerProfil(p)
+                        JournalTechnique.ecrire("profil après \(depot.profil.rawValue), état \(depot.etat)")
+                    }
                         .background(GeometryReader { g in
                             Color.clear
                                 .onAppear { Diagnostic.cadres[p] = g.frame(in: .global) }
