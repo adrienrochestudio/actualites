@@ -14,7 +14,10 @@ struct ActualitesMac: App {
             Journal()
                 .environmentObject(depot)
                 .frame(minWidth: 720, minHeight: 600)
-                .task { await depot.actualiser(force: true) }
+                .task {
+                    Diagnostic.lancer(depot)
+                    await depot.actualiser(force: true)
+                }
                 // scenePhase ne change pas de façon fiable sur macOS : on écoute directement le système.
                 // Retour au premier plan : nouvelle vérification si la dernière date de plus de 10 min.
                 .onReceive(NotificationCenter.default.publisher(for: NSApplication.didBecomeActiveNotification)) { _ in
@@ -43,7 +46,7 @@ struct ActualitesMac: App {
 /// Plein écran dès l'ouverture, mise à jour de l'app si une nouvelle version est publiée, et l'app se ferme avec sa fenêtre.
 final class Delegue: NSObject, NSApplicationDelegate {
     func applicationDidFinishLaunching(_ notification: Notification) {
-        Task { await MiseAJour.verifier() }
+        if !Diagnostic.actif { Task { await MiseAJour.verifier() } }
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
             guard let w = NSApp.windows.first(where: { $0.canBecomeMain }) else { return }
             w.collectionBehavior.insert(.fullScreenPrimary)

@@ -23,6 +23,11 @@ jobs:
             curl -fsS "https://adrienrochestudio.github.io/actualites/$f" -o "${f%%/*}-$(basename "$f")" || echo "absent : $f"
           done
           ./controle *.json
+      - name: Mesurer le changement de langue
+        if: github.ref != 'refs/heads/main'
+        run: |
+          rm -rf ~/Library/Application\ Support/Actualites
+          timeout 180 "natif/build/Actualités.app/Contents/MacOS/Actualites" --diagnostic 2>&1 | grep MESURE || true
       - name: Publier dans la release "mac"
         # Une autre branche ne fait que vérifier la compilation.
         if: github.ref == 'refs/heads/main'
