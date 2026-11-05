@@ -90,3 +90,4 @@
 2026-11-05 06:06 | 4 rédaction | ok ; Cinéma omis (aucune source lisible hors CNC d'octobre, déjà traité hier) ; Politique du Brésil changé (PEC déjà traitée)
 2026-11-05 06:15 | 5 contrôle fr | ok (audit 0 rouge)
 2026-11-05 06:16 | 6 préparer | ok, 161 textes
+2026-11-05 06:17 | 7 traduction | ok
