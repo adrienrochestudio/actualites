@@ -336,11 +336,12 @@ final class Depot: ObservableObject {
         let attendus = Set(pub.images.map(Self.nomLocal))
         let manquants = pub.images.filter { !fm.fileExists(atPath: img.appendingPathComponent(Self.nomLocal($0)).path) }
 
+        let session = session
         await withTaskGroup(of: Bool.self) { groupe in
             var suivants = manquants.makeIterator()
             func lancer() {
                 guard let chemin = suivants.next() else { return }
-                groupe.addTask { [session] in
+                groupe.addTask {
                     guard let url = URL(string: chemin, relativeTo: Self.base)?.absoluteURL,
                           let reponse = try? await session.data(from: url),
                           (reponse.1 as? HTTPURLResponse)?.statusCode == 200 else { return false }
