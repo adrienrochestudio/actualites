@@ -102,3 +102,4 @@
 2026-11-06 06:06 | 7. Traduction | ok
 2026-11-06 06:06 | 8. Contrôle PT | ok, audit 0 rouge
 2026-11-06 06:07 | 9. Publication | ok, fr et pt publiés à 06:07
+2026-11-06 06:07 | 10. Historique | ok
