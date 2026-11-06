@@ -100,3 +100,4 @@
 2026-11-06 06:03 | 4. Rédaction | base.json écrit ; Politique du Brésil omise (PEC déjà traitée, plus de recherche disponible, sources brésiliennes inaccessibles)
 2026-11-06 06:04 | 5. Contrôle FR | ok, audit 0 rouge
 2026-11-06 06:06 | 7. Traduction | ok
+2026-11-06 06:06 | 8. Contrôle PT | ok, audit 0 rouge
