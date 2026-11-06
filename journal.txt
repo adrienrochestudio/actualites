@@ -98,3 +98,4 @@
 2026-11-06 05:55 | 2. Veille | veille du 05/11 11h41, plus de 12 h : complément par WebSearch extended
 2026-11-06 05:58 | 3. Pistes | ok
 2026-11-06 06:03 | 4. Rédaction | base.json écrit ; Politique du Brésil omise (PEC déjà traitée, plus de recherche disponible, sources brésiliennes inaccessibles)
+2026-11-06 06:04 | 5. Contrôle FR | ok, audit 0 rouge
