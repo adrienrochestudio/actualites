@@ -109,3 +109,4 @@
 2026-11-07 05:57 | 3. Pistes | ok
 2026-11-07 06:02 | 4. Rédaction | base.json écrit ; Politique du Brésil omise (aucune décision fraîche vérifiable, WebFetch indisponible)
 2026-11-07 06:02 | 5. Contrôle FR | ok, audit 0 rouge
+2026-11-07 06:02 | 6. Préparation | ok
