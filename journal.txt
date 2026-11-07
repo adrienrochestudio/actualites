@@ -108,3 +108,4 @@
 2026-11-07 05:56 | Lecture | WebFetch refusé sur tous les hôtes (ENOTFOUND, y compris Commons et OWID) : rédaction depuis WebSearch seul
 2026-11-07 05:57 | 3. Pistes | ok
 2026-11-07 06:02 | 4. Rédaction | base.json écrit ; Politique du Brésil omise (aucune décision fraîche vérifiable, WebFetch indisponible)
+2026-11-07 06:02 | 5. Contrôle FR | ok, audit 0 rouge
