@@ -126,3 +126,4 @@
 2026-11-08 06:10 | Hebdo 1-5. Recherche | ok, 13 recherches
 2026-11-08 06:18 | Hebdo 6. Rédaction | ok, 7 dossiers
 2026-11-08 06:18 | Hebdo 7. Contrôle FR | ok, audit 0 rouge
+2026-11-08 06:23 | Hebdo 8. Contrôle PT | ok, audit 0 rouge
