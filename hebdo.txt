@@ -16,3 +16,10 @@ date | etiquette | sujet
 2026-11-01 | IA et technologie | Dire non à l'entraînement des IA : le robots.txt devient un contrat entre les sites et les modèles
 2026-11-01 | Architecture | Oxford Street sans voitures : comment Londres a fini par piétonniser sa rue la plus commerçante
 2026-11-01 | Politique du Brésil | BRB et Banco Master : comment une banque publique a acheté des crédits qui n'existaient pas, et qui paie
+2026-11-08 | Géopolitique | Paraguay : comment la faillite d'une banque a fait tomber un président
+2026-11-08 | Environnement | Le super El Niño, de l'océan Pacifique aux récoltes et aux barrages
+2026-11-08 | Société | Au Japon, les aides-soignantes étrangères face à l'examen qui décide de leur avenir
+2026-11-08 | Finance | Livret A : le plafond monte, et avec lui le circuit qui transforme l'épargne en logements
+2026-11-08 | IA et technologie | Du Texas à Querétaro, les territoires reprennent la main sur les data centers
+2026-11-08 | Architecture | Le terrain en commun : comment des favelas de Rio protègent leurs maisons de la spéculation
+2026-11-08 | Politique du Brésil | Penduricalhos : comment les primes de la justice passent au-dessus du plafond des salaires publics
