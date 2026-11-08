@@ -127,3 +127,4 @@
 2026-11-08 06:18 | Hebdo 6. Rédaction | ok, 7 dossiers
 2026-11-08 06:18 | Hebdo 7. Contrôle FR | ok, audit 0 rouge
 2026-11-08 06:23 | Hebdo 8. Contrôle PT | ok, audit 0 rouge
+2026-11-08 06:25 | Hebdo 9. Publication | ok, fr et pt publiés ; barres converties en images locales (publier.py semaine plante sur les items de barres)
