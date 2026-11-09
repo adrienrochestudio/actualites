@@ -130,3 +130,4 @@
 2026-11-08 06:25 | Hebdo 9. Publication | ok, fr et pt publiés ; barres converties en images locales (publier.py semaine plante sur les items de barres)
 2026-11-08 06:25 | Hebdo 10. Historique | ok
 2026-11-09 05:54 | 0. accès | ok
+2026-11-09 05:54 | 1. historique | ok
