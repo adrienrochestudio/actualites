@@ -137,3 +137,4 @@
 2026-11-09 06:06 | 4-5. rédaction et contrôle FR | ok ; Cinéma omis (sujet CNC déjà traité le 04/11, aucune autre source lisible), Chiffre du jour et Carte expliquée omis (OWID, Eurostat, AIE injoignables, plafond de 18 recherches atteint)
 2026-11-09 06:08 | 6-7. préparation et traduction | ok, 166 textes
 2026-11-09 06:08 | 8. contrôle pt | ok, audit 97/100
+2026-11-09 06:09 | 9. publication | ok, fr 8 rubriques et pt 6 rubriques en ligne à 06h08
