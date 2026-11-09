@@ -131,3 +131,4 @@
 2026-11-08 06:25 | Hebdo 10. Historique | ok
 2026-11-09 05:54 | 0. accès | ok
 2026-11-09 05:54 | 1. historique | ok
+2026-11-09 05:56 | 2. veille | branche veille de 19 h (08/11 11h08), trop ancienne : WebSearch extended ; WebFetch refusé sur folha, lemonde, cnc, theverge, agenciabrasil, wikimedia, ourworldindata (ENOTFOUND ou refus)
