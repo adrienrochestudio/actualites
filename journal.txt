@@ -134,3 +134,4 @@
 2026-11-09 05:56 | 2. veille | branche veille de 19 h (08/11 11h08), trop ancienne : WebSearch extended ; WebFetch refusé sur folha, lemonde, cnc, theverge, agenciabrasil, wikimedia, ourworldindata (ENOTFOUND ou refus)
 2026-11-09 05:59 | 3. pistes | ok, 2 pistes
 2026-11-09 06:01 | 3. pistes | ok, 2 pistes
+2026-11-09 06:06 | 4-5. rédaction et contrôle FR | ok ; Cinéma omis (sujet CNC déjà traité le 04/11, aucune autre source lisible), Chiffre du jour et Carte expliquée omis (OWID, Eurostat, AIE injoignables, plafond de 18 recherches atteint)
