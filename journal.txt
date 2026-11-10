@@ -145,3 +145,4 @@
 2026-11-10 06:07 | 4-5. Rédaction et contrôle FR | ok
 2026-11-10 06:10 | 6-7. Préparation et traduction | ok
 2026-11-10 06:10 | 8. Contrôle pt | ok
+2026-11-10 06:10 | 9. Publication | ok, fr et pt du 2026-11-10 sur pages
