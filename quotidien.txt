@@ -207,3 +207,17 @@
 2026-11-09 | IA, technique | Le filigrane statistique, ou comment marquer un texte d'IA sans y changer une lettre visible | 
 2026-11-09 | Architecture | Le Sesc Pompeia, l'usine de São Paulo que Lina Bo Bardi a gardée debout | Pompeia, São Paulo
 2026-11-09 | Environnement | La COP31 s'ouvre à Antalya, avec une présidence partagée entre la Turquie et l'Australie | Antalya
+2026-11-10 | une | La COP31 s'est ouverte lundi 9 novembre à Antalya, en Turquie, pour des négociations prévues jusqu'au 20 novembre entre  |
+2026-11-10 | Monde | En Afrique du Sud, l'ANC tombe à 30,76 % aux municipales et perd les grandes villes | Durban
+2026-11-10 | France | La Cour des comptes propose jusqu'à 38 milliards d'euros d'efforts, dont un tiers sur les niches | 
+2026-11-10 | Brésil | Inscrits d'office, les lycéens du public se présentent en plus grand nombre à l'Enem | 
+2026-11-10 | Politique du Brésil | Dettes agricoles : la mesure provisoire expire mercredi avec 18,65 milliards de reais renégociés sur 100 | 
+2026-11-10 | Le chiffre du jour | 2,1 % | 
+2026-11-10 | Comprendre | Correction boursière : ce que mesure une baisse de 10 %, et pourquoi Morgan Stanley la croit presque finie | 
+2026-11-10 | Finance | Le pétrole recule de 5,5 %, l'or monte, Nvidia décroche pendant que les puces rebondissent | 
+2026-11-10 | Intelligence artificielle | Anthropic sort Claude Fable 5.2 et réserve sa version sans garde-fous, Mythos 5.2, aux organismes vérifiés | 
+2026-11-10 | IA, technique | La température, ou comment une IA décide du mot suivant | 
+2026-11-10 | Architecture | À Mexico, le musée d'anthropologie tient sous un parapluie de béton posé sur une seule colonne | Mexico
+2026-11-10 | Cinéma | « De Gaulle », 70 millions d'euros de budget, part à la conquête des salles américaines | 
+2026-11-10 | Environnement | Au 1er novembre, 64 % des nappes phréatiques sont sous leur niveau normal, deux fois plus qu'il y a un an | Limoges
+2026-11-10 | Carte expliquée | Le charbon dans l'électricité : un tiers du courant mondial, 81 % en Afrique du Sud, 34 % en Turquie | 
