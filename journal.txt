@@ -150,3 +150,4 @@
 2026-11-11 05:58 | 1 historique | ok
 2026-11-11 05:58 | 2 veille | branche veille du 10/11 11h58, plus de 12 h : recherche WebSearch
 2026-11-11 06:09 | 3 pistes | ok
+2026-11-11 06:10 | 4 rédaction | ok, Architecture et Carte expliquée omises (Wikimedia, OWID, Wikipédia inaccessibles par WebFetch)
