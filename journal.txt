@@ -154,3 +154,4 @@
 2026-11-11 06:11 | 5 contrôle FR | ok, aucun manque, audit sans rouge
 2026-11-11 06:13 | 6-7 préparation et traduction | ok
 2026-11-11 06:14 | 8 contrôle PT | audit sans rouge ; manque 1 portrait ou logo côté pt (Wikimedia inaccessible pour vérifier un nom de fichier), publication forcée prévue à 7h40
+2026-11-11 07:41 | 9 publication | ok, fr et pt publiés à 7h41 avec --forcer (pt : 1 portrait ou logo sur 2)
