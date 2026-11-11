@@ -152,3 +152,4 @@
 2026-11-11 06:09 | 3 pistes | ok
 2026-11-11 06:10 | 4 rédaction | ok, Architecture et Carte expliquée omises (Wikimedia, OWID, Wikipédia inaccessibles par WebFetch)
 2026-11-11 06:11 | 5 contrôle FR | ok, aucun manque, audit sans rouge
+2026-11-11 06:13 | 6-7 préparation et traduction | ok
