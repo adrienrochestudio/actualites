@@ -233,3 +233,17 @@
 2026-11-11 | IA, technique | La mémoire HBM, ou pourquoi une puce d'IA passe son temps à attendre ses données | 
 2026-11-11 | Cinéma | 14,66 millions d'entrées en octobre, avec une semaine de moins qu'en 2025 | 
 2026-11-11 | Environnement | Les émissions de CO2 des énergies fossiles devraient baisser de 0,4 % en 2026 | 
+2026-11-12 | une | Le conseil d'administration de Nvidia s'est réuni mercredi soir pour décider de l'avenir de Jensen Huang, qui dirige l'e |
+2026-11-12 | Monde | Washington met en garde Madagascar contre ses instructeurs militaires russes | Antsiranana
+2026-11-12 | France | Airbus construira à Cornebarrieu une deuxième usine de mâts-réacteurs pour 3 500 salariés | Cornebarrieu
+2026-11-12 | Brésil | Petrobras gagne 39,8 milliards de reais au troisième trimestre, mais garde ses dividendes pour investir | 
+2026-11-12 | Politique du Brésil | Neuf capitales préparent la transformation de leurs gardes municipales en polices | Goiânia
+2026-11-12 | Le chiffre du jour | 10,6 % | 
+2026-11-12 | Comprendre | Comment les marchés calculent la probabilité d'une hausse de taux de la Fed | 
+2026-11-12 | Finance | CoreWeave relance Wall Street, le pétrole remonte, l'or recule | 
+2026-11-12 | Intelligence artificielle | Anthropic lance Claude Sheets, Whiteboards et Meetings face à Microsoft et Google | 
+2026-11-12 | IA, technique | Le décodage spéculatif, ou comment un petit modèle fait écrire un grand plus vite | 
+2026-11-12 | Architecture | Sumayya Vally va transformer une villa de Dubaï en fondation d'art | 
+2026-11-12 | Cinéma | Wētā FX s'allie à Taïwan pour faire de l'île un centre de production à l'IA | 
+2026-11-12 | Environnement | Les promesses de financement climatique des pays riches chutent de 70 % | 
+2026-11-12 | Carte expliquée | Qui vit en ville : 58 % de l'humanité, selon une nouvelle façon de compter | 
