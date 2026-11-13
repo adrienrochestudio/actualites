@@ -166,3 +166,4 @@
 2026-11-12 06:07 | 9. Publication | ok, fr et pt en ligne à 06h07
 2026-11-12 06:07 | 10. Historique | ok
 2026-11-13 05:54 | 1. Historique | ok
+2026-11-13 05:54 | 2. Veille | veille du 12/11 11h52, plus de 12 h : recherche WebSearch en complément
