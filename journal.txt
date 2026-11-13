@@ -172,3 +172,4 @@
 2026-11-13 06:05 | 5. Contrôle FR | ok, audit 0 rouge
 2026-11-13 06:07 | 6-7. Préparation et traduction | ok
 2026-11-13 06:08 | 8. Contrôle PT | ok, audit 0 rouge
+2026-11-13 06:08 | 9. Publication | ok, fr et pt en ligne
