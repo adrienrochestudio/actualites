@@ -170,3 +170,4 @@
 2026-11-13 06:05 | 3. Pistes | ok
 2026-11-13 06:05 | 4. Rédaction | ok, Cinéma omis (sujet CNC déjà traité, aucune autre matière lisible : WebFetch bloqué sur presque tous les sites)
 2026-11-13 06:05 | 5. Contrôle FR | ok, audit 0 rouge
+2026-11-13 06:07 | 6-7. Préparation et traduction | ok
