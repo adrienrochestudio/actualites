@@ -181,3 +181,4 @@
 2026-11-14 06:03 | 5. Contrôle FR | ok
 2026-11-14 06:05 | 6-7. Préparation et traduction | ok
 2026-11-14 06:05 | 9. Publication | ok fr+pt, 06:06 Paris
+2026-11-14 06:05 | 10. Historique | ok
