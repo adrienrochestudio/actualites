@@ -191,3 +191,4 @@
 2026-11-15 06:05 | 7. Traduction | ok
 2026-11-15 06:06 | 8. Contrôle PT | ok
 2026-11-15 06:06 | 9. Publication | ok, fr 9 rubriques et pt 7 rubriques en ligne à 06:06
+2026-11-15 06:06 | 10. Historique | ok
