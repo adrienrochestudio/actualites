@@ -23,3 +23,10 @@ date | etiquette | sujet
 2026-11-08 | IA et technologie | Du Texas à Querétaro, les territoires reprennent la main sur les data centers
 2026-11-08 | Architecture | Le terrain en commun : comment des favelas de Rio protègent leurs maisons de la spéculation
 2026-11-08 | Politique du Brésil | Penduricalhos : comment les primes de la justice passent au-dessus du plafond des salaires publics
+2026-11-15 | Géopolitique | Reko Diq, la mine de cuivre du Baloutchistan qui attend toujours son chemin de fer
+2026-11-15 | Environnement | La glace et la neige de la Terre sont sorties de leur zone de sécurité
+2026-11-15 | Société | Le Japon cherche une capitale de secours, et quatre régions se la disputent
+2026-11-15 | Finance | Les marchés de prédiction, des paris rangés parmi les produits financiers
+2026-11-15 | IA et technologie | Comment des puces Nvidia interdites passent par Singapour et la Malaisie
+2026-11-15 | Architecture | Amaravati, la capitale que l'Inde reconstruit sur des terres agricoles
+2026-11-15 | Politique du Brésil | Le projet qui donnerait au Cade des pouvoirs spéciaux sur Google, Meta et Apple
