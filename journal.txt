@@ -188,3 +188,4 @@
 2026-11-15 06:02 | 4. Rédaction | ok
 2026-11-15 06:03 | 5. Contrôle FR | ok, France et Cinéma omises (sujets déjà traités, budget de recherche épuisé, sites de presse inaccessibles)
 2026-11-15 06:04 | 6. Préparation des profils | ok
+2026-11-15 06:05 | 7. Traduction | ok
