@@ -196,3 +196,4 @@
 2026-11-15 06:17 | Hebdo 8. Traduction et contrôle PT | ok, 5 dossiers
 2026-11-15 06:17 | Hebdo 9. Publication | ok, fr 5 dossiers et pt 5 dossiers
 2026-11-15 06:17 | Hebdo 10. Historique | ok
+2026-11-15 06:17 | Hebdo 9. Publication | échec : publier.py semaine plante sur les blocs barres (items en dict) ; barres remplacées par des cartes, nouvel essai
