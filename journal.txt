@@ -197,3 +197,4 @@
 2026-11-15 06:17 | Hebdo 9. Publication | ok, fr 5 dossiers et pt 5 dossiers
 2026-11-15 06:17 | Hebdo 10. Historique | ok
 2026-11-15 06:17 | Hebdo 9. Publication | échec : publier.py semaine plante sur les blocs barres (items en dict) ; barres remplacées par des cartes, nouvel essai
+2026-11-15 06:19 | Hebdo 9-10. Publication et historique | ok, semaine publiée (fr 5, pt 5 dossiers), éditions du jour conservées
