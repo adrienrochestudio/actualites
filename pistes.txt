@@ -1,7 +1,5 @@
 # Sujets de fond repérés pendant la semaine, pour l'édition du dimanche (14 jours)
 # Format : AAAA-MM-JJ | thème | piste | url
-2026-11-01 | Géopolitique | Dawei, le port birman que la Thaïlande, la Russie et la junte veulent relancer vers l'océan Indien | https://thediplomat.com/2026/10/can-myanmars-new-government-revive-the-stalled-dawei-sez-project/
-2026-11-01 | Société | Japon : la fin du délai de grâce pour l'examen national des aides-soignants étrangers (taux de réussite autour de 30 %) | https://asia.nikkei.com/business/health-care/japan-s-foreign-caregivers-face-exam-hurdle-as-grace-period-ends
 2026-11-02 | Géopolitique | Inde : la révision intensive spéciale des listes électorales (SIR), 130 millions de noms radiés et la contestation de la Commission électorale | https://www.cnbc.com/2026/11/01/thousands-join-indian-protest-demanding-election-chiefs-resignation-.html
 2026-11-02 | IA | Anthropic et la découverte de médicaments : Mithril Medicine, Pleiades, ce que l'IA change au coût d'un programme préclinique | https://www.anthropic.com/research/early-progress-drug-development
 2026-11-02 | Environnement | Stockage de gaz en Allemagne à 61 % : les objectifs de remplissage ont-ils encore un sens ? | https://www.energyconnects.com/news/gas-lng/2026/november/germany-misses-gas-storage-target-as-cold-snap-sets-in/
@@ -35,3 +33,6 @@
 2026-11-15 | Environnement | Brésil : le coût du capital, frein principal à la sortie des énergies fossiles selon les auteurs de la feuille de route de transition | https://www1.folha.uol.com.br/ambiente/2026/11/custo-de-capital-e-desafio-para-reduzir-dependencia-de-combustivel-fossil-diz-coautora-de-mapa-para-transicao.shtml
 2026-11-15 | IA | Espagne : la bataille de la régulation des data centers (eau, réseau électrique, lobbies) | https://reporterre.net/Data-centers-en-Espagne-la-droite-et-les-lobbies-tentent-d-empecher-leur-regulation
 2026-11-15 | Société | Baltimore : comment la ville a fait baisser la criminalité après la mort de Freddie Gray | https://www.lemonde.fr/m-le-mag/article/2026/11/14/a-baltimore-la-formule-gagnante-pour-faire-chuter-la-criminalite-apres-les-evenements-entourant-la-mort-de-freddie-gray-il-a-fallu-passer-d-une-culture-de-la-force-a-une-culture-de-la-protection_6809587_4500055.html
+2026-11-16 | Environnement | Guyane : l'ONF veut ouvrir 20 000 hectares de forêt primaire à l'exploitation | https://reporterre.net/
+2026-11-16 | Politique du Brésil | Caso Master : le Banco Central au plus grand nombre de liquidations depuis 2002 | https://c-level.folha.uol.com.br/financas/2026/11/caso-master-leva-banco-central-ao-maior-numero-de-liquidacoes-desde-2002.shtml
+2026-11-16 | IA | Comment Huawei est devenu le navire amiral de la Chine dans la bataille des puces | https://www.lemonde.fr/economie/

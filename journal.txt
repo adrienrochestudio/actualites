@@ -200,3 +200,4 @@
 2026-11-15 06:19 | Hebdo 9-10. Publication et historique | ok, semaine publiée (fr 5, pt 5 dossiers), éditions du jour conservées
 2026-11-16 05:53 | 1. Historique | ok
 2026-11-16 05:54 | 2. Veille | branche veille du 15/11 11h39, plus de 12 h : recherches WebSearch extended
+2026-11-16 05:58 | 3. Pistes | ok, 3 pistes
