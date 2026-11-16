@@ -286,3 +286,16 @@
 2026-11-15 | Architecture | Argyle House, le bloc brutaliste d'Édimbourg que l'on veut démolir | 
 2026-11-15 | Environnement | La Cour suprême norvégienne exige de compter le CO2 du pétrole brûlé ailleurs | Stavanger
 2026-11-15 | Carte expliquée | Qui produit son courant avec l'atome : 68,79 % en France, 8,85 % dans le monde | 
+2026-11-16 | une | Les Bourses d'Asie ont ouvert la semaine en baisse, quatre jours après la démission de Jensen Huang, fondateur et patron |
+2026-11-16 | Monde | Le Sri Lanka redevient un pays à revenu intermédiaire supérieur, avec 34 dollars d'avance | Colombo
+2026-11-16 | France | Cures thermales : le Sénat gèle le remboursement à 65 % en attendant la Haute Autorité de santé | Royat
+2026-11-16 | Brésil | Le Canada met 400 millions de dollars dans le fonds brésilien pour les forêts tropicales | 
+2026-11-16 | Politique du Brésil | Budget 2027 : les parlementaires ont jusqu'au 27 novembre pour déposer leurs amendements | 
+2026-11-16 | Le chiffre du jour | -0,1 % | 
+2026-11-16 | Comprendre | Garantie des dépôts : pourquoi l'Europe renonce à une assurance commune | 
+2026-11-16 | Finance | L'or perd 4,6 % en une semaine, les marchés misent sur une hausse des taux en décembre | 
+2026-11-16 | Intelligence artificielle | Claude Meetings : Anthropic fait entrer son assistant dans les réunions vidéo | 
+2026-11-16 | IA, technique | La distillation, ou comment un petit modèle d'IA apprend en copiant un grand | 
+2026-11-16 | Architecture | À Amman, Darat al Funun a fait d'une maison abandonnée un centre d'art | Amman, Umm Qais
+2026-11-16 | Cinéma | Le festival Jakarta World Cinema s'installe à Bandung et à Malang | Bandung, Malang
+2026-11-16 | Environnement | La France interdit la pêche de loisir de l'anguille jaune dans toutes ses rivières | 
