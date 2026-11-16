@@ -201,3 +201,4 @@
 2026-11-16 05:53 | 1. Historique | ok
 2026-11-16 05:54 | 2. Veille | branche veille du 15/11 11h39, plus de 12 h : recherches WebSearch extended
 2026-11-16 05:58 | 3. Pistes | ok, 3 pistes
+2026-11-16 06:05 | 4-5. Rédaction et contrôle FR | ok (Carte expliquée omise : WebFetch bloqué, pas de données fiables)
