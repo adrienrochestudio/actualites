@@ -203,3 +203,4 @@
 2026-11-16 05:58 | 3. Pistes | ok, 3 pistes
 2026-11-16 06:05 | 4-5. Rédaction et contrôle FR | ok (Carte expliquée omise : WebFetch bloqué, pas de données fiables)
 2026-11-16 06:07 | 6-8. Profils et traduction | ok
+2026-11-16 06:08 | 9. Publication | ok, fr et pt en ligne
