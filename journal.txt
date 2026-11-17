@@ -212,3 +212,4 @@
 2026-11-17 06:04 | 4 redaction | ok, sans Cinéma (CNC d'octobre déjà traité) ni Carte expliquée (OWID et Wikimedia injoignables)
 2026-11-17 06:04 | 5 controle fr | ok
 2026-11-17 06:06 | 6-7 profils traduction | ok
+2026-11-17 06:08 | 8 controle pt | MANQUE pt : 0 portrait/logo (Wikimedia injoignable par WebFetch et shell) ; envoi --forcer programmé à 7h41
