@@ -299,3 +299,15 @@
 2026-11-16 | Architecture | À Amman, Darat al Funun a fait d'une maison abandonnée un centre d'art | Amman, Umm Qais
 2026-11-16 | Cinéma | Le festival Jakarta World Cinema s'installe à Bandung et à Malang | Bandung, Malang
 2026-11-16 | Environnement | La France interdit la pêche de loisir de l'anguille jaune dans toutes ses rivières | 
+2026-11-17 | une | Les agents publics manifestent ce mardi pour obtenir une hausse du point d'indice, gelé pour la quatrième année de suite |
+2026-11-17 | Monde | En Hongrie, le nouveau gouvernement met les usines de batteries chinoises et coréennes sous surveillance | Debrecen, Sóskút
+2026-11-17 | France | Cures thermales : 200 millions d'euros que l'Assurance maladie voudrait faire payer aux mutuelles | Royat
+2026-11-17 | Brésil | À São Paulo, un assistant automatique prend les plaintes pour bruit au 190 | 
+2026-11-17 | Politique du Brésil | Les parlementaires battus aux élections veulent garder la main sur leurs amendements de 2027 | 
+2026-11-17 | Le chiffre du jour | -0,1 % | 
+2026-11-17 | Comprendre | Augmentation de capital avec droits : pourquoi New World a perdu 40 % en une séance | 
+2026-11-17 | Finance | Le Nasdaq entre en correction à la veille des résultats de Nvidia | Santa Clara
+2026-11-17 | Intelligence artificielle | Anthropic fixe le prix de son entrée en Bourse entre 70 et 78 dollars par action | San Francisco
+2026-11-17 | IA, technique | La lithographie EUV, ou comment une goutte d'étain sert à graver les puces d'IA | 
+2026-11-17 | Architecture | Casablanca protège 1 521 immeubles pour sauver son centre Art déco | Casablanca, Marrakech
+2026-11-17 | Environnement | En Guyane, l'ONF ouvre un massif de 20 000 hectares de forêt primaire à l'exploitation | 
