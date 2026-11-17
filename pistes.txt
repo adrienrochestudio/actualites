@@ -1,8 +1,5 @@
 # Sujets de fond repérés pendant la semaine, pour l'édition du dimanche (14 jours)
 # Format : AAAA-MM-JJ | thème | piste | url
-2026-11-02 | Géopolitique | Inde : la révision intensive spéciale des listes électorales (SIR), 130 millions de noms radiés et la contestation de la Commission électorale | https://www.cnbc.com/2026/11/01/thousands-join-indian-protest-demanding-election-chiefs-resignation-.html
-2026-11-02 | IA | Anthropic et la découverte de médicaments : Mithril Medicine, Pleiades, ce que l'IA change au coût d'un programme préclinique | https://www.anthropic.com/research/early-progress-drug-development
-2026-11-02 | Environnement | Stockage de gaz en Allemagne à 61 % : les objectifs de remplissage ont-ils encore un sens ? | https://www.energyconnects.com/news/gas-lng/2026/november/germany-misses-gas-storage-target-as-cold-snap-sets-in/
 2026-11-03 | Géopolitique | Algérie : premier déploiement de troupes à l'étranger depuis cinquante ans, au Niger, et retour au Sahel | https://issafrica.org/fr/iss-today/le-retour-de-l-algerie-au-sahel-crise-ou-opportunite
 2026-11-03 | Environnement | Le super El Niño 2026, d'une ampleur inédite : ce qu'il change pour les récoltes et l'énergie | https://www.lemonde.fr/planete/
 2026-11-04 | Géopolitique | AGOA : ce que perdent l'Afrique du Sud et le Rwanda, exclus au 1er janvier 2027 (1,7 Md$ d'exportations sud-africaines) | https://www.aljazeera.com/economy/2026/11/2/us-to-suspend-south-africa-and-rwanda-from-duty-free-trade-access
@@ -36,3 +33,6 @@
 2026-11-16 | Environnement | Guyane : l'ONF veut ouvrir 20 000 hectares de forêt primaire à l'exploitation | https://reporterre.net/
 2026-11-16 | Politique du Brésil | Caso Master : le Banco Central au plus grand nombre de liquidations depuis 2002 | https://c-level.folha.uol.com.br/financas/2026/11/caso-master-leva-banco-central-ao-maior-numero-de-liquidacoes-desde-2002.shtml
 2026-11-16 | IA | Comment Huawei est devenu le navire amiral de la Chine dans la bataille des puces | https://www.lemonde.fr/economie/
+2026-11-17 | Finance | Transferts de risque des banques européennes (SRT) : le boom qui expose au désendettement forcé | https://www.ft.com/content/3b6cccb1-cac2-4e64-a2c2-3b3801f9a5fb
+2026-11-17 | Société | ANRU 3 : les maires demandent un nouveau plan de rénovation des quartiers populaires | https://www.lemonde.fr/societe/article/2026/11/16/loi-relance-du-logement-des-maires-rappellent-l-urgence-d-un-anru-3-pour-resorber-les-trappes-a-pauvrete-dans-les-quartiers-populaires_6811677_3224.html
+2026-11-17 | IA | IA militaire : comment la France tente d'ouvrir la porte à une régulation | https://www.lemonde.fr/international/article/2026/11/16/ia-militaire-comment-la-france-tente-d-entrouvrir-la-porte-a-une-regulation_6811534_3210.html
