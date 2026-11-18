@@ -311,3 +311,16 @@
 2026-11-17 | IA, technique | La lithographie EUV, ou comment une goutte d'étain sert à graver les puces d'IA | 
 2026-11-17 | Architecture | Casablanca protège 1 521 immeubles pour sauver son centre Art déco | Casablanca, Marrakech
 2026-11-17 | Environnement | En Guyane, l'ONF ouvre un massif de 20 000 hectares de forêt primaire à l'exploitation | 
+2026-11-18 | une | Au Mozambique, le procès de l'opposant Venâncio Mondlane s'est ouvert mardi devant la Cour suprême, à Maputo, sous forte |
+2026-11-18 | Monde | En Mongolie, le président démissionne pour un chemin de fer à charbon | Tavan Tolgoi, Gashuunsukhait
+2026-11-18 | France | Bruxelles prévoit pour la France la plus faible croissance de la zone euro en 2027 | 
+2026-11-18 | Brésil | La règle européenne contre la déforestation pourrait renchérir de 12 % le soja brésilien | Dourados
+2026-11-18 | Politique du Brésil | CBS : le Sénat a jusqu'au 15 décembre pour fixer le taux du nouvel impôt fédéral | 
+2026-11-18 | Le chiffre du jour | 1,54 | 
+2026-11-18 | Comprendre | Offre publique d'échange : comment UniCredit prend Commerzbank sans payer de prime | 
+2026-11-18 | Intelligence artificielle | Nvidia dépasse les attentes et prévoit son prochain trimestre sans la Chine | 
+2026-11-18 | Finance | Les logiciels font plonger le Dow Jones, le yen tout près de 160 | 
+2026-11-18 | IA, technique | Les poids d'un modèle ouvert, ou ce qu'OVHcloud va mettre en téléchargement jeudi | 
+2026-11-18 | Architecture | Avant l'opéra de Shenzhen, Jean Nouvel avait coiffé celui de Lyon d'une voûte de verre | 
+2026-11-18 | Environnement | À la COP31, le premier projet d'accord met l'électrification et la sortie des fossiles sur la table | Antalya
+2026-11-18 | Carte expliquée | Une voiture neuve sur quatre est électrique, 97 sur 100 en Norvège | 
