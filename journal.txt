@@ -220,3 +220,4 @@
 2026-11-18 05:59 | 3. Pistes | ok
 2026-11-18 06:06 | 4-5. Rédaction et contrôle FR | ok (veille périmée, 18 recherches ; Cinéma omis : CNC d'octobre déjà traité ; WebFetch bloqué hors anthropic.com)
 2026-11-18 06:08 | 6-7. Préparation et traduction | ok
+2026-11-18 06:09 | 8. Assemblage et contrôle pt | ok
