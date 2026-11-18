@@ -215,3 +215,4 @@
 2026-11-17 06:08 | 8 controle pt | MANQUE pt : 0 portrait/logo (Wikimedia injoignable par WebFetch et shell) ; envoi --forcer programmé à 7h41
 2026-11-17 07:41 | 9 publication | ok, fr et pt en un envoi à 7h41 (--forcer : pt sans portrait ni logo)
 2026-11-17 07:41 | 10 historique | ok
+2026-11-18 05:54 | 1. Historique | ok
