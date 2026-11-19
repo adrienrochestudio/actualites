@@ -229,3 +229,4 @@
 2026-11-19 05:58 | 3. pistes | ok
 2026-11-19 06:04 | 4-5. base.json et contrôle FR | ok, aucun manque, audit 0 rouge
 2026-11-19 06:06 | 6-7. preparer et traduction | ok, 172 textes
+2026-11-19 06:08 | 8. édition pt | ok, aucun manque, audit 0 rouge
