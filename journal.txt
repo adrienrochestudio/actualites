@@ -223,3 +223,4 @@
 2026-11-18 06:09 | 8. Assemblage et contrôle pt | ok
 2026-11-18 06:10 | 9. Publication | ok, fr et pt en un envoi
 2026-11-18 06:10 | 10. Historique | ok
+2026-11-19 05:54 | 0. accès git | ok
