@@ -1,7 +1,5 @@
 # Sujets de fond repérés pendant la semaine, pour l'édition du dimanche (14 jours)
 # Format : AAAA-MM-JJ | thème | piste | url
-2026-11-04 | Géopolitique | AGOA : ce que perdent l'Afrique du Sud et le Rwanda, exclus au 1er janvier 2027 (1,7 Md$ d'exportations sud-africaines) | https://www.aljazeera.com/economy/2026/11/2/us-to-suspend-south-africa-and-rwanda-from-duty-free-trade-access
-2026-11-04 | Environnement | Finlande : Google a rasé des centaines d'hectares de forêt à Muhos et Otanmäki avant l'étude d'impact de ses data centers | https://www.tomshardware.com/tech-industry/data-centers/google-ai-data-center-project-investigated-after-420-football-fields-of-finnish-forest-razed-trees-were-removed-before-a-mandatory-environmental-impact-assessment-say-reports
 2026-11-05 | Finance | Livret A relevé à 25 000-30 000 euros en février : comment le fonds d'épargne de la Caisse des dépôts transforme l'épargne en logement social et nucléaire | https://www.franceinfo.fr/economie/votre-argent/livret-a/le-plafond-du-livret-a-sera-releve-en-fevrier-pour-atteindre-au-moins-25-000-euros-annonce-sebastien-lecornu_8265983.html
 2026-11-05 | Environnement | Colombie, arrêt T-283 : un peuple autochtone peut retirer son consentement à un projet de crédits carbone REDD+ | https://carbon-pulse.com/563219/
 2026-11-05 | IA | Weta FX et TAICCA veulent faire de Taïwan un centre de production audiovisuelle assistée par IA pour l'Asie | https://variety.com/2026/film/markets-festivals/weta-fx-taicca-partner-taiwan-ai-screen-production-hub-1236938968/
@@ -37,3 +35,5 @@
 2026-11-18 | Géopolitique | Le Japon propose une AIE asiatique pour gérer en commun les stocks de pétrole de la région | https://www.ft.com/content/208b3dff-5d7a-4250-989a-821fb70fb896
 2026-11-18 | Environnement | Russie, Arabie saoudite et Australie, premiers exportateurs de CO2 de l'histoire par les combustibles vendus | https://www.carbonbrief.org/revealed-russia-saudi-arabia-and-australia-are-largest-co2-exporters-of-all-time
 2026-11-18 | Société | Le Brésil dépense 14,5 milliards de reais par an dans la guerre aux drogues | https://agenciabrasil.ebc.com.br/direitos-humanos/noticia/2026-11/brasil-gasta-r-145-bilhoes-por-ano-com-guerra-drogas
+2026-11-19 | Société | Ebola en RDC : 1 737 enfants morts sur 2 959 cas, 72 % de létalité chez les moins de cinq ans (Unicef) | https://actualite.cd/2026/11/17/ebola-en-rdc-plus-de-1-700-enfants-decedes-parmi-pres-de-3-000-cas-recenses-alerte
+2026-11-19 | Géopolitique | Bangladesh : le retour annoncé de Sheikh Hasina, paramilitaires déployés, élections et Ligue Awami interdite | https://www.usnews.com/news/world/articles/2026-11-18/bangladesh-deploys-paramilitary-as-unrest-grows-over-hasinas-return
