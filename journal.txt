@@ -231,3 +231,4 @@
 2026-11-19 06:06 | 6-7. preparer et traduction | ok, 172 textes
 2026-11-19 06:08 | 8. édition pt | ok, aucun manque, audit 0 rouge
 2026-11-19 06:09 | 9. publication | ok, fr et pt du 2026-11-19 sur pages
+2026-11-19 06:09 | 10. historique | ok
