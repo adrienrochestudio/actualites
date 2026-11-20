@@ -338,3 +338,16 @@
 2026-11-19 | Cinéma | Le Partenariat Lumière ouvre ses guichets aux entreprises de l'image | Saint-Paul-de-Vence
 2026-11-19 | Environnement | En trente ans, les catastrophes climatiques ont tué plus de 900 000 personnes, surtout par la chaleur | Roseau, Kingston
 2026-11-19 | Carte expliquée | Le taux d'homicides, de 0,23 pour 100 000 habitants au Japon à plus de 40 en Jamaïque | 
+2026-11-20 | une | Les Bourses d'Asie ont fortement reculé ce vendredi matin, au lendemain d'une séance noire à Wall Street. À Tokyo, le Ni |
+2026-11-20 | Monde | Au Sénégal, le président applique par décret un budget rejeté, au nom d'un article contesté de la Constitution | Dakar
+2026-11-20 | France | Trains de nuit : l'État renonce aux voitures neuves et fera rénover les Corail | 
+2026-11-20 | Brésil | En Amazonie, le Rio Negro tarde à remonter et les incendies ont plus que doublé | São Gabriel da Cachoeira
+2026-11-20 | Politique du Brésil | São Paulo réorganise son gouvernement et confie les concessions à une seule secrétairerie | 
+2026-11-20 | Le chiffre du jour | 5,4 millions | 
+2026-11-20 | Comprendre | 1 280 ou 1 760 milliards de dollars : pourquoi Anthropic a deux valeurs en Bourse | 
+2026-11-20 | Finance | Wall Street aligne six séances de baisse, le Dow Jones perd plus de 1 100 points | 
+2026-11-20 | Intelligence artificielle | Osmo affirme que son modèle sent aussi bien qu'un humain, des spécialistes en doutent | 
+2026-11-20 | IA, technique | Pourquoi un entraînement d'IA dure plus longtemps que ne le prévoit le calcul | 
+2026-11-20 | Architecture | Shigeru Ban dessine une église en forme de tente pour Ostie, au bord de Rome | Ostie, Christchurch
+2026-11-20 | Cinéma | Prix Louis-Delluc : douze films finalistes, Bruno Dumont et Ryusuke Hamaguchi en lice | 
+2026-11-20 | Environnement | L'Union européenne repousse de deux ans les contrôles du méthane sur le gaz et le pétrole importés | 
