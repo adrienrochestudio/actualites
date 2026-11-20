@@ -240,3 +240,4 @@
 2026-11-20 06:08 | 7 traduction | ok
 2026-11-20 06:08 | 8 controle pt | ok, audit 100/100
 2026-11-20 06:09 | 9 publication | ok, fr et pt en un envoi
+2026-11-20 06:09 | 10 historique | ok
