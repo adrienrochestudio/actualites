@@ -249,3 +249,4 @@
 2026-11-21 06:06 | 6-7. Preparation et traduction | ok
 2026-11-21 06:07 | 8. Controle PT | ok, audit 94/100, 0 rouge
 2026-11-21 06:08 | 9. Publication | ok, fr 10 rubriques et pt 7 rubriques en ligne ; Architecture et Cinema omis faute de source lisible
+2026-11-21 06:08 | 10. Historique | ok
