@@ -245,3 +245,4 @@
 2026-11-21 05:54 | 2. Veille | branche veille du 20/11 12h16, plus de 12 h : recherche WebSearch en complement
 2026-11-21 05:58 | 3. Pistes | ok
 2026-11-21 06:00 | 2. Sujets | veille perimee, WebFetch bloque sur presse, Wikimedia et OWID : 18 recherches WebSearch, Architecture et Cinema sans matiere fiable
+2026-11-21 06:04 | 4-5. Redaction et controle FR | ok, audit 91/100, 0 rouge
