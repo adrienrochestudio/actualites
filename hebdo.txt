@@ -30,3 +30,10 @@ date | etiquette | sujet
 2026-11-15 | IA et technologie | Comment des puces Nvidia interdites passent par Singapour et la Malaisie
 2026-11-15 | Architecture | Amaravati, la capitale que l'Inde reconstruit sur des terres agricoles
 2026-11-15 | Politique du Brésil | Le projet qui donnerait au Cade des pouvoirs spéciaux sur Google, Meta et Apple
+2026-11-22 | Géopolitique | À Moyale, une ville coupée en deux et une frontière intérieure que l'Éthiopie n'a jamais fini de tracer
+2026-11-22 | Environnement | Le GIEC à court d'argent : comment se finance la science du climat, et ce qui se joue d'ici 2028
+2026-11-22 | Société | Ebola Bundibugyo : six mois d'épidémie sans vaccin, et la course aux essais en Ituri
+2026-11-22 | Finance | Transferts de risque : comment les banques européennes louent leur risque de crédit à des investisseurs
+2026-11-22 | IA et technologie | Armes autonomes : à Genève, 128 États se donnent deux ans, et la France défend sa ligne de partage
+2026-11-22 | Architecture | ANRU 3 : la France relance la rénovation de ses grands ensembles, vingt ans après les premières démolitions
+2026-11-22 | Politique du Brésil | Aliénation parentale : la loi de 2010 part au Sénat pour être abrogée, et ce qu'elle a changé dans les gardes d'enfants
