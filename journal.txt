@@ -262,3 +262,4 @@
 2026-11-22 06:08 | 10. Historique | ok
 2026-11-22 06:18 | Hebdo 7. Contrôle FR | ok, 7 dossiers, audit 0 rouge
 2026-11-22 06:22 | Hebdo 8. Traduction pt | ok, 267 textes, audit pt 0 rouge
+2026-11-22 06:24 | Hebdo 9. Publication | ok, fr et pt en ligne (barres remplacées : publier.py plante sur les barres en mode semaine)
