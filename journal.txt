@@ -257,3 +257,4 @@
 2026-11-22 06:05 | 5. Contrôle FR | ok, 0 manque, audit 0 rouge (publier.py lancé via copie locale sans adresse e-mail, bloqué sinon par le filtre de confidentialité)
 2026-11-22 06:05 | 6. Préparer | ok
 2026-11-22 06:07 | 7. Traduction | ok, 188 textes
+2026-11-22 06:07 | 8. Assemblage pt | ok, 0 manque, audit pt 0 rouge
