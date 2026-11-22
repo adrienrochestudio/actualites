@@ -363,3 +363,17 @@
 2026-11-21 | IA, technique | Comment une IA se sert d'un ordinateur : une capture d'écran, des coordonnées, et on recommence | 
 2026-11-21 | Environnement | Le GIEC n'a pas de budget pour 2027 et n'a reçu que 19 % de celui de 2026 | Addis-Abeba
 2026-11-21 | Carte expliquée | Le CO2 par habitant : environ 41 tonnes au Qatar, 13,8 aux États-Unis, 9,2 en Chine | 
+2026-11-22 | une | À Antalya, la présidence turque de la COP31 a publié dans la nuit un projet d'accord final de dix pages qui ne contient  |
+2026-11-22 | Monde | Au Kenya, les terres rares de Mrima Hill promises à un consortium américain | Mrima Hill
+2026-11-22 | France | Dans le Pas-de-Calais, la Canche reste en crue et les pompes arrivent | Brimeux
+2026-11-22 | Brésil | La déforestation recule, et le méthane du bétail passe au premier plan | 
+2026-11-22 | Politique du Brésil | Fin de la semaine de six jours : le décret est signé, le STF n'a pas fini de juger | 
+2026-11-22 | Le chiffre du jour | 4,0 % | 
+2026-11-22 | Comprendre | Convention fiscale de l'ONU : qui a le droit de taxer le bénéfice d'une multinationale | 
+2026-11-22 | Finance | La pire semaine du Nasdaq depuis mars 2020, et les capitaux filent vers les obligations | 
+2026-11-22 | Intelligence artificielle | Un mathématicien d'Anthropic dit avoir démontré l'hypothèse de Riemann avec Claude | 
+2026-11-22 | IA, technique | Deux millions de faux secrets pour suivre ce que deviennent vos messages à une IA | 
+2026-11-22 | Architecture | Frida Escobedo désigne Lanza Atelier, et son propre pavillon de 2018 dit pourquoi | Mexico
+2026-11-22 | Cinéma | À Belfort, Entrevues fête sa 41e édition en misant sur les premiers films | Belfort
+2026-11-22 | Environnement | L'Europe n'a plus le droit d'envoyer ses déchets plastiques hors de l'OCDE | 
+2026-11-22 | Carte expliquée | Savoir lire et écrire : près de 88 % des adultes dans le monde, beaucoup moins au Sahel | 
