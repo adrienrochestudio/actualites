@@ -254,3 +254,4 @@
 2026-11-22 05:54 | 2. Veille | veille du 21/11 11h52, plus de 12 h : complément par WebSearch
 2026-11-22 05:57 | 3. Pistes | ok, 3 pistes
 2026-11-22 06:03 | 4. Rédaction | ok, Cinéma changé (CNC octobre déjà traité)
+2026-11-22 06:05 | 5. Contrôle FR | ok, 0 manque, audit 0 rouge (publier.py lancé via copie locale sans adresse e-mail, bloqué sinon par le filtre de confidentialité)
