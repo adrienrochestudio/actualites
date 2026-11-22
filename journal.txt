@@ -251,3 +251,4 @@
 2026-11-21 06:08 | 9. Publication | ok, fr 10 rubriques et pt 7 rubriques en ligne ; Architecture et Cinema omis faute de source lisible
 2026-11-21 06:08 | 10. Historique | ok
 2026-11-22 05:54 | 1. Historique | ok
+2026-11-22 05:54 | 2. Veille | veille du 21/11 11h52, plus de 12 h : complément par WebSearch
