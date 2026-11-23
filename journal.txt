@@ -273,3 +273,4 @@
 2026-11-23 06:07 | 7. Traduction | ok, 168 textes
 2026-11-23 06:08 | 8. Contrôle PT | ok, plus de MANQUES, audit pt sans alerte rouge
 2026-11-23 06:09 | 9. Publication | ok, fr et pt en ligne (rubrique Brésil omise)
+2026-11-23 06:09 | 10. Historique | ok ; publier.py lancé via une copie locale non suivie (auteur git générique), le hook de confidentialité bloquant l'original à cause de l'adresse mail en dur
