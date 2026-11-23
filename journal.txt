@@ -271,3 +271,4 @@
 2026-11-23 06:03 | 4. Rédaction | base.json écrit ; rubrique Brésil omise (sujet Petrobras déjà traité, aucune source brésilienne lisible, plafond de 18 recherches atteint)
 2026-11-23 06:05 | 5. Contrôle FR | ok, plus de MANQUES, audit sans alerte rouge
 2026-11-23 06:07 | 7. Traduction | ok, 168 textes
+2026-11-23 06:08 | 8. Contrôle PT | ok, plus de MANQUES, audit pt sans alerte rouge
