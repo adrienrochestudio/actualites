@@ -267,3 +267,4 @@
 2026-11-23 05:53 | 1. Historique | ok
 2026-11-23 05:54 | 2. Veille | branche veille datée du 22/11 12h01 (plus de 12 h) : bascule sur WebSearch extended
 2026-11-23 05:56 | 2. Recherche | WebFetch refusé sur presque tous les sites (ENOTFOUND : lemonde, bbc, folha, senat.fr, cnc.fr, commons, ourworldindata) ; seul anthropic.com passe : rédaction sur WebSearch extended (18 max)
+2026-11-23 05:58 | 3. Pistes | ok
