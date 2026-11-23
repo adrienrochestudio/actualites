@@ -269,3 +269,4 @@
 2026-11-23 05:56 | 2. Recherche | WebFetch refusé sur presque tous les sites (ENOTFOUND : lemonde, bbc, folha, senat.fr, cnc.fr, commons, ourworldindata) ; seul anthropic.com passe : rédaction sur WebSearch extended (18 max)
 2026-11-23 05:58 | 3. Pistes | ok
 2026-11-23 06:03 | 4. Rédaction | base.json écrit ; rubrique Brésil omise (sujet Petrobras déjà traité, aucune source brésilienne lisible, plafond de 18 recherches atteint)
+2026-11-23 06:05 | 5. Contrôle FR | ok, plus de MANQUES, audit sans alerte rouge
