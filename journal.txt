@@ -279,3 +279,4 @@
 2026-11-24 05:59 | 3. Pistes et recherche | WebFetch bloqué sauf anthropic.com et code.claude.com ; contenu par WebSearch extended (18)
 2026-11-24 06:06 | 4-5. Rédaction et contrôle FR | ok, audit 97/100 ; Cinéma refait (CNC d'octobre déjà traité le 11/11), 19e recherche
 2026-11-24 06:08 | 6-7. Préparation et traduction | ok
+2026-11-24 06:09 | 8. Assemblage pt | ok, audit pt 97/100
