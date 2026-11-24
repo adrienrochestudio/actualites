@@ -275,3 +275,4 @@
 2026-11-23 06:09 | 9. Publication | ok, fr et pt en ligne (rubrique Brésil omise)
 2026-11-23 06:09 | 10. Historique | ok ; publier.py lancé via une copie locale non suivie (auteur git générique), le hook de confidentialité bloquant l'original à cause de l'adresse mail en dur
 2026-11-24 05:53 | 1. Historique | ok
+2026-11-24 05:54 | 2. Veille | veille du 23/11 13h11, plus de 12 h : complétée par WebSearch extended
