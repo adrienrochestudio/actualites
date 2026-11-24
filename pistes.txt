@@ -1,7 +1,5 @@
 # Sujets de fond repérés pendant la semaine, pour l'édition du dimanche (14 jours)
 # Format : AAAA-MM-JJ | thème | piste | url
-2026-11-09 | Environnement | Afşin-Elbistan, la double centrale au charbon de la Turquie hôte de la COP31 : production, pollution, plan de sortie | https://www.lemonde.fr/planete/article/2026/11/07/en-turquie-pays-d-accueil-de-la-cop31-les-ravages-sans-fin-de-la-double-centrale-au-charbon-d-afsin-elbistan_6808282_3244.html
-2026-11-09 | Finance | Itaipu : le côté paraguayen garde près d'un milliard de reais à l'Ueno Bank, banque au cœur de la chute de Santiago Peña | https://c-level.folha.uol.com.br/negocios/2026/11/lado-paraguaio-de-itaipu-mantem-quase-r-1-bilhao-no-ueno-bank.shtml
 2026-11-10 | Environnement | Kenya : le super El Niño menace l'horticulture qui fournit un tiers des fleurs importées par l'UE | https://www.lemonde.fr/economie/article/2026/11/08/le-super-el-nino-inquiete-les-horticulteurs-kenyans-qui-fournissent-un-tiers-des-fleurs-importees-de-l-ue_6808402_3234.html
 2026-11-10 | Architecture | Amaravati : comment l'Inde construit une capitale d'État sur des terres agricoles, et pourquoi le chantier prend du retard | https://www.archdaily.com/1188110/master-plan-meets-land-planning-amaravati-indias-new-state-capital
 2026-11-10 | Finance | Le mécanisme Belém-Antalya pour une transition juste : qui paie et pour quoi | https://www.carbonbrief.org/qa-what-is-the-belem-antalya-mechanism-for-a-just-transition
@@ -38,3 +36,5 @@
 2026-11-22 | Politique du Brésil | La Câmara vote la révocation de la loi sur l'aliénation parentale : ce que change le texte envoyé au Sénat | https://www1.folha.uol.com.br/poder/2026/11/camara-envia-ao-senado-projeto-que-revoga-lei-de-alienacao-parental.shtml
 2026-11-23 | Géopolitique | Sortir de la catégorie des pays les moins avancés : ce que le Laos perd et gagne, et pourquoi le Népal et le Bangladesh ont demandé un délai | https://asia.nikkei.com/spotlight/your-week-in-asia/laos-least-developed-status-shift-tata-meeting-taiwan-local-elections
 2026-11-23 | IA | Mémoire DRAM et HBM : comment la hausse des prix de la mémoire se transmet aux serveurs d'IA et aux contrats déjà signés | https://www.digitimes.com/news/a20261123VL206/ai-server-dell-price-hpe-lenovo.html
+2026-11-24 | Géopolitique | Pakistan : le projet de découpage des provinces et la résistance du PPP | https://asia.nikkei.com/politics/pakistan-s-push-to-split-provinces-hits-resistance-from-bhutto-s-party
+2026-11-24 | Politique du Brésil | Loi Enamed : l'article qui épargne 99 cursus de médecine mal évalués | https://www1.folha.uol.com.br/educacao/2026/11/artigo-incluido-sem-alarde-na-lei-do-enamed-livra-de-punicoes-99-cursos-de-medicina-mal-avaliados.shtml
