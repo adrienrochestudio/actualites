@@ -288,3 +288,4 @@
 2026-11-25 06:04 | 3 pistes, 6 preparer | ok
 2026-11-25 06:06 | 7 traduction | ok
 2026-11-25 06:06 | 8 controle pt | ok
+2026-11-25 06:07 | 9 publication | ok, fr et pt en ligne (identite git generique pour le commit pages)
