@@ -404,3 +404,16 @@
 2026-11-24 | Cinéma | À Belfort, Entrevues donne son grand prix à un docufiction, I Plant My Hand in the Garden | Belfort
 2026-11-24 | Environnement | Épandre du basalte pour capter du CO2 : la question du sol à long terme | 
 2026-11-24 | Carte expliquée | L'électricité solaire : 8,7 % du courant mondial, plus d'un quart en Hongrie et au Chili | 
+2026-11-25 | une | À Madagascar, les députés ont destitué dans la nuit de lundi à mardi le président de l'Assemblée nationale, Siteny Randr |
+2026-11-25 | Monde | L'Union européenne et l'Indonésie signent leur accord : huile de palme sous quota, nickel en ligne de mire | 
+2026-11-25 | France | Sanofi paie 41 milliards de dollars pour Insmed et son traitement des bronches | Bridgewater
+2026-11-25 | Brésil | Petrobras achète 42 % de Neomille, producteur d'éthanol de maïs du Centre-Ouest | Chapadão do Céu, Maracaju
+2026-11-25 | Le chiffre du jour | 4,3 milliards de dollars | 
+2026-11-25 | Comprendre | Le fonds coté à rachats périodiques, ou comment BlackRock veut vendre du non-coté en Bourse | 
+2026-11-25 | Finance | Le Dow Jones passe 50 000 points pendant que le Nasdaq recule de 1,48 % | 
+2026-11-25 | Intelligence artificielle | Avec Claude Ship, Anthropic confie à des agents la relecture et la correction du code | 
+2026-11-25 | IA, technique | La centrale au pied du data center : comment une turbine à gaz alimente des serveurs d'IA sans le réseau | 
+2026-11-25 | Architecture | À Londres, le London Museum s'installe dans les halles victoriennes de Smithfield | Smithfield
+2026-11-25 | Cinéma | 14,66 millions d'entrées en octobre : les salles françaises gagnent 24,8 % sur dix mois | 
+2026-11-25 | Environnement | La COP31 d'Antalya finit sans accord politique, une première depuis Copenhague | Antalya
+2026-11-25 | Carte expliquée | L'obésité chez les adultes : 16 % de l'humanité, de moins de 3 % à plus de 70 % selon les pays | 
