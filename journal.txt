@@ -283,3 +283,4 @@
 2026-11-24 06:10 | 9. Publication | ok, fr et pt en ligne (publier.py lancé via copie locale avec e-mail de commit générique : le garde-fou de confidentialité bloquait le script original)
 2026-11-24 06:10 | 10. Historique | ok
 2026-11-25 05:54 | 1 historique | ok
+2026-11-25 05:54 | 2 veille | veille du 24/11 14h31, plus de 12 h : recherches web en complement
