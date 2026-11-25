@@ -287,3 +287,4 @@
 2026-11-25 06:04 | 4-5 base.json | ok, Politique du Bresil omise (plan Moretti deja traite, plus de budget de recherche ; presse et Wikimedia inaccessibles en lecture)
 2026-11-25 06:04 | 3 pistes, 6 preparer | ok
 2026-11-25 06:06 | 7 traduction | ok
+2026-11-25 06:06 | 8 controle pt | ok
