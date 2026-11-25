@@ -1,8 +1,5 @@
 # Sujets de fond repérés pendant la semaine, pour l'édition du dimanche (14 jours)
 # Format : AAAA-MM-JJ | thème | piste | url
-2026-11-10 | Environnement | Kenya : le super El Niño menace l'horticulture qui fournit un tiers des fleurs importées par l'UE | https://www.lemonde.fr/economie/article/2026/11/08/le-super-el-nino-inquiete-les-horticulteurs-kenyans-qui-fournissent-un-tiers-des-fleurs-importees-de-l-ue_6808402_3234.html
-2026-11-10 | Architecture | Amaravati : comment l'Inde construit une capitale d'État sur des terres agricoles, et pourquoi le chantier prend du retard | https://www.archdaily.com/1188110/master-plan-meets-land-planning-amaravati-indias-new-state-capital
-2026-11-10 | Finance | Le mécanisme Belém-Antalya pour une transition juste : qui paie et pour quoi | https://www.carbonbrief.org/qa-what-is-the-belem-antalya-mechanism-for-a-just-transition
 2026-11-11 | Géopolitique | Mali : l'emprise des orpailleurs chinois, du chef de village aux ministères | https://www.lemonde.fr/afrique/article/2026/11/09/au-mali-l-emprise-croissante-des-orpailleurs-chinois-ils-arrosent-tout-le-monde-du-chef-de-village-au-sommet-des-ministeres_6808676_3212.html
 2026-11-11 | Environnement | COP31 à Antalya : ce que réclament les États insulaires du Pacifique | https://www.lemonde.fr/planete/article/2026/11/10/cop31-sur-la-ligne-de-front-du-rechauffement-climatique-les-etats-insulaires-du-pacifique-veulent-se-faire-entendre_6808818_3244.html
 2026-11-12 | Société | Japon : la loi sur la capitale de secours, et les préfectures qui se disputent le rôle (Hokkaido, Aichi, Osaka, Fukuoka) | https://www.bangkokpost.com/world/3306160/cities-compete-to-be-japans-backup-capital
@@ -38,3 +35,6 @@
 2026-11-23 | IA | Mémoire DRAM et HBM : comment la hausse des prix de la mémoire se transmet aux serveurs d'IA et aux contrats déjà signés | https://www.digitimes.com/news/a20261123VL206/ai-server-dell-price-hpe-lenovo.html
 2026-11-24 | Géopolitique | Pakistan : le projet de découpage des provinces et la résistance du PPP | https://asia.nikkei.com/politics/pakistan-s-push-to-split-provinces-hits-resistance-from-bhutto-s-party
 2026-11-24 | Politique du Brésil | Loi Enamed : l'article qui épargne 99 cursus de médecine mal évalués | https://www1.folha.uol.com.br/educacao/2026/11/artigo-incluido-sem-alarde-na-lei-do-enamed-livra-de-punicoes-99-cursos-de-medicina-mal-avaliados.shtml
+2026-11-25 | Géopolitique | Accord UE-Indonésie : ce que l'interdiction d'exporter le nickel brut change pour les batteries européennes | https://www.secnewgate.eu/eu-indonesia-deal-what-it-means-for-trade-palm-oil-and-nickel/
+2026-11-25 | Finance | Fonds cotés d'actifs privés : décotes, rachats périodiques et la demande de BlackRock à la SEC | https://financialnewswire.com.au/managed-accounts/etf-hybrid-sees-blackrock-push-further-into-private-markets/
+2026-11-25 | Environnement | Centrales à gaz derrière le compteur : 181 GW annoncés pour les data centers | https://www.technologyreview.com/2026/11/24/1149622/data-centers-natural-gas/
