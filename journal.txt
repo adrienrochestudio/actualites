@@ -284,3 +284,4 @@
 2026-11-24 06:10 | 10. Historique | ok
 2026-11-25 05:54 | 1 historique | ok
 2026-11-25 05:54 | 2 veille | veille du 24/11 14h31, plus de 12 h : recherches web en complement
+2026-11-25 06:04 | 4-5 base.json | ok, Politique du Bresil omise (plan Moretti deja traite, plus de budget de recherche ; presse et Wikimedia inaccessibles en lecture)
