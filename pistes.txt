@@ -1,7 +1,5 @@
 # Sujets de fond repérés pendant la semaine, pour l'édition du dimanche (14 jours)
 # Format : AAAA-MM-JJ | thème | piste | url
-2026-11-11 | Géopolitique | Mali : l'emprise des orpailleurs chinois, du chef de village aux ministères | https://www.lemonde.fr/afrique/article/2026/11/09/au-mali-l-emprise-croissante-des-orpailleurs-chinois-ils-arrosent-tout-le-monde-du-chef-de-village-au-sommet-des-ministeres_6808676_3212.html
-2026-11-11 | Environnement | COP31 à Antalya : ce que réclament les États insulaires du Pacifique | https://www.lemonde.fr/planete/article/2026/11/10/cop31-sur-la-ligne-de-front-du-rechauffement-climatique-les-etats-insulaires-du-pacifique-veulent-se-faire-entendre_6808818_3244.html
 2026-11-12 | Société | Japon : la loi sur la capitale de secours, et les préfectures qui se disputent le rôle (Hokkaido, Aichi, Osaka, Fukuoka) | https://www.bangkokpost.com/world/3306160/cities-compete-to-be-japans-backup-capital
 2026-11-12 | Géopolitique | Madagascar et la Russie : instructeurs d'Africa Corps à Ivato, accords de défense, canal du Mozambique | https://www.globalsecurity.org/wmd/library/news/russia/2026/09/russia-260923-rferl03.htm
 2026-11-12 | Finance | Jio Platforms : la plus grosse introduction en Bourse indienne et ce qu'elle dit de l'empire Ambani | https://www.lemonde.fr/economie/article/2026/11/10/en-inde-l-operateur-telecom-jio-platforms-est-devenu-le-nouveau-joyau-boursier-de-l-empire-ambani_6808820_3234.html
@@ -38,3 +36,6 @@
 2026-11-25 | Géopolitique | Accord UE-Indonésie : ce que l'interdiction d'exporter le nickel brut change pour les batteries européennes | https://www.secnewgate.eu/eu-indonesia-deal-what-it-means-for-trade-palm-oil-and-nickel/
 2026-11-25 | Finance | Fonds cotés d'actifs privés : décotes, rachats périodiques et la demande de BlackRock à la SEC | https://financialnewswire.com.au/managed-accounts/etf-hybrid-sees-blackrock-push-further-into-private-markets/
 2026-11-25 | Environnement | Centrales à gaz derrière le compteur : 181 GW annoncés pour les data centers | https://www.technologyreview.com/2026/11/24/1149622/data-centers-natural-gas/
+2026-11-26 | Environnement | Nouvelle-Zélande : après l'abandon de la taxe sur le méthane agricole, tout miser sur les bolus, vaccins et inhibiteurs | https://www.lemonde.fr/planete/article/2026/11/25/pour-reduire-les-emissions-de-methane-de-son-betail-la-nouvelle-zelande-s-en-remet-entierement-a-la-technologie_6815047_3244.html
+2026-11-26 | Société | Bangladesh : le salaire minimum du textile passe de 12 500 à 17 000 takas, ce que cela change pour les ouvrières et les marques | https://www.aljazeera.com/news/2026/11/25/bangladesh-garment-workers-win-36-pay-rise-after-weeks-of-protest
+2026-11-26 | Géopolitique | Îles Salomon : le traité avec l'Australie et l'avenir du pacte de sécurité signé avec la Chine en 2022 | https://www.japantimes.co.jp/news/2026/11/25/asia-pacific/politics/australia-solomon-islands-pact-china/
