@@ -1,8 +1,5 @@
 # Sujets de fond repérés pendant la semaine, pour l'édition du dimanche (14 jours)
 # Format : AAAA-MM-JJ | thème | piste | url
-2026-11-12 | Société | Japon : la loi sur la capitale de secours, et les préfectures qui se disputent le rôle (Hokkaido, Aichi, Osaka, Fukuoka) | https://www.bangkokpost.com/world/3306160/cities-compete-to-be-japans-backup-capital
-2026-11-12 | Géopolitique | Madagascar et la Russie : instructeurs d'Africa Corps à Ivato, accords de défense, canal du Mozambique | https://www.globalsecurity.org/wmd/library/news/russia/2026/09/russia-260923-rferl03.htm
-2026-11-12 | Finance | Jio Platforms : la plus grosse introduction en Bourse indienne et ce qu'elle dit de l'empire Ambani | https://www.lemonde.fr/economie/article/2026/11/10/en-inde-l-operateur-telecom-jio-platforms-est-devenu-le-nouveau-joyau-boursier-de-l-empire-ambani_6808820_3234.html
 2026-11-13 | Environnement | Mer d'Aral : la crevette artémia, ressource éphémère de l'aquaculture mondiale née de l'assèchement | https://www.lemonde.fr/planete/article/2026/11/12/dans-la-mer-d-aral-en-voie-d-assechement-le-miracle-ephemere-de-la-crevette-artemia-ressource-prisee-de-l-aquaculture-mondiale_6809056_3244.html
 2026-11-13 | Société | La France exporte ses stations de ski au Kazakhstan malgré l'opposition locale | https://reporterre.net/La-France-exporte-ses-stations-de-ski-au-Kazakhstan-malgre-une-forte-opposition-locale
 2026-11-14 | Géopolitique | Reko Diq : le chemin de fer, la sécurité et le cuivre du Baloutchistan | https://asia.nikkei.com/editor-s-picks/interview/pakistan-to-link-reko-diq-mine-to-karachi-port-by-rail-in-3-years
@@ -39,3 +36,6 @@
 2026-11-26 | Environnement | Nouvelle-Zélande : après l'abandon de la taxe sur le méthane agricole, tout miser sur les bolus, vaccins et inhibiteurs | https://www.lemonde.fr/planete/article/2026/11/25/pour-reduire-les-emissions-de-methane-de-son-betail-la-nouvelle-zelande-s-en-remet-entierement-a-la-technologie_6815047_3244.html
 2026-11-26 | Société | Bangladesh : le salaire minimum du textile passe de 12 500 à 17 000 takas, ce que cela change pour les ouvrières et les marques | https://www.aljazeera.com/news/2026/11/25/bangladesh-garment-workers-win-36-pay-rise-after-weeks-of-protest
 2026-11-26 | Géopolitique | Îles Salomon : le traité avec l'Australie et l'avenir du pacte de sécurité signé avec la Chine en 2022 | https://www.japantimes.co.jp/news/2026/11/25/asia-pacific/politics/australia-solomon-islands-pact-china/
+2026-11-27 | IA | La FCC autorise SpaceX à lancer jusqu'à un million de satellites pour des centres de données spatiaux | https://www.theverge.com/
+2026-11-27 | Géopolitique | Accord de sécurité Australie-Îles Salomon, quatre ans après le pacte avec la Chine | https://www.lemonde.fr/international/article/2026/11/25/l-australie-et-les-iles-salomon-concluent-un-accord-securitaire-endiguant-l-influence-de-la-chine-dans-le-pacifique_6815126_3210.html
+2026-11-27 | Environnement | Sécheresse d'El Niño au Roraima : communautés isolées et rationnement de l'eau | https://www1.folha.uol.com.br/ambiente/2026/11/com-el-nino-seca-em-roraima-isola-comunidades-e-leva-a-racionamento-de-agua.shtml
