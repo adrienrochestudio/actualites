@@ -295,3 +295,4 @@
 2026-11-27 05:59 | 3 pistes | ok
 2026-11-27 06:06 | 4-5 rédaction et contrôle FR | ok (portraits/logos : URLs Wikimedia non vérifiables, Commons injoignable)
 2026-11-27 06:08 | 6-7 préparation et traduction | ok
+2026-11-27 06:08 | 8 contrôle pt | ok
