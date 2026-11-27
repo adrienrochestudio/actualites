@@ -294,3 +294,4 @@
 2026-11-27 05:59 | 2 veille | veille du 26/11 13h12 (plus de 12 h) : 18 recherches WebSearch extended ; Le Monde, Folha, Wikimedia, OWID, CNC injoignables par WebFetch
 2026-11-27 05:59 | 3 pistes | ok
 2026-11-27 06:06 | 4-5 rédaction et contrôle FR | ok (portraits/logos : URLs Wikimedia non vérifiables, Commons injoignable)
+2026-11-27 06:08 | 6-7 préparation et traduction | ok
