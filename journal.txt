@@ -1,15 +1,5 @@
 # Journal d'exécution de la tâche Actualités (30 jours)
 # Format : AAAA-MM-JJ HH:MM (Paris) | étape | état ou cause
-2026-10-27 07:06 | 1-2 historique et pages | édition du 2026-10-27 déjà publiée à 06h37 (fr et pt) et historique déjà ajouté : seconde exécution arrêtée sans republier
-2026-10-27 07:08 | 1. Historique | ok
-2026-10-27 07:10 | 2. Veille | ok, mais WebFetch hors service (ENOTFOUND, sites refusés) : recherches WebSearch à la place
-2026-10-27 07:14 | 3. Pistes | en cours
-2026-10-27 07:14 | 3. Pistes | ok
-2026-10-27 07:16 | 5. Contrôle FR | ok (audit 0 rouge ; publier.py plantait sur les blocs barres, corrigé en local seulement)
-2026-10-27 07:18 | 7. Traduction | ok
-2026-10-27 07:19 | 8. Contrôle PT | ok (audit 0 rouge)
-2026-10-27 07:19 | 9. Publication | ok, fr et pt en ligne
-2026-10-27 07:20 | 10. Historique | ok
 2026-10-28 05:54 | 1. Historique | ok
 2026-10-28 05:54 | 2. Veille | branche veille du 27/10 06h26, plus de 12 h : recherche WebSearch
 2026-10-28 06:03 | 3. Pistes | ok, 2 pistes
@@ -298,3 +288,4 @@
 2026-11-26 06:07 | 8. Assemblage et contrôle PT | ok, audit sans rouge
 2026-11-26 06:08 | 9. Publication | ok, fr et pt en ligne
 2026-11-26 06:08 | 10. Historique | ok
+2026-11-27 05:54 | 0 accès | ok
