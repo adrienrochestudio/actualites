@@ -297,3 +297,4 @@
 2026-11-27 06:08 | 6-7 préparation et traduction | ok
 2026-11-27 06:08 | 8 contrôle pt | ok
 2026-11-27 06:09 | 9 publication | ok, fr et pt en ligne (images Wikimedia et OWID laissées distantes)
+2026-11-27 06:09 | 10 historique | ok
