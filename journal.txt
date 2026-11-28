@@ -1,14 +1,5 @@
 # Journal d'exécution de la tâche Actualités (30 jours)
 # Format : AAAA-MM-JJ HH:MM (Paris) | étape | état ou cause
-2026-10-28 05:54 | 1. Historique | ok
-2026-10-28 05:54 | 2. Veille | branche veille du 27/10 06h26, plus de 12 h : recherche WebSearch
-2026-10-28 06:03 | 3. Pistes | ok, 2 pistes
-2026-10-28 06:03 | 4. Rédaction | ok, base.json (WebFetch bloqué sauf anthropic.com : lectures par WebSearch)
-2026-10-28 06:03 | 5. Contrôle FR | ok, audit 97/100, 0 rouge
-2026-10-28 06:05 | 6-7. Préparer et traduire | ok, 173 textes
-2026-10-28 06:05 | 8. Contrôle PT | ok, audit 94/100, 0 rouge
-2026-10-28 06:05 | 9. Publication | ok, fr et pt en ligne
-2026-10-28 06:05 | 10. Historique | ok
 2026-10-29 05:54 | 1. historique | ok
 2026-10-29 05:54 | 2. veille | branche veille de 28/10 10h32, plus de 12 h : recherche web
 2026-10-29 05:58 | 2. veille | WebFetch bloqué (ENOTFOUND sur tous les sites) ; 18 recherches WebSearch faites
@@ -298,3 +289,4 @@
 2026-11-27 06:08 | 8 contrôle pt | ok
 2026-11-27 06:09 | 9 publication | ok, fr et pt en ligne (images Wikimedia et OWID laissées distantes)
 2026-11-27 06:09 | 10 historique | ok
+2026-11-28 05:54 | 1. Historique | ok
