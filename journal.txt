@@ -290,3 +290,4 @@
 2026-11-27 06:09 | 9 publication | ok, fr et pt en ligne (images Wikimedia et OWID laissées distantes)
 2026-11-27 06:09 | 10 historique | ok
 2026-11-28 05:54 | 1. Historique | ok
+2026-11-28 05:54 | 2. Veille | branche veille datée du 27/11 12h59 (plus de 12 h) : recherches WebSearch extended, veille en complément
