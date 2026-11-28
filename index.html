@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Actualités</title>
+<meta name="description" content="Actualités, édition quotidienne et dossiers de la semaine, lisibles hors ligne.">
+<link rel="manifest" href="./manifest.webmanifest">
+<link rel="icon" href="./icons/icon-192.png">
+<link rel="apple-touch-icon" href="./icons/icon-180.png">
+<link rel="preload" href="./fonts/source-serif-4-var.woff2" as="font" type="font/woff2" crossorigin>
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Actualités">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="theme-color" content="#ffffff">
+<link rel="stylesheet" href="./styles.css">
+<script type="module" src="./app.js"></script>
+</head>
+<body>
+<div class="voile" aria-hidden="true"></div>
+<button type="button" id="ouvrir-menu" class="ouvrir-menu" aria-haspopup="dialog" aria-controls="menu" data-t-label="menu">
+  <span></span><span></span><span></span>
+</button>
+<div id="tirer" class="tirer" aria-hidden="true">
+  <canvas></canvas>
+  <p class="note"></p>
+</div>
+<div id="maj" class="maj" hidden>
+  <span data-t="nouvelleVersion">Nouvelle version de l'app.</span>
+  <button type="button" id="maj-bouton" data-t="recharger">Recharger</button>
+</div>
+<header class="titre-journal">
+  <div class="marque">
+    <canvas id="logo" width="34" height="34" aria-hidden="true"></canvas>
+    <h1>Actualités</h1>
+  </div>
+  <nav class="onglets" data-t-label="editions" aria-label="Éditions">
+    <button type="button" data-vue="jour" data-t="quotidien" aria-pressed="true">Quotidien</button>
+    <button type="button" data-vue="semaine" data-t="hebdomadaire" aria-pressed="false">Hebdomadaire</button>
+  </nav>
+  <p class="date" id="date"></p>
+</header>
+<main id="journal" class="journal" aria-live="polite">
+  <p class="note" data-t="chargement">Chargement de l'édition.</p>
+</main>
+<dialog id="menu" class="menu" data-t-label="menu" aria-label="Menu">
+  <nav>
+    <button type="button" class="fermer-menu" data-t-label="fermer" aria-label="Fermer"><span></span><span></span></button>
+    <h2 class="menu-titre" data-t="langue">Langue</h2>
+    <ul class="menu-liste" id="menu-langues"></ul>
+    <h2 class="menu-titre" id="menu-rubriques-titre">Rubriques</h2>
+    <ul class="menu-liste" id="menu-rubriques"></ul>
+    <h2 class="menu-titre" data-t="gardes" id="menu-gardes-titre" hidden>Gardés</h2>
+    <ul class="menu-liste" id="menu-gardes"></ul>
+  </nav>
+</dialog>
+<dialog id="zoom" class="zoom" aria-label="Image agrandie">
+  <button type="button" class="fermer-zoom" data-t="fermer">Fermer</button>
+  <iframe title="Graphique interactif" loading="lazy" referrerpolicy="no-referrer"
+          sandbox="allow-scripts allow-same-origin allow-popups"></iframe>
+  <img alt="">
+  <p class="note"></p>
+</dialog>
+</body>
+</html>
