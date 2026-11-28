@@ -1,7 +1,5 @@
 # Sujets de fond repérés pendant la semaine, pour l'édition du dimanche (14 jours)
 # Format : AAAA-MM-JJ | thème | piste | url
-2026-11-13 | Environnement | Mer d'Aral : la crevette artémia, ressource éphémère de l'aquaculture mondiale née de l'assèchement | https://www.lemonde.fr/planete/article/2026/11/12/dans-la-mer-d-aral-en-voie-d-assechement-le-miracle-ephemere-de-la-crevette-artemia-ressource-prisee-de-l-aquaculture-mondiale_6809056_3244.html
-2026-11-13 | Société | La France exporte ses stations de ski au Kazakhstan malgré l'opposition locale | https://reporterre.net/La-France-exporte-ses-stations-de-ski-au-Kazakhstan-malgre-une-forte-opposition-locale
 2026-11-14 | Géopolitique | Reko Diq : le chemin de fer, la sécurité et le cuivre du Baloutchistan | https://asia.nikkei.com/editor-s-picks/interview/pakistan-to-link-reko-diq-mine-to-karachi-port-by-rail-in-3-years
 2026-11-14 | Environnement | La cryosphère, dixième limite planétaire proposée | https://www.stockholmresilience.org/research/research-stories/2026-11-12-earths-frozen-landscapes-have-been-pushed-beyond-safe-planetary-limits.html
 2026-11-15 | Environnement | Brésil : le coût du capital, frein principal à la sortie des énergies fossiles selon les auteurs de la feuille de route de transition | https://www1.folha.uol.com.br/ambiente/2026/11/custo-de-capital-e-desafio-para-reduzir-dependencia-de-combustivel-fossil-diz-coautora-de-mapa-para-transicao.shtml
@@ -39,3 +37,6 @@
 2026-11-27 | IA | La FCC autorise SpaceX à lancer jusqu'à un million de satellites pour des centres de données spatiaux | https://www.theverge.com/
 2026-11-27 | Géopolitique | Accord de sécurité Australie-Îles Salomon, quatre ans après le pacte avec la Chine | https://www.lemonde.fr/international/article/2026/11/25/l-australie-et-les-iles-salomon-concluent-un-accord-securitaire-endiguant-l-influence-de-la-chine-dans-le-pacifique_6815126_3210.html
 2026-11-27 | Environnement | Sécheresse d'El Niño au Roraima : communautés isolées et rationnement de l'eau | https://www1.folha.uol.com.br/ambiente/2026/11/com-el-nino-seca-em-roraima-isola-comunidades-e-leva-a-racionamento-de-agua.shtml
+2026-11-28 | Géopolitique | Ouganda et RDC : le retrait de Lubero, les messages de Muhoozi Kainerugaba et l'opération Shujaa | https://www.arabnews.com/world/uganda-to-withdraw-troops-from-dr-congo-amid-diplomatic-spat-3014265
+2026-11-28 | Société | Logement : plus de la moitié du parc locatif privé est détenue par des multipropriétaires | https://www.lemonde.fr/le-monde-evenements/article/2026/11/27/logement-plus-de-la-moitie-du-parc-prive-est-aux-mains-de-multiproprietaires_6815810_4333359.html
+2026-11-28 | Politique du Brésil | Lula envisage un ministère du gouvernement numérique pour centraliser les politiques de technologie | https://www1.folha.uol.com.br/mercado/2026/11/lula-avalia-criar-ministerio-com-foco-em-governo-digital-para-centralizar-politicas-de-tecnologia.shtml
