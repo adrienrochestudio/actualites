@@ -296,3 +296,4 @@
 2026-11-28 06:11 | 6-7. Préparation et traduction | ok, 186 textes
 2026-11-28 06:12 | 8. Contrôle PT | ok, audit pt 100/100
 2026-11-28 06:13 | 9. Publication | ok, fr et pt du 2026-11-28 publiés en un envoi (06:13 Paris)
+2026-11-28 06:13 | 10. Historique | ok, 13 lignes ajoutées
