@@ -293,3 +293,4 @@
 2026-11-28 05:54 | 2. Veille | branche veille datée du 27/11 12h59 (plus de 12 h) : recherches WebSearch extended, veille en complément
 2026-11-28 05:59 | 3. Pistes | ok, 3 pistes ; WebFetch refusé sur presque tous les sites (lemonde, bbc, dezeen, wikimedia, owid, insee, ibge) : contenu et images pris par WebSearch, 21 recherches au lieu de 18
 2026-11-28 06:09 | 5. Contrôle FR | ok, audit 97/100, 0 rouge (publier.py et historique.py lancés par copies locales avec adresse git générique : le hook de confidentialité bloque les originaux ; Python 3.13 pour Pillow)
+2026-11-28 06:11 | 6-7. Préparation et traduction | ok, 186 textes
